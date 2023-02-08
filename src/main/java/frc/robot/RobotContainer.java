@@ -4,17 +4,16 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.commands.Autos;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class RobotContainer {
-  
-
+  private final Drivetrain drivetrain = Drivetrain.getInstance();
 
   public RobotContainer() {
     configureBindings();
   }
-
 
   private void configureBindings() {
     
@@ -26,7 +25,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.getAutoCommand();
-  }
+    // An example command will be run in autonomous 
+    return Autos.getAutoCommand(drivetrain);
+  } 
 }
