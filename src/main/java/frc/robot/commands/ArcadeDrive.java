@@ -18,8 +18,8 @@ public class ArcadeDrive extends CommandBase {
 
   @Override
   public void execute() {
-    double xSpeed = - OI.driverController.getLeftY();
-    double zRotation = OI.driverController.getRightX() * -0.7;
+    double xSpeed = OI.driverController.getLeftY();
+    double zRotation = OI.driverController.getRightX();
 
     xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
     zRotation = MathUtil.clamp(zRotation, -1.0, 1.0);

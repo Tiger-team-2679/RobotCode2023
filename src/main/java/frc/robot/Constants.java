@@ -23,27 +23,5 @@ public final class Constants {
       public static final int leftFollowerID  = 3;
       public static final int rightID         = 6;
       public static final int rightFollowerID = 5;
-
-      // public static final double kP = 1.5;
-      // public static final double kI = 0.015;
-      // public static final double kD = 0.2;
-
-      public static final double kP = 1.7;
-      public static final double kI = 0;
-      public static final double kD = 0.2;
-      public static final double angle = 180;
-
-      // public static final double kP2 = 1.5;
-      // public static final double kI2 = 0.0;
-      // public static final double kD2 = 0.2;
-  }
-
-  public final class Arm{
-      public static final double kP = 2.0;
-      public static final double kI = 0.0;
-      public static final double kD = 0.2;
-
-      public static final int ArmId = 7;
-      public static final double angle =90;
   }
 }

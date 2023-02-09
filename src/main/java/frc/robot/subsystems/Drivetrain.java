@@ -18,14 +18,18 @@ public class Drivetrain extends SubsystemBase {
   private static Drivetrain instance = null;
 
   /** Creates a new Drivetrain. */
-  public Drivetrain() {
+  private Drivetrain() {
+    setDefaultCommand(new ArcadeDrive(this));
+
     leftMotorFollower.follow(leftMotor);
     rightMotorFollower.follow(rightMotor);
-    setDefaultCommand(new ArcadeDrive(this));
+
+    rightMotor.setInverted(true);
+    rightMotorFollower.setInverted(true);
   }
 
   public void set(double leftDemand, double rightDemand) {
-    leftMotor.set(ControlMode.PercentOutput, -leftDemand);
+    leftMotor.set(ControlMode.PercentOutput, leftDemand);
     rightMotor.set(ControlMode.PercentOutput, rightDemand);
   }
 
