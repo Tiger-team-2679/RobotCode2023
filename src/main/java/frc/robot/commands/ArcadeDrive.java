@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.OI;
 import frc.robot.subsystems.Drivetrain;
@@ -20,7 +19,7 @@ public class ArcadeDrive extends CommandBase {
   @Override
   public void execute() {
     double xSpeed = - OI.driverController.getLeftY();
-    double zRotation = OI.driverController.getRightX() * 0.7;
+    double zRotation = OI.driverController.getRightX();
 
     xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
     zRotation = MathUtil.clamp(zRotation, -1.0, 1.0);
@@ -63,9 +62,7 @@ public class ArcadeDrive extends CommandBase {
     }
 
 
-    SmartDashboard.putNumber("Encoder left", drivetrain.getLeftEncoder().getDistance());
-    SmartDashboard.putNumber("Encoder right", drivetrain.getRightEncoder().getDistance());
-    drivetrain.set(leftSpeed * 10, rightSpeed * 10);
+    drivetrain.set(leftSpeed, rightSpeed);
   }
 
   // Called once the command ends or is interrupted.

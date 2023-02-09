@@ -31,12 +31,12 @@ public class Drivetrain extends SubsystemBase {
   private static Drivetrain instance = null;
 
   /** Creates a new Drivetrain. */
-  public Drivetrain() {
+  private Drivetrain() {
     leftMotorFollower.follow(leftMotor);
     rightMotorFollower.follow(rightMotor);
     setDefaultCommand(new ArcadeDrive(this));
 
-    double wheelRadiusInMeters = 0.075;
+    double wheelRadiusInMeters = 0.076;
     int pulsesInRound = 2048;
 
     double distancePerRound = wheelRadiusInMeters * 2 * Math.PI;
@@ -58,14 +58,6 @@ public class Drivetrain extends SubsystemBase {
 
     leftMotor.set(ControlMode.PercentOutput, leftDemand);
     rightMotor.set(ControlMode.PercentOutput, -rightDemand);
-  }
-  
-  public void setInVolts(double leftDemand, double rightDemand) {
-    SmartDashboard.putNumber("right", rightDemand);
-    SmartDashboard.putNumber("left", leftDemand);
-
-    leftMotor.set(ControlMode.PercentOutput, leftDemand * 12);
-    rightMotor.set(ControlMode.PercentOutput, -rightDemand * 12);
   }
 
   public PigeonIMU getIMU() {
@@ -99,6 +91,8 @@ public class Drivetrain extends SubsystemBase {
       rightEncoder.getDistance()
     );
 
+    SmartDashboard.putNumber("Encoder left", leftEncoder.getDistance());
+    SmartDashboard.putNumber("Encoder right", rightEncoder.getDistance());
     SmartDashboard.putNumber("yaw", imu.getYaw());
   }
 
