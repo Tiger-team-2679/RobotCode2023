@@ -1,12 +1,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.OI;
 import frc.robot.subsystems.Drivetrain;
 
 public class ArcadeDrive extends CommandBase {
   private final Drivetrain drivetrain;
+
+  private final PIDController pid = new PIDController(Constants.ArcadeDrive.kP, Constants.ArcadeDrive.kI, Constants.ArcadeDrive.kD);
+
 
   public ArcadeDrive(Drivetrain drivetrain) {
     this.drivetrain = drivetrain;
@@ -18,7 +24,8 @@ public class ArcadeDrive extends CommandBase {
 
   @Override
   public void execute() {
-    double xSpeed = OI.driverController.getLeftY();
+    // inverted because the Yaxis joystick gives opposite values.
+    double xSpeed = -OI.driverController.getLeftY();
     double zRotation = OI.driverController.getRightX();
 
     xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
@@ -61,7 +68,15 @@ public class ArcadeDrive extends CommandBase {
       rightSpeed /= maxMagnitude;
     }
 
-    drivetrain.set(leftSpeed, rightSpeed);
+    double leftPIDValue = pid.calculate(drivetrain.getLeftEncoder().getRate() / Constants.ArcadeDrive.maxSpeed, leftSpeed);
+    double rightPIDValue = pid.calculate(drivetrain.getRightEncoder().getRate() / Constants.ArcadeDrive.maxSpeed, rightSpeed);
+
+    SmartDashboard.putNumber("rightPIDValue", rightPIDValue);
+    SmartDashboard.putNumber("leftPIDValue", leftPIDValue);
+
+    double PercentOutputLeftValue = MathUtil.clamp(leftPIDValue, -1, 1);
+    double PercentOutputRightValue = MathUtil.clamp(rightPIDValue, -1, 1);
+    drivetrain.set(PercentOutputLeftValue, PercentOutputRightValue);
   }
 
   // Called once the command ends or is interrupted.
