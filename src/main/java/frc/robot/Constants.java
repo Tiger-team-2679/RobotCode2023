@@ -24,4 +24,11 @@ public final class Constants {
       public static final int rightID         = 6;
       public static final int rightFollowerID = 5;
   }
+
+  public final class ArcadeDrive {
+    public static final double kP = 1;
+    public static final double kI = 0;
+    public static final double kD = 0; 
+    public static final double maxSpeed = 4.6;  //meters per second
+  }
 }
