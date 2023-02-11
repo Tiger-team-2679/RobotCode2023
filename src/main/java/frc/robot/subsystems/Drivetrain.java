@@ -12,14 +12,14 @@ import frc.robot.Constants;
 import frc.robot.commands.ArcadeDrive;
 
 public class Drivetrain extends SubsystemBase {
-  private final TalonSRX leftMotor = new TalonSRX(Constants.Drivetrain.leftID);
-  private final TalonSRX leftMotorFollower = new TalonSRX(Constants.Drivetrain.leftFollowerID);
-  private final TalonSRX rightMotor = new TalonSRX(Constants.Drivetrain.rightID);
-  private final TalonSRX rightMotorFollower = new TalonSRX(Constants.Drivetrain.rightFollowerID);
+  private final TalonSRX leftMotor = new TalonSRX(Constants.Drivetrain.LEFT_ID);
+  private final TalonSRX leftMotorFollower = new TalonSRX(Constants.Drivetrain.LEFT_FOLLOWER_ID);
+  private final TalonSRX rightMotor = new TalonSRX(Constants.Drivetrain.RIGHT_ID);
+  private final TalonSRX rightMotorFollower = new TalonSRX(Constants.Drivetrain.RIGHT_FOLLOWER_ID);
 
   private final PigeonIMU imu = new PigeonIMU(leftMotorFollower);
-  private final Encoder leftEncoder = new Encoder(Constants.Drivetrain.leftEncoderChannelA, Constants.Drivetrain.leftEncoderChannelB);
-  private final Encoder rightEncoder = new Encoder(Constants.Drivetrain.rightEncoderChannelA, Constants.Drivetrain.rightEncoderChannelB);
+  private final Encoder leftEncoder = new Encoder(Constants.Drivetrain.LEFT_ENCODER_CHANNEL_A, Constants.Drivetrain.LEFT_ENCODER_CHANNEL_B);
+  private final Encoder rightEncoder = new Encoder(Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_A, Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_B);
 
   private static Drivetrain instance = null;
 

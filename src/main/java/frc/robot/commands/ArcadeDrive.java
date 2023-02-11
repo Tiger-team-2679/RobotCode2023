@@ -11,7 +11,7 @@ import frc.robot.subsystems.Drivetrain;
 public class ArcadeDrive extends CommandBase {
   private final Drivetrain drivetrain;
 
-  private final PIDController pid = new PIDController(Constants.ArcadeDrive.kP, Constants.ArcadeDrive.kI, Constants.ArcadeDrive.kD);
+  private final PIDController pid = new PIDController(Constants.ArcadeDrive.KP, Constants.ArcadeDrive.KI, Constants.ArcadeDrive.KD);
 
 
   public ArcadeDrive(Drivetrain drivetrain) {
@@ -68,8 +68,8 @@ public class ArcadeDrive extends CommandBase {
       rightSpeed /= maxMagnitude;
     }
 
-    double leftPIDValue = pid.calculate(drivetrain.getLeftEncoder().getRate() / Constants.ArcadeDrive.maxSpeed, leftSpeed);
-    double rightPIDValue = pid.calculate(drivetrain.getRightEncoder().getRate() / Constants.ArcadeDrive.maxSpeed, rightSpeed);
+    double leftPIDValue = pid.calculate(drivetrain.getLeftEncoder().getRate() / Constants.ArcadeDrive.MAX_SPEED, leftSpeed);
+    double rightPIDValue = pid.calculate(drivetrain.getRightEncoder().getRate() / Constants.ArcadeDrive.MAX_SPEED, rightSpeed);
 
     SmartDashboard.putNumber("rightPIDValue", rightPIDValue);
     SmartDashboard.putNumber("leftPIDValue", leftPIDValue);
