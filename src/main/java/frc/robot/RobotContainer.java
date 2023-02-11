@@ -4,12 +4,15 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.commands.Autos;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class RobotContainer {
-  Drivetrain drivetrain = Drivetrain.getInstance();
+  private Drivetrain drivetrain = Drivetrain.getInstance();
+  private Arm arm = Arm.getInstance();
 
   public RobotContainer() {
     configureBindings();
@@ -17,7 +20,7 @@ public class RobotContainer {
 
 
   private void configureBindings() {
-    
+    OI.driverController.a().onTrue(new InstantCommand(() -> arm.setSpeed(0.5)));
   }
 
   /**

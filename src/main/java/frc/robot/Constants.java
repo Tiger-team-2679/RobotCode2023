@@ -36,8 +36,14 @@ public final class Constants {
     public static final double kD = 0; 
     public static final double maxSpeed = 4.6;  //meters per second
   }
-
+  
   public final class Arm {
     public static final int motorID = 7;
+    public static final int KP = 0;
+    public static final int KI = 0;
+    public static final int KD = 0;
+
+    public static final int TOLERANCE_POSTION = 0;
+    public static final int TOLERANCE_VELOCITY = 0;
   }
 }
