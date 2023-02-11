@@ -24,7 +24,7 @@ public class Arm extends SubsystemBase {
     }
 
     public Arm getInstance() {
-        if (instance != null) {
+        if (instance == null) {
             instance = new Arm();
         }
         return instance;
