@@ -52,8 +52,8 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void set(double leftDemand, double rightDemand) {
-    leftMotor.set(ControlMode.PercentOutput, leftDemand);
-    rightMotor.set(ControlMode.PercentOutput, rightDemand);
+    leftMotor.set(ControlMode.PercentOutput, leftDemand*0.3);
+    rightMotor.set(ControlMode.PercentOutput, rightDemand*0.3);
   }
 
   public PigeonIMU getIMU() {

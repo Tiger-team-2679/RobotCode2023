@@ -24,6 +24,7 @@ public class Arm extends SubsystemBase {
         // This method will be called once per scheduler run
     }
 
+
     public void setSpeed(double speedDemand) {
         motor.set(speedDemand);
     }

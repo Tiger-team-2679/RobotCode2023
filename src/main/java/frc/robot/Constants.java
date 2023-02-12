@@ -33,5 +33,7 @@ public final class Constants {
 
     public static final int TOLERANCE_POSTION = 0;
     public static final int TOLERANCE_VELOCITY = 0;
+
+    public static final double POSTION_FEEDER= 120;
   }
 }
