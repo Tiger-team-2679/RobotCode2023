@@ -24,6 +24,10 @@ public final class Constants {
     public static final double KD = 0;
     public static final double MAX_SPEED = 4.6; // meters per second
   }
+
+  public final class Intake {
+    public static final int MOTOR_ID = 8;
+  }
   
   public final class Arm {
     public static final int motorID = 7;

@@ -6,12 +6,14 @@ package frc.robot;
 
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
 import frc.robot.commands.Autos;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class RobotContainer {
   private Drivetrain drivetrain = Drivetrain.getInstance();
+  Intake intake = Intake.getInstance();
   private Arm arm = Arm.getInstance();
 
   public RobotContainer() {
