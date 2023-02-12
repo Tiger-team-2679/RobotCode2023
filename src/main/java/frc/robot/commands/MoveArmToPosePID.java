@@ -9,11 +9,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 
-public class ArmPID extends CommandBase {
+public class MoveArmToPosePID extends CommandBase {
   Arm arm ;
   PIDController pid = new PIDController(Constants.Arm.KP, Constants.Arm.KI, Constants.Arm.KD);
   /** Creates a new ArmPID. */
-  public ArmPID(Arm arm) {
+  public MoveArmToPosePID(Arm arm) {
     this.arm = arm ;
     
     // Use addRequirements() here to declare subsystem dependencies.

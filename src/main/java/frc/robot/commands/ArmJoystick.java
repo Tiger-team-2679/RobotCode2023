@@ -4,12 +4,17 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.OI;
+import frc.robot.subsystems.Arm;
 
 public class ArmJoystick extends CommandBase {
+  Arm arm;
   /** Creates a new ArmJoystick. */
-  public ArmJoystick() {
-    // Use addRequirements() here to declare subsystem dependencies.
+  public ArmJoystick(Arm arm) {
+    this.arm = arm;
+    addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
@@ -18,7 +23,11 @@ public class ArmJoystick extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    double Speed = -OI.opertatorController.getLeftY();
+    Speed = MathUtil.clamp(Speed, -1.0, 1.0);
+    arm.setSpeed(Speed);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
