@@ -12,74 +12,103 @@ import frc.robot.Constants;
 import frc.robot.commands.ArcadeDrive;
 
 public class Drivetrain extends SubsystemBase {
-  private final TalonSRX leftMotor = new TalonSRX(Constants.Drivetrain.LEFT_ID);
-  private final TalonSRX leftMotorFollower = new TalonSRX(Constants.Drivetrain.LEFT_FOLLOWER_ID);
-  private final TalonSRX rightMotor = new TalonSRX(Constants.Drivetrain.RIGHT_ID);
-  private final TalonSRX rightMotorFollower = new TalonSRX(Constants.Drivetrain.RIGHT_FOLLOWER_ID);
+    private final TalonSRX leftMotor = new TalonSRX(Constants.Drivetrain.LEFT_ID);
+    private final TalonSRX leftMotorFollower = new TalonSRX(Constants.Drivetrain.LEFT_FOLLOWER_ID);
+    private final TalonSRX rightMotor = new TalonSRX(Constants.Drivetrain.RIGHT_ID);
+    private final TalonSRX rightMotorFollower = new TalonSRX(Constants.Drivetrain.RIGHT_FOLLOWER_ID);
 
-  private final PigeonIMU imu = new PigeonIMU(leftMotorFollower);
-  private final Encoder leftEncoder = new Encoder(Constants.Drivetrain.LEFT_ENCODER_CHANNEL_A, Constants.Drivetrain.LEFT_ENCODER_CHANNEL_B);
-  private final Encoder rightEncoder = new Encoder(Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_A, Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_B);
+    private final PigeonIMU imu = new PigeonIMU(leftMotorFollower);
+    private final Encoder leftEncoder = new Encoder(Constants.Drivetrain.LEFT_ENCODER_CHANNEL_A,
+            Constants.Drivetrain.LEFT_ENCODER_CHANNEL_B);
+    private final Encoder rightEncoder = new Encoder(Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_A,
+            Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_B);
+            
+            
+    private double lastSpeedLeft = 0;
+    private double lastSpeedright = 0;
 
-  private static Drivetrain instance = null;
+    private static Drivetrain instance = null;
 
-  /** Creates a new Drivetrain. */
-  private Drivetrain() {
-    setDefaultCommand(new ArcadeDrive(this));
+    /** Creates a new Drivetrain. */
+    private Drivetrain() {
+        setDefaultCommand(new ArcadeDrive(this));
 
-    leftMotorFollower.follow(leftMotor);
-    rightMotorFollower.follow(rightMotor);
+        leftMotorFollower.follow(leftMotor);
+        rightMotorFollower.follow(rightMotor);
 
-    rightMotor.setInverted(true);
-    rightMotorFollower.setInverted(true);
+        rightMotor.setInverted(true);
+        rightMotorFollower.setInverted(true);
 
-    rightMotor.setNeutralMode(NeutralMode.Brake);
-    rightMotorFollower.setNeutralMode(NeutralMode.Brake);
-    leftMotor.setNeutralMode(NeutralMode.Brake);
-    leftMotorFollower.setNeutralMode(NeutralMode.Brake);
+        rightMotor.setNeutralMode(NeutralMode.Brake);
+        rightMotorFollower.setNeutralMode(NeutralMode.Brake);
+        leftMotor.setNeutralMode(NeutralMode.Brake);
+        leftMotorFollower.setNeutralMode(NeutralMode.Brake);
 
+        double wheelRadiusInMeters = 0.076;
+        int pulsesInRound = 2048;
 
-    double wheelRadiusInMeters = 0.076;
-    int pulsesInRound = 2048;
+        double distancePerRound = wheelRadiusInMeters * 2 * Math.PI;
+        double roundsPerPules = 1 / (double) pulsesInRound;
 
-    double distancePerRound = wheelRadiusInMeters * 2 * Math.PI;
-    double roundsPerPules = 1 / (double) pulsesInRound;
+        double distancePerPules = distancePerRound * roundsPerPules;
 
-    double distancePerPules = distancePerRound * roundsPerPules;
-
-    rightEncoder.setDistancePerPulse(distancePerPules);
-    leftEncoder.setDistancePerPulse(distancePerPules);
-  }
-
-  public void set(double leftDemand, double rightDemand) {
-    leftMotor.set(ControlMode.PercentOutput, leftDemand);
-    rightMotor.set(ControlMode.PercentOutput, rightDemand);
-  }
-
-  public PigeonIMU getIMU() {
-    return imu;
-  }
-
-  public Encoder getLeftEncoder() {
-      return leftEncoder;
-  }
-
-  public Encoder getRightEncoder() {
-      return rightEncoder;
-  }
-
-  @Override
-  public void periodic() {
-    SmartDashboard.putNumber("Right Encoder Distance", rightEncoder.getDistance());
-    SmartDashboard.putNumber("Left Encoder Distance", leftEncoder.getDistance());
-    SmartDashboard.putNumber("PigeonIMU Yaw", imu.getYaw());
-  }
-
-  public static Drivetrain getInstance() {
-    if(instance == null) {
-      instance = new Drivetrain();
+        rightEncoder.setDistancePerPulse(distancePerPules);
+        leftEncoder.setDistancePerPulse(distancePerPules);
     }
 
-    return instance;
-  }
+    public void set(double leftDemand, double rightDemand) {
+        leftMotor.set(ControlMode.PercentOutput, leftDemand);
+        rightMotor.set(ControlMode.PercentOutput, rightDemand);
+        lastSpeedLeft = leftDemand;
+        lastSpeedright = rightDemand;
+    }
+
+    public double getYaw() {
+        return imu.getYaw();
+    }
+
+    public double getLeftDistanceMeters() {
+        return leftEncoder.getDistance();
+    }
+
+    public double getRightDistanceMeters() {
+        return rightEncoder.getDistance();
+    }
+
+    public double getLastSpeedLeft() {
+        return lastSpeedLeft;
+    }
+
+    public double getLastSpeedright() {
+        return lastSpeedright;
+    }
+
+    /**
+     * * @return speed of the left motors from encoder, in meters per seconds
+     */
+    public double getLeftSpeed() {
+        return leftEncoder.getRate();
+    }
+
+    /**
+     * * @return speed of the right motors from encoder, in meters per seconds
+     */
+    public double getRightSpeed() {
+        return rightEncoder.getRate();
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Right Encoder Distance", getRightDistanceMeters());
+        SmartDashboard.putNumber("Left Encoder Distance", getLeftDistanceMeters());
+        SmartDashboard.putNumber("PigeonIMU Yaw", imu.getYaw());
+    }
+
+    public static Drivetrain getInstance() {
+        if (instance == null) {
+            instance = new Drivetrain();
+        }
+
+        return instance;
+    }
 }
