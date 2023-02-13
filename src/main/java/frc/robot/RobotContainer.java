@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.commands.Autos;
+import frc.robot.commands.ChargeStationBalanceAuto;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class RobotContainer {
@@ -19,7 +20,7 @@ public class RobotContainer {
 
 
   private void configureBindings() {
-    
+    OI.driverController.a().onTrue(new ChargeStationBalanceAuto(drivetrain));
   }
 
   /**

@@ -93,6 +93,10 @@ public class Drivetrain extends SubsystemBase {
         return imu.getYaw();
     }
 
+    public double getPitch() {
+        return imu.getRoll();
+    }
+
     public double getLeftDistanceMeters() {
         return leftEncoder.getDistance();
     }
@@ -128,6 +132,7 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("Right Encoder Distance", getRightDistanceMeters());
         SmartDashboard.putNumber("Left Encoder Distance", getLeftDistanceMeters());
         SmartDashboard.putNumber("PigeonIMU Yaw", getYaw());
+        SmartDashboard.putNumber("Pigeon Pitch", getPitch());
     }
 
     public static Drivetrain getInstance() {

@@ -29,4 +29,9 @@ public final class Constants {
   public final class Intake {
     public static final int MOTOR_ID = 8;
   }
+
+  public final class GetOnChargeStationAuto {
+    public static final double DRIVE_SPEED = 0.4;
+    public static final double FINISH_ANGLE = 10;
+  }
 }

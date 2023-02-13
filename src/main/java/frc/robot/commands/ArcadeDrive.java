@@ -78,7 +78,7 @@ public class ArcadeDrive extends CommandBase {
             rightSpeed /= maxMagnitude;
         }
         
-        drivetrain.setVelocity(leftSpeed, rightSpeed);
+        drivetrain.set(leftSpeed, rightSpeed);
     }
 
     // Called once the command ends or is interrupted.
