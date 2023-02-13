@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.Utils;
 
 public class Drivetrain extends SubsystemBase {
     private final TalonSRX leftMotor = new TalonSRX(Constants.Drivetrain.LEFT_ID);
@@ -78,6 +79,9 @@ public class Drivetrain extends SubsystemBase {
 
     public void setVelocity(double leftDemand, double rightDemand) {
         isUsingVelocity = true;
+        // rightDemand = Utils.DeadBand(0.1, -0.1, rightDemand);
+        // leftDemand = Utils.DeadBand(0.1, -0.1, leftDemand);
+
         targetValocityLeft = leftDemand;
         targetValocityRight = rightDemand;
     }
