@@ -20,8 +20,6 @@ public class RobotContainer {
 
 
   private void configureBindings() {
-    OI.driverController.a().onTrue(new InstantCommand(() -> drivetrain.setVelocity(0.4, 0.4)));
-    OI.driverController.b().onTrue(new InstantCommand(() -> drivetrain.setVelocity(0, 0)));
   }
 
   /**
