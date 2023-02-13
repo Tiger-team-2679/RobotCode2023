@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.OI;
+import frc.robot.Utils;
 import frc.robot.subsystems.Drivetrain;
 
 public class ArcadeDrive extends CommandBase {
@@ -37,6 +38,8 @@ public class ArcadeDrive extends CommandBase {
         
         if((zRotation < 0.2 && zRotation > 0) || (zRotation > -0.2 && zRotation < 0))
             zRotation = 0;
+
+        
         
         SmartDashboard.putNumber("xSpeed", xSpeed);
         SmartDashboard.putNumber("zRotation", zRotation);
@@ -77,7 +80,8 @@ public class ArcadeDrive extends CommandBase {
             leftSpeed /= maxMagnitude;
             rightSpeed /= maxMagnitude;
         }
-        
+
+
         drivetrain.setVelocity(leftSpeed, rightSpeed);
     }
 

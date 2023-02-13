@@ -19,10 +19,9 @@ public final class Constants {
   }
 
   public final class ArcadeDrive {
-    public static final double KP = 0;
-    // public static final double KP = 0.08;
+    public static final double KP = 0.014;
     public static final double KI = 0;
-    public static final double KD = 0;
+    public static final double KD = 0.008;
     public static final double MAX_SPEED = 4.6; // meters per second
   }
 
