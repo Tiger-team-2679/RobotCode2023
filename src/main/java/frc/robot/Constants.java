@@ -14,12 +14,13 @@ public final class Constants {
 
     public static final int LEFT_ENCODER_CHANNEL_A = 0;
     public static final int LEFT_ENCODER_CHANNEL_B = 1;
-    public static final int RIGHT_ENCODER_CHANNEL_A = 3;
-    public static final int RIGHT_ENCODER_CHANNEL_B = 2;
+    public static final int RIGHT_ENCODER_CHANNEL_A = 2;
+    public static final int RIGHT_ENCODER_CHANNEL_B = 3;
   }
 
   public final class ArcadeDrive {
-    public static final double KP = 1;
+    public static final double KP = 0;
+    // public static final double KP = 0.08;
     public static final double KI = 0;
     public static final double KD = 0;
     public static final double MAX_SPEED = 4.6; // meters per second

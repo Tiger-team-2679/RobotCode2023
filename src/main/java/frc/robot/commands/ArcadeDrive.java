@@ -32,6 +32,15 @@ public class ArcadeDrive extends CommandBase {
         xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
         zRotation = MathUtil.clamp(zRotation, -1.0, 1.0);
 
+        if((xSpeed < 0.2 && xSpeed > 0) || (xSpeed > -0.2 && xSpeed < 0))
+            xSpeed = 0;
+        
+        if((zRotation < 0.2 && zRotation > 0) || (zRotation > -0.2 && zRotation < 0))
+            zRotation = 0;
+        
+        SmartDashboard.putNumber("xSpeed", xSpeed);
+        SmartDashboard.putNumber("zRotation", zRotation);
+
         // Square the inputs (while preserving the sign) to increase fine control
         // while permitting full power.
         xSpeed = Math.copySign(xSpeed * xSpeed, xSpeed);
@@ -68,17 +77,8 @@ public class ArcadeDrive extends CommandBase {
             leftSpeed /= maxMagnitude;
             rightSpeed /= maxMagnitude;
         }
-
-        double leftPIDValue = pid.calculate(drivetrain.getLeftSpeed() / Constants.ArcadeDrive.MAX_SPEED, leftSpeed);
-        double rightPIDValue = pid.calculate(drivetrain.getRightSpeed() / Constants.ArcadeDrive.MAX_SPEED, rightSpeed);
-
-        SmartDashboard.putNumber("rightPIDValue", rightPIDValue);
-        SmartDashboard.putNumber("leftPIDValue", leftPIDValue);
-
-        double PercentOutputLeftValue = MathUtil.clamp(drivetrain.getLastSpeedLeft() + leftPIDValue, -1, 1);
-        double PercentOutputRightValue = MathUtil.clamp(drivetrain.getLastSpeedright() + rightPIDValue, -1, 1);
-
-        drivetrain.set(PercentOutputLeftValue, PercentOutputRightValue);
+        
+        drivetrain.setVelocity(leftSpeed, rightSpeed);
     }
 
     // Called once the command ends or is interrupted.

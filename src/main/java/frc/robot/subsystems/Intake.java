@@ -9,13 +9,16 @@ import frc.robot.commands.IntakeController;
 
 public class Intake extends SubsystemBase {
     private TalonSRX motor = new TalonSRX(Constants.Intake.MOTOR_ID);
-    private static Intake instance = new Intake();
+    private static Intake instance = null;
 
     private Intake() {
-        setDefaultCommand(new IntakeController(getInstance()));
+        setDefaultCommand(new IntakeController(this));
     }
 
     public static Intake getInstance() {
+        if(instance == null){
+            instance = new Intake();
+        }
         return instance;
     }
 
