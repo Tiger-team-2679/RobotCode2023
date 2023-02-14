@@ -10,19 +10,19 @@ import frc.robot.Constants;
 import frc.robot.commands.ArmJoystick;
 
 public class Arm extends SubsystemBase {
-    private CANSparkMax motor = new CANSparkMax(Constants.Arm.motorID, MotorType.kBrushless);
+    private CANSparkMax motor = new CANSparkMax(Constants.Arm.MOTOR_ID, MotorType.kBrushless);
     private static Arm instance = null;
-    private DutyCycleEncoder encoder = new DutyCycleEncoder(4);
+    private DutyCycleEncoder encoder = new DutyCycleEncoder(9);
     
 
     private Arm() {
-        setDefaultCommand(new ArmJoystick(getInstance()));
+        setDefaultCommand(new ArmJoystick(this));
         encoder.setDistancePerRotation(360);
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("get()", encoder.get());
+        SmartDashboard.putNumber("get()", getAngle());
         SmartDashboard.putNumber("getPositionOffset()", encoder.getPositionOffset());
         // This method will be called once per scheduler run
     }
@@ -32,9 +32,8 @@ public class Arm extends SubsystemBase {
         motor.set(speedDemand);
     }
 
-    public DutyCycleEncoder getEncoder() {
-        // use getDistance() to get the angle.
-        return encoder;
+    public double getAngle() {
+        return encoder.getDistance();
     }
 
 

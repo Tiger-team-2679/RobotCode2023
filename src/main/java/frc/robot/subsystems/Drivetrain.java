@@ -50,15 +50,15 @@ public class Drivetrain extends SubsystemBase {
         double distancePerRound = wheelRadiusInMeters * 2 * Math.PI;
         double roundsPerPules = 1 / (double) pulsesInRound;
 
-        double distancePerPules = distancePerRound * roundsPerPules;
+        double distancePerPules = distancePerRound * roundsPerPules;    
 
         rightEncoder.setDistancePerPulse(distancePerPules);
         leftEncoder.setDistancePerPulse(distancePerPules);
     }
 
     public void set(double leftDemand, double rightDemand) {
-        leftMotor.set(ControlMode.PercentOutput, leftDemand);
-        rightMotor.set(ControlMode.PercentOutput, rightDemand);
+        leftMotor.set(ControlMode.PercentOutput, leftDemand*0.3);
+        rightMotor.set(ControlMode.PercentOutput, rightDemand*0.3);
         lastSpeedLeft = leftDemand;
         lastSpeedright = rightDemand;
     }

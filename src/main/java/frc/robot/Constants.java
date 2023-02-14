@@ -30,14 +30,28 @@ public final class Constants {
   }
   
   public final class Arm {
-    public static final int motorID = 7;
-    public static final int KP = 0;
-    public static final int KI = 0;
-    public static final int KD = 0;
+    public static final int MOTOR_ID = 9;
+    public static final double KP = 0;
+    public static final double KI = 0;
+    public static final double KD = 0;
 
-    public static final int TOLERANCE_POSTION = 0;
-    public static final int TOLERANCE_VELOCITY = 0;
+    public static final double TOLERANCE_POSTION = 0;
+    public static final double TOLERANCE_VELOCITY = 0;
 
-    public static final double POSTION_FEEDER= 120;
+    public static final double POSTION_FEEDER = 120;
+    public static final double POSTION_SECOND_LEVEL = 70;
+    public static final double POSTION_FIRST_LEVEL = 30;
+    public static final double POSTION_REST = 0;
+
+    public static final double KS = 0;
+    public static final double KG = 0;
+    public static final double KV = 0;
+    public static final double KA = 0;
+    public static final double KPF = 0;
+    public static final double KIF = 0;
+    public static final double KDF = 0;
+    public static final double  MAX_SPEED= 0;
+
+
   }
 }

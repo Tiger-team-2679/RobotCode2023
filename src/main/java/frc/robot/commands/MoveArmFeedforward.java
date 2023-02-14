@@ -4,21 +4,23 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 
-public class MoveArmToPosePID extends CommandBase {
-  private Arm arm;
-  private final PIDController pid = new PIDController(Constants.Arm.KP, Constants.Arm.KI, Constants.Arm.KD);
-  private double targetPosition;
-
-  /** Creates a new ArmPID. */
-  public MoveArmToPosePID(double targetPosition, Arm arm) {
+public class MoveArmFeedforward extends CommandBase {
+  Arm arm ;
+  double targetPosition;
+  private final PIDController pid = new PIDController(Constants.Arm.KPF, Constants.Arm.KIF, Constants.Arm.KDF);
+  ArmFeedforward feedforward = new ArmFeedforward(Constants.Arm.KS, Constants.Arm.KG, Constants.Arm.KV, Constants.Arm.KA);
+  /** Creates a new ArmFeedforward. */
+  public MoveArmFeedforward(double targetPosition,Arm arm) {
     this.targetPosition = targetPosition;
     this.arm = arm;
-    addRequirements(arm);
+    feedforward.calculate(targetPosition, targetPosition);
+    addRequirements(this.arm);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -26,18 +28,22 @@ public class MoveArmToPosePID extends CommandBase {
   @Override
   public void initialize() {
     pid.setTolerance(Constants.Arm.TOLERANCE_POSTION,Constants.Arm.TOLERANCE_VELOCITY);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double currentPostion = arm.getAngle();
-    arm.setSpeed(pid.calculate(currentPostion, targetPosition));
+    arm.setSpeed(pid.calculate(currentPostion, targetPosition) + feedforward.calculate(Math.toRadians(Constants.Arm.POSTION_FEEDER), Constants.Arm.MAX_SPEED));
+    ;
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    arm.setSpeed(0);
+  }
 
   // Returns true when the command should end.
   @Override

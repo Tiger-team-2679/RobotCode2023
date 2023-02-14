@@ -69,16 +69,16 @@ public class ArcadeDrive extends CommandBase {
             rightSpeed /= maxMagnitude;
         }
 
-        double leftPIDValue = pid.calculate(drivetrain.getLeftSpeed() / Constants.ArcadeDrive.MAX_SPEED, leftSpeed);
-        double rightPIDValue = pid.calculate(drivetrain.getRightSpeed() / Constants.ArcadeDrive.MAX_SPEED, rightSpeed);
+        // double leftPIDValue = pid.calculate(drivetrain.getLeftSpeed() / Constants.ArcadeDrive.MAX_SPEED, leftSpeed);
+        // double rightPIDValue = pid.calculate(drivetrain.getRightSpeed() / Constants.ArcadeDrive.MAX_SPEED, rightSpeed);
 
-        SmartDashboard.putNumber("rightPIDValue", rightPIDValue);
-        SmartDashboard.putNumber("leftPIDValue", leftPIDValue);
+        // SmartDashboard.putNumber("rightPIDValue", rightPIDValue);
+        // SmartDashboard.putNumber("leftPIDValue", leftPIDValue);
 
-        double PercentOutputLeftValue = MathUtil.clamp(drivetrain.getLastSpeedLeft() + leftPIDValue, -1, 1);
-        double PercentOutputRightValue = MathUtil.clamp(drivetrain.getLastSpeedright() + rightPIDValue, -1, 1);
+        // double PercentOutputLeftValue = MathUtil.clamp(drivetrain.getLastSpeedLeft() + leftPIDValue, -1, 1);
+        // double PercentOutputRightValue = MathUtil.clamp(drivetrain.getLastSpeedright() + rightPIDValue, -1, 1);
 
-        drivetrain.set(PercentOutputLeftValue, PercentOutputRightValue);
+        drivetrain.set(leftSpeed, rightSpeed);
     }
 
     // Called once the command ends or is interrupted.
