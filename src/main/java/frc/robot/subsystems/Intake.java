@@ -16,7 +16,7 @@ public class Intake extends SubsystemBase {
     }
 
     public static Intake getInstance() {
-        if(instance == null){
+        if(instance == null) {
             instance = new Intake();
         }
         return instance;

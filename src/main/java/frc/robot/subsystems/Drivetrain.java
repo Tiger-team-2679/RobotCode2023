@@ -62,13 +62,14 @@ public class Drivetrain extends SubsystemBase {
         double distancePerRound = wheelRadiusInMeters * 2 * Math.PI;
         double roundsPerPules = 1 / (double) pulsesInRound;
 
-        double distancePerPules = distancePerRound * roundsPerPules;
+        double distancePerPules = distancePerRound * roundsPerPules;    
 
         rightEncoder.setDistancePerPulse(distancePerPules);
         leftEncoder.setDistancePerPulse(distancePerPules);
 
         imu.setYaw(0);
     }
+
 
     private void set(double leftDemand, double rightDemand) {
         leftMotor.set(ControlMode.PercentOutput, leftDemand);
