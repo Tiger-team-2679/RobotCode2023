@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class RobotContainer {
   private Drivetrain drivetrain = Drivetrain.getInstance();
-  Intake intake = Intake.getInstance();
+  // Intake intake = Intake.getInstance();
   private Arm arm = Arm.getInstance();
 
   public RobotContainer() {
@@ -27,10 +27,6 @@ public class RobotContainer {
     //OI.driverController.x().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_SECOND_LEVEL, arm));
     //OI.driverController.b().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_FIRST_LEVEL, arm));
     //OI.driverController.a().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_REST, arm));
-    OI.driverController.a().onTrue(new InstantCommand(() -> {
-      System.out.println("yayyyy");
-      arm.setSpeed(0.5);
-    }));
   }
 
   /**

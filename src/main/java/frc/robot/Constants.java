@@ -26,7 +26,7 @@ public final class Constants {
   }
 
   public final class Intake {
-    public static final int MOTOR_ID = 8;
+    public static final int MOTOR_ID = 7;
   }
   
   public final class Arm {
