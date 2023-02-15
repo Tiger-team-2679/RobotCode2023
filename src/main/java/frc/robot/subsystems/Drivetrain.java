@@ -5,11 +5,14 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.Utils;
 
 public class Drivetrain extends SubsystemBase {
     private final TalonSRX leftMotor = new TalonSRX(Constants.Drivetrain.LEFT_ID);
@@ -22,12 +25,19 @@ public class Drivetrain extends SubsystemBase {
             Constants.Drivetrain.LEFT_ENCODER_CHANNEL_B);
     private final Encoder rightEncoder = new Encoder(Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_A,
             Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_B);
+
+    private final PIDController velocityPID = new PIDController(Constants.ArcadeDrive.KP, Constants.ArcadeDrive.KI,
+            Constants.ArcadeDrive.KD);
+
             
-            
+    
+    private double targetValocityLeft = 0;
+    private double targetValocityRight = 0;
     private double lastSpeedLeft = 0;
     private double lastSpeedright = 0;
 
     private static Drivetrain instance = null;
+    private boolean isUsingVelocity = false;
 
     /** Creates a new Drivetrain. */
     private Drivetrain() {
@@ -44,6 +54,8 @@ public class Drivetrain extends SubsystemBase {
         leftMotor.setNeutralMode(NeutralMode.Brake);
         leftMotorFollower.setNeutralMode(NeutralMode.Brake);
 
+        rightEncoder.setReverseDirection(true);
+
         double wheelRadiusInMeters = 0.076;
         int pulsesInRound = 2048;
 
@@ -54,13 +66,30 @@ public class Drivetrain extends SubsystemBase {
 
         rightEncoder.setDistancePerPulse(distancePerPules);
         leftEncoder.setDistancePerPulse(distancePerPules);
+
+        imu.setYaw(0);
     }
 
-    public void set(double leftDemand, double rightDemand) {
-        leftMotor.set(ControlMode.PercentOutput, leftDemand*0.3);
-        rightMotor.set(ControlMode.PercentOutput, rightDemand*0.3);
+
+    private void set(double leftDemand, double rightDemand) {
+        leftMotor.set(ControlMode.PercentOutput, leftDemand);
+        rightMotor.set(ControlMode.PercentOutput, rightDemand);
         lastSpeedLeft = leftDemand;
         lastSpeedright = rightDemand;
+    }
+
+    public void setVelocity(double leftDemand, double rightDemand) {
+        isUsingVelocity = true;
+        // rightDemand = Utils.DeadBand(0.1, -0.1, rightDemand);
+        // leftDemand = Utils.DeadBand(0.1, -0.1, leftDemand);
+
+        targetValocityLeft = leftDemand;
+        targetValocityRight = rightDemand;
+    }
+
+    public void setSpeed(double leftDemand, double rightDemand){
+        isUsingVelocity = false;
+        set(leftDemand, rightDemand);
     }
 
     public double getYaw() {
@@ -73,14 +102,6 @@ public class Drivetrain extends SubsystemBase {
 
     public double getRightDistanceMeters() {
         return rightEncoder.getDistance();
-    }
-
-    public double getLastSpeedLeft() {
-        return lastSpeedLeft;
-    }
-
-    public double getLastSpeedright() {
-        return lastSpeedright;
     }
 
     /**
@@ -99,9 +120,27 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putBoolean("isUsingVelocity", isUsingVelocity);
+        if(isUsingVelocity){
+            double leftPIDValue = velocityPID.calculate(getLeftSpeed() / Constants.ArcadeDrive.MAX_SPEED, targetValocityLeft);
+            double rightPIDValue = velocityPID.calculate(getRightSpeed() / Constants.ArcadeDrive.MAX_SPEED, targetValocityRight);
+
+            SmartDashboard.putNumber("leftDemand", targetValocityLeft);
+            SmartDashboard.putNumber("rightDemand", targetValocityRight);
+            double finalLeftValue = MathUtil.clamp(lastSpeedLeft + leftPIDValue, -1, 1);
+            double finalRightValue = MathUtil.clamp(lastSpeedright + rightPIDValue, -1, 1);
+
+            set(finalLeftValue, finalRightValue);
+        }
+
+        SmartDashboard.putNumber("leftSpeed", getRightSpeed() / Constants.ArcadeDrive.MAX_SPEED);
+        SmartDashboard.putNumber("rightSpeed", getLeftSpeed() / Constants.ArcadeDrive.MAX_SPEED);
         SmartDashboard.putNumber("Right Encoder Distance", getRightDistanceMeters());
         SmartDashboard.putNumber("Left Encoder Distance", getLeftDistanceMeters());
-        SmartDashboard.putNumber("PigeonIMU Yaw", imu.getYaw());
+        SmartDashboard.putNumber("delta left", MathUtil.clamp(Math.abs((getLeftSpeed() / Constants.ArcadeDrive.MAX_SPEED)-(targetValocityLeft)), 0, 0.05));
+        SmartDashboard.putNumber("delta right", MathUtil.clamp(Math.abs((getRightSpeed() / Constants.ArcadeDrive.MAX_SPEED)-(targetValocityRight)), 0, 0.05));
+        SmartDashboard.putNumber("PigeonIMU Yaw", getYaw());
+
     }
 
     public static Drivetrain getInstance() {
