@@ -30,11 +30,8 @@ public class ArmJoystick extends CommandBase {
     double speed = 
     -OI.driverController.getLeftY();
 
-    SmartDashboard.putNumber("speed of left y before all", speed);
     speed = MathUtil.clamp(speed, -1.0, 1.0);
-    SmartDashboard.putNumber("speed of left y before deadband", speed);
     speed = Utils.DeadBand(0.2,-0.2,speed);
-    SmartDashboard.putNumber("speed of left y", speed);
 
     arm.setSpeed(speed * Constants.Arm.multiplierController);
   }

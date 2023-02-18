@@ -24,7 +24,6 @@ public class Intake extends SubsystemBase {
     }
 
     public void setSpeed(double demand) {
-        SmartDashboard.putNumber("intake motor demand", demand);
         motor.set(ControlMode.PercentOutput, demand);
     }
 

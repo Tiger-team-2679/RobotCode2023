@@ -25,7 +25,6 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("get() angle encoder arm", getAngle());
-        SmartDashboard.putNumber("getPositionOffset()", encoder.getPositionOffset());
         // This method will be called once per scheduler run
     }
 
