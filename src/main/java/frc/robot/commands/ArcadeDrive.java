@@ -40,10 +40,6 @@ public class ArcadeDrive extends CommandBase {
             zRotation = 0;
 
         
-        
-        SmartDashboard.putNumber("xSpeed", xSpeed);
-        SmartDashboard.putNumber("zRotation", zRotation);
-
         // Square the inputs (while preserving the sign) to increase fine control
         // while permitting full power.
         xSpeed = Math.copySign(xSpeed * xSpeed, xSpeed);
