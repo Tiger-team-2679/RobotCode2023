@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.IFollower;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,6 +15,7 @@ public class Arm extends SubsystemBase {
     private CANSparkMax motor = new CANSparkMax(Constants.Arm.MOTOR_ID, MotorType.kBrushless);
     private static Arm instance = null;
     private DutyCycleEncoder encoder = new DutyCycleEncoder(Constants.Arm.ENCODER_ID);
+    private DigitalInput armlimitSwitch = new DigitalInput(Constants.Arm.LIMITSWITCH_ID);
     
 
     private Arm() {
@@ -24,6 +27,8 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("get() angle encoder arm", getAngle());
+        SmartDashboard.putBoolean("limit switch", !armlimitSwitch.get());
+        if(!armlimitSwitch.get())resetEncoder();
         // This method will be called once per scheduler run
     }
 
