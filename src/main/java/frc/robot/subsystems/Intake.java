@@ -3,17 +3,14 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.IntakeController;
 
 public class Intake extends SubsystemBase {
     private TalonSRX motor = new TalonSRX(Constants.Intake.MOTOR_ID);
     private static Intake instance = null;
 
     private Intake() {
-        setDefaultCommand(new IntakeController(this));
     }
 
     public static Intake getInstance() {
