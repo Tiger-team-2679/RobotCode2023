@@ -57,6 +57,8 @@ public final class Constants {
 
     public static final double multiplierController = 0.2;
 
+    public static final int LIMITSWITCH_ID = 9;
+
 
   }
 }
