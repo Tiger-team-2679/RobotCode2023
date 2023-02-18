@@ -1,23 +1,22 @@
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.OI;
-import frc.robot.Utils;
 import frc.robot.subsystems.Drivetrain;
 
 public class ArcadeDrive extends CommandBase {
     private final Drivetrain drivetrain;
-    private final PIDController pid = new PIDController(Constants.ArcadeDrive.KP, Constants.ArcadeDrive.KI,
-            Constants.ArcadeDrive.KD);
 
+    private final DoubleSupplier forwardDemandSupplier;
+    private final DoubleSupplier backwardDemandSupplier;
 
-    public ArcadeDrive(Drivetrain drivetrain) {
+    public ArcadeDrive(Drivetrain drivetrain, DoubleSupplier forwardDemandSupplier, DoubleSupplier backwardDemandSupplier) {
         this.drivetrain = drivetrain;
         addRequirements(this.drivetrain);
+        this.forwardDemandSupplier = forwardDemandSupplier;
+        this.backwardDemandSupplier = backwardDemandSupplier;
     }
 
     @Override
@@ -26,47 +25,43 @@ public class ArcadeDrive extends CommandBase {
 
     @Override
     public void execute() {
-        // inverted because the Yaxis joystick gives opposite values.
-        double xSpeed = -OI.driverController.getLeftY();
-        double zRotation = OI.driverController.getRightX();
+        double forwardDemand = MathUtil.clamp(forwardDemandSupplier.getAsDouble(), -1.0, 1.0);
+        double rotationDemand = MathUtil.clamp(backwardDemandSupplier.getAsDouble(), -1.0, 1.0);
 
-        xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
-        zRotation = MathUtil.clamp(zRotation, -1.0, 1.0);
-
-        if((xSpeed < 0.2 && xSpeed > 0) || (xSpeed > -0.2 && xSpeed < 0))
-            xSpeed = 0;
+        if((forwardDemand < 0.2 && forwardDemand > 0) || (forwardDemand > -0.2 && forwardDemand < 0))
+            forwardDemand = 0;
         
-        if((zRotation < 0.2 && zRotation > 0) || (zRotation > -0.2 && zRotation < 0))
-            zRotation = 0;
+        if((rotationDemand < 0.2 && rotationDemand > 0) || (rotationDemand > -0.2 && rotationDemand < 0))
+            rotationDemand = 0;
 
         
         // Square the inputs (while preserving the sign) to increase fine control
         // while permitting full power.
-        xSpeed = Math.copySign(xSpeed * xSpeed, xSpeed);
-        zRotation = Math.copySign(zRotation * zRotation, zRotation);
+        forwardDemand = Math.copySign(forwardDemand * forwardDemand, forwardDemand);
+        rotationDemand = Math.copySign(rotationDemand * rotationDemand, rotationDemand);
 
         double leftSpeed;
         double rightSpeed;
 
-        double maxInput = Math.copySign(Math.max(Math.abs(xSpeed), Math.abs(zRotation)), xSpeed);
+        double maxInput = Math.copySign(Math.max(Math.abs(forwardDemand), Math.abs(rotationDemand)), forwardDemand);
 
-        if (Double.compare(xSpeed, 0.0) >= 0) {
+        if (Double.compare(forwardDemand, 0.0) >= 0) {
             // First quadrant, else second quadrant
-            if (Double.compare(zRotation, 0.0) >= 0) {
+            if (Double.compare(rotationDemand, 0.0) >= 0) {
                 leftSpeed = maxInput;
-                rightSpeed = xSpeed - zRotation;
+                rightSpeed = forwardDemand - rotationDemand;
             } else {
-                leftSpeed = xSpeed + zRotation;
+                leftSpeed = forwardDemand + rotationDemand;
                 rightSpeed = maxInput;
             }
         } else {
             // Third quadrant, else fourth quadrant
-            if (Double.compare(zRotation, 0.0) >= 0) {
-                leftSpeed = xSpeed + zRotation;
+            if (Double.compare(rotationDemand, 0.0) >= 0) {
+                leftSpeed = forwardDemand + rotationDemand;
                 rightSpeed = maxInput;
             } else {
                 leftSpeed = maxInput;
-                rightSpeed = xSpeed - zRotation;
+                rightSpeed = forwardDemand - rotationDemand;
             }
         }
 

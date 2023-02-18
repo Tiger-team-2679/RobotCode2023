@@ -1,16 +1,20 @@
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.OI;
 import frc.robot.subsystems.Intake;
 
 public class IntakeController extends CommandBase {
   private Intake intake;
+  private DoubleSupplier forwardDemandSupplier;
+  private DoubleSupplier backwardDemandSupplier;
 
-
-  public IntakeController(Intake intake) {
+  public IntakeController(Intake intake, DoubleSupplier forwardDemandSupplier, DoubleSupplier backwardDemandSupplier) {
     this.intake = intake;
     addRequirements(intake);
+    this.forwardDemandSupplier = forwardDemandSupplier;
+    this.backwardDemandSupplier = backwardDemandSupplier;
   }
 
   @Override
@@ -19,11 +23,10 @@ public class IntakeController extends CommandBase {
   }
 
   @Override
-  public void execute() {
-    double leftTrigger = OI.driverController.getLeftTriggerAxis();
-    double rightTrigger = OI.driverController.getRightTriggerAxis();
-    
-    double speed = leftTrigger > rightTrigger ? -leftTrigger : rightTrigger;
+  public void execute() {    
+    double forward = forwardDemandSupplier.getAsDouble();
+    double backward = backwardDemandSupplier.getAsDouble();
+    double speed = backward > forward ? -backward : forward;
 
     intake.setSpeed(speed);
   }

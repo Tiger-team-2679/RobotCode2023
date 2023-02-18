@@ -24,8 +24,8 @@ public class Drivetrain extends SubsystemBase {
     private final Encoder rightEncoder = new Encoder(Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_A,
             Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_B);
 
-    private final PIDController velocityPID = new PIDController(Constants.ArcadeDrive.KP, Constants.ArcadeDrive.KI,
-            Constants.ArcadeDrive.KD);
+    private final PIDController velocityPID = new PIDController(Constants.Drivetrain.VELOCITY_KP, Constants.Drivetrain.VELOCITY_KI,
+            Constants.Drivetrain.VELOCITY_KD);
 
             
     
@@ -114,8 +114,8 @@ public class Drivetrain extends SubsystemBase {
     @Override
     public void periodic() {
         if(isUsingVelocity){
-            double leftPIDValue = velocityPID.calculate(getLeftSpeed() / Constants.ArcadeDrive.MAX_SPEED, targetValocityLeft);
-            double rightPIDValue = velocityPID.calculate(getRightSpeed() / Constants.ArcadeDrive.MAX_SPEED, targetValocityRight);
+            double leftPIDValue = velocityPID.calculate(getLeftSpeed() / Constants.Drivetrain.MAX_VELOCITY, targetValocityLeft);
+            double rightPIDValue = velocityPID.calculate(getRightSpeed() / Constants.Drivetrain.MAX_VELOCITY, targetValocityRight);
 
             double finalLeftValue = MathUtil.clamp(lastSpeedLeft + leftPIDValue, -1, 1);
             double finalRightValue = MathUtil.clamp(lastSpeedright + rightPIDValue, -1, 1);
