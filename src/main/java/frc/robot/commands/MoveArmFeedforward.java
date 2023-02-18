@@ -13,7 +13,7 @@ import frc.robot.subsystems.Arm;
 public class MoveArmFeedforward extends CommandBase {
   Arm arm ;
   double targetPosition;
-  private final PIDController pid = new PIDController(Constants.Arm.KPF, Constants.Arm.KIF, Constants.Arm.KDF);
+  private final PIDController pid = new PIDController(Constants.Arm.KPFeedForward, Constants.Arm.KIFeedForrward, Constants.Arm.KDFeedForward);
   ArmFeedforward feedforward = new ArmFeedforward(Constants.Arm.KS, Constants.Arm.KG, Constants.Arm.KV, Constants.Arm.KA);
   /** Creates a new ArmFeedforward. */
   public MoveArmFeedforward(double targetPosition,Arm arm) {

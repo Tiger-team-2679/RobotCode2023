@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
@@ -20,6 +21,7 @@ public class MoveArmToPosePID extends CommandBase {
     this.arm = arm;
     addRequirements(arm);
     // Use addRequirements() here to declare subsystem dependencies.
+
   }
 
   // Called when the command is initially scheduled.
@@ -32,12 +34,15 @@ public class MoveArmToPosePID extends CommandBase {
   @Override
   public void execute() {
     double currentPostion = arm.getAngle();
-    arm.setSpeed(pid.calculate(currentPostion, targetPosition));
+    double pidResult = pid.calculate(currentPostion / 360, targetPosition / 360);
+    arm.setSpeed(pidResult);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    arm.setSpeed(0);
+  }
 
   // Returns true when the command should end.
   @Override
