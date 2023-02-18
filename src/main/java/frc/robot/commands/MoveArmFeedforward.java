@@ -6,20 +6,21 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 
 public class MoveArmFeedforward extends CommandBase {
   Arm arm ;
-  double targetPosition;
+  double targetPosition,feedForwarCal;
   private final PIDController pid = new PIDController(Constants.Arm.KPF, Constants.Arm.KIF, Constants.Arm.KDF);
   ArmFeedforward feedforward = new ArmFeedforward(Constants.Arm.KS, Constants.Arm.KG, Constants.Arm.KV, Constants.Arm.KA);
   /** Creates a new ArmFeedforward. */
   public MoveArmFeedforward(double targetPosition,Arm arm) {
     this.targetPosition = targetPosition;
     this.arm = arm;
-    feedforward.calculate(targetPosition, targetPosition);
+    feedForwarCal =feedforward.calculate(Math.toRadians(targetPosition),Constants.Arm.MAX_SPEED);
     addRequirements(this.arm);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -35,8 +36,12 @@ public class MoveArmFeedforward extends CommandBase {
   @Override
   public void execute() {
     double currentPostion = arm.getAngle();
-    arm.setSpeed(pid.calculate(currentPostion, targetPosition) + feedforward.calculate(Math.toRadians(Constants.Arm.POSTION_FEEDER), Constants.Arm.MAX_SPEED));
-    ;
+    arm.setSpeed(pid.calculate(currentPostion, targetPosition) + feedForwarCal);
+    SmartDashboard.putNumber("target", targetPosition);
+    SmartDashboard.putBoolean("at pos", pid.atSetpoint());
+    System.out.println("executeFF");
+
+
   }
 
   // Called once the command ends or is interrupted.

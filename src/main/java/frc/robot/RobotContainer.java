@@ -8,6 +8,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.commands.Autos;
+import frc.robot.commands.MoveArmFeedforward;
 import frc.robot.commands.MoveArmToPosePID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -26,7 +27,7 @@ public class RobotContainer {
     //OI.driverController.y().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_FEEDER, arm));
     //OI.driverController.x().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_SECOND_LEVEL, arm));
     //OI.driverController.b().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_FIRST_LEVEL, arm));
-    //OI.driverController.a().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_REST, arm));
+    OI.driverController.a().onTrue(new MoveArmFeedforward(Constants.Arm.POSTION_REST, arm));
   }
 
   /**
