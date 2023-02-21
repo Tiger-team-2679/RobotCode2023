@@ -5,7 +5,6 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.Utils;
 import frc.robot.subsystems.Arm;
 
 public class ArmController extends CommandBase {
@@ -26,7 +25,7 @@ public class ArmController extends CommandBase {
     double demand = demandSupplier.getAsDouble();
 
     demand = MathUtil.clamp(demand, -1.0, 1.0);
-    demand = Utils.DeadBand(0.2, -0.2, demand);
+    demand = MathUtil.applyDeadband(demand, 0.2);
 
     arm.setSpeed(demand * Constants.Arm.multiplierController);
   }

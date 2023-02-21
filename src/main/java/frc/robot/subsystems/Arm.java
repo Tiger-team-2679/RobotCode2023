@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.IFollower;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,7 +35,7 @@ public class Arm extends SubsystemBase {
 
 
     public void setSpeed(double speedDemand) {
-        motor.set(speedDemand);
+        motor.set(MathUtil.clamp(speedDemand, -0.2, 0.2));
     }
 
     public double getTorque(double angle){
