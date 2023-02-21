@@ -83,8 +83,8 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("leftDemand", leftDemand);
         SmartDashboard.putNumber("rightDemand", rightDemand);
 
-        double finalLeftValue = MathUtil.clamp(getLastSpeedLeft() + leftPIDValue, -1, 1);
-        double finalRightValue = MathUtil.clamp(getLastSpeedright() + rightPIDValue, -1, 1);
+        double finalLeftValue = MathUtil.clamp(lastSpeedLeft + leftPIDValue, -1, 1);
+        double finalRightValue = MathUtil.clamp(lastSpeedright + rightPIDValue, -1, 1);
 
         set(finalLeftValue, finalRightValue);
     }
@@ -94,7 +94,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getPitch() {
-        return imu.getRoll();
+        return imu.getPitch();
     }
 
 
@@ -104,14 +104,6 @@ public class Drivetrain extends SubsystemBase {
 
     public double getRightDistanceMeters() {
         return rightEncoder.getDistance();
-    }
-
-    private double getLastSpeedLeft() {
-        return lastSpeedLeft;
-    }
-
-    private double getLastSpeedright() {
-        return lastSpeedright;
     }
 
     /**
