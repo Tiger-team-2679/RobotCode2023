@@ -97,6 +97,7 @@ public class Drivetrain extends SubsystemBase {
         return imu.getRoll();
     }
 
+
     public double getLeftDistanceMeters() {
         return leftEncoder.getDistance();
     }
@@ -105,11 +106,11 @@ public class Drivetrain extends SubsystemBase {
         return rightEncoder.getDistance();
     }
 
-    public double getLastSpeedLeft() {
+    private double getLastSpeedLeft() {
         return lastSpeedLeft;
     }
 
-    public double getLastSpeedright() {
+    private double getLastSpeedright() {
         return lastSpeedright;
     }
 

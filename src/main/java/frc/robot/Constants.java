@@ -34,4 +34,9 @@ public final class Constants {
     public static final double DRIVE_SPEED = 0.4;
     public static final double FINISH_ANGLE = 10;
   }
+
+  public final class BalanceOnChargeStationAuto {
+    public static final double DRIVE_SPEED_FORWARD = 0.2;
+    public static final double FINISH_ANGLE = 0.5;
+  }
 }

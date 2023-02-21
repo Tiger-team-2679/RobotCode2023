@@ -4,10 +4,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
-public class ChargeStationBalanceAuto extends CommandBase {
+public class GetOnChargeStationAuto extends CommandBase {
     Drivetrain drivetrain;
 
-    public ChargeStationBalanceAuto(Drivetrain drivetrain) {
+    public GetOnChargeStationAuto(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
         addRequirements(drivetrain);
     }
