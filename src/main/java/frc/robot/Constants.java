@@ -37,6 +37,24 @@ public final class Constants {
 
   public final class BalanceOnChargeStationAuto {
     public static final double DRIVE_SPEED_FORWARD = 0.2;
+    public static final double DRIVE_SPEED_BACKWARDS = -0.2;
     public static final double FINISH_ANGLE = 0.5;
+    public static final double MISTAKE_ANGLE = 5;
+  }
+
+  public final class BalanceOnChargeStationPID {
+    public static final double KP = 0;
+    public static final double KI = 0;
+    public static final double KD = 0;
+
+    public static final double FINISH_ANGLE = 0;
+  }
+
+  public final class DriveToDistance {
+    public static final double KP = 0;
+    public static final double KI = 0;
+    public static final double KD = 0;
+
+    public static final double FINISH_POINT = 0;
   }
 }
