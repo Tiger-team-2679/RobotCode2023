@@ -8,10 +8,9 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.ArcadeDrive;
+
 
 public class Drivetrain extends SubsystemBase {
     private final TalonSRX leftMotor = new TalonSRX(Constants.Drivetrain.LEFT_ID);
@@ -25,20 +24,21 @@ public class Drivetrain extends SubsystemBase {
     private final Encoder rightEncoder = new Encoder(Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_A,
             Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_B);
 
-    private final PIDController velocityPID = new PIDController(Constants.ArcadeDrive.KP, Constants.ArcadeDrive.KI,
-            Constants.ArcadeDrive.KD);
+    private final PIDController velocityPID = new PIDController(Constants.Drivetrain.VELOCITY_KP, Constants.Drivetrain.VELOCITY_KI,
+            Constants.Drivetrain.VELOCITY_KD);
 
             
-            
+    
+    private double targetValocityLeft = 0;
+    private double targetValocityRight = 0;
     private double lastSpeedLeft = 0;
     private double lastSpeedright = 0;
 
     private static Drivetrain instance = null;
+    private boolean isUsingVelocity = false;
 
     /** Creates a new Drivetrain. */
     private Drivetrain() {
-        setDefaultCommand(new ArcadeDrive(this));
-
         leftMotorFollower.follow(leftMotor);
         rightMotorFollower.follow(rightMotor);
 
@@ -58,7 +58,7 @@ public class Drivetrain extends SubsystemBase {
         double distancePerRound = wheelRadiusInMeters * 2 * Math.PI;
         double roundsPerPules = 1 / (double) pulsesInRound;
 
-        double distancePerPules = distancePerRound * roundsPerPules;
+        double distancePerPules = distancePerRound * roundsPerPules;    
 
         rightEncoder.setDistancePerPulse(distancePerPules);
         leftEncoder.setDistancePerPulse(distancePerPules);
@@ -66,7 +66,8 @@ public class Drivetrain extends SubsystemBase {
         imu.setYaw(0);
     }
 
-    public void set(double leftDemand, double rightDemand) {
+
+    private void set(double leftDemand, double rightDemand) {
         leftMotor.set(ControlMode.PercentOutput, leftDemand);
         rightMotor.set(ControlMode.PercentOutput, rightDemand);
         lastSpeedLeft = leftDemand;
@@ -74,19 +75,14 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void setVelocity(double leftDemand, double rightDemand) {
-        double leftPIDValue = velocityPID.calculate(getLeftSpeed() / Constants.ArcadeDrive.MAX_SPEED, leftDemand);
-        double rightPIDValue = velocityPID.calculate(getRightSpeed() / Constants.ArcadeDrive.MAX_SPEED, rightDemand);
+        isUsingVelocity = true;
+        targetValocityLeft = leftDemand;
+        targetValocityRight = rightDemand;
+    }
 
-        SmartDashboard.putNumber("leftSpeed", getRightSpeed() / Constants.ArcadeDrive.MAX_SPEED);
-        SmartDashboard.putNumber("rightSpeed", getLeftSpeed() / Constants.ArcadeDrive.MAX_SPEED);
-
-        SmartDashboard.putNumber("leftDemand", leftDemand);
-        SmartDashboard.putNumber("rightDemand", rightDemand);
-
-        double finalLeftValue = MathUtil.clamp(lastSpeedLeft + leftPIDValue, -1, 1);
-        double finalRightValue = MathUtil.clamp(lastSpeedright + rightPIDValue, -1, 1);
-
-        set(finalLeftValue, finalRightValue);
+    public void setSpeed(double leftDemand, double rightDemand){
+        isUsingVelocity = false;
+        set(leftDemand, rightDemand);
     }
 
     public double getYaw() {
@@ -122,10 +118,15 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Right Encoder Distance", getRightDistanceMeters());
-        SmartDashboard.putNumber("Left Encoder Distance", getLeftDistanceMeters());
-        SmartDashboard.putNumber("PigeonIMU Yaw", getYaw());
-        SmartDashboard.putNumber("Pigeon Pitch", getPitch());
+        if(isUsingVelocity){
+            double leftPIDValue = velocityPID.calculate(getLeftSpeed() / Constants.Drivetrain.MAX_VELOCITY, targetValocityLeft);
+            double rightPIDValue = velocityPID.calculate(getRightSpeed() / Constants.Drivetrain.MAX_VELOCITY, targetValocityRight);
+
+            double finalLeftValue = MathUtil.clamp(lastSpeedLeft + leftPIDValue, -1, 1);
+            double finalRightValue = MathUtil.clamp(lastSpeedright + rightPIDValue, -1, 1);
+
+            set(finalLeftValue, finalRightValue);
+        }
     }
 
     public static Drivetrain getInstance() {
