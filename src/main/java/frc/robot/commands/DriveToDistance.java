@@ -25,12 +25,12 @@ public class DriveToDistance extends CommandBase {
     pidResultRight = pidController.calculate(drivetrain.getRightDistanceMeters(), Constants.DriveToDistance.FINISH_POINT);
     pidResultLeft = pidController.calculate(drivetrain.getLeftDistanceMeters(), Constants.DriveToDistance.FINISH_POINT);
 
-    drivetrain.set(pidResultLeft, pidResultRight);
+    drivetrain.setSpeed(pidResultLeft, pidResultRight);
   }
 
   @Override
   public void end(boolean interrupted) {
-    drivetrain.set(0, 0);
+    drivetrain.setSpeed(0, 0);
   }
 
   @Override

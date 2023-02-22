@@ -25,12 +25,12 @@ public class BalanceOnChargeStationPID extends CommandBase {
   @Override
   public void execute() {
     pidResult = pidController.calculate(drivetrain.getPitch(), Constants.BalanceOnChargeStationPID.FINISH_ANGLE);
-    drivetrain.set(pidResult, pidResult);
+    drivetrain.setSpeed(pidResult, pidResult);
   }
 
   @Override
   public void end(boolean interrupted) {
-    drivetrain.set(0, 0);
+    drivetrain.setSpeed(0, 0);
   }
 
   @Override

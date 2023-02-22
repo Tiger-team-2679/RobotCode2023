@@ -27,15 +27,15 @@ public class BalanceOnChargeStationAuto extends CommandBase {
   @Override
   public void execute() {
     if(drivetrain.getPitch() > Constants.BalanceOnChargeStationAuto.MISTAKE_ANGLE)
-      drivetrain.set(Constants.BalanceOnChargeStationAuto.DRIVE_SPEED_FORWARD, Constants.BalanceOnChargeStationAuto.DRIVE_SPEED_FORWARD);
+      drivetrain.setSpeed(Constants.BalanceOnChargeStationAuto.DRIVE_SPEED_FORWARD, Constants.BalanceOnChargeStationAuto.DRIVE_SPEED_FORWARD);
     else if(drivetrain.getPitch() < Constants.BalanceOnChargeStationAuto.MISTAKE_ANGLE)
-      drivetrain.set(Constants.BalanceOnChargeStationAuto.DRIVE_SPEED_BACKWARDS, Constants.BalanceOnChargeStationAuto.DRIVE_SPEED_BACKWARDS);
+      drivetrain.setSpeed(Constants.BalanceOnChargeStationAuto.DRIVE_SPEED_BACKWARDS, Constants.BalanceOnChargeStationAuto.DRIVE_SPEED_BACKWARDS);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drivetrain.set(0, 0);
+    drivetrain.setSpeed(0, 0);
   }
 
   // Returns true when the command should end.

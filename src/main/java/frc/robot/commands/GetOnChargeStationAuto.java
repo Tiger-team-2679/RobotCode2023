@@ -14,7 +14,7 @@ public class GetOnChargeStationAuto extends CommandBase {
 
     @Override
     public void initialize() {
-        drivetrain.set(Constants.GetOnChargeStationAuto.DRIVE_SPEED, Constants.GetOnChargeStationAuto.DRIVE_SPEED);
+        drivetrain.setSpeed(Constants.GetOnChargeStationAuto.DRIVE_SPEED, Constants.GetOnChargeStationAuto.DRIVE_SPEED);
     }
 
     @Override
@@ -23,7 +23,7 @@ public class GetOnChargeStationAuto extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        drivetrain.set(0, 0);
+        drivetrain.setSpeed(0, 0);
     }
 
     @Override

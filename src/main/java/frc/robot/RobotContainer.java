@@ -12,7 +12,6 @@ import frc.robot.commands.ArmController;
 import frc.robot.commands.Autos;
 import frc.robot.commands.IntakeController;
 import frc.robot.commands.MoveArmToPosePID;
-import frc.robot.commands.GetOnChargeStationAuto;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -30,7 +29,25 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    
+    drivetrain.setDefaultCommand(new ArcadeDrive(
+        drivetrain,
+        () -> -driverController.getLeftY(),
+        () -> driverController.getRightX()));
+
+    intake.setDefaultCommand(new IntakeController(
+        intake,
+        () -> opertatorController.getRightTriggerAxis(),
+        () -> opertatorController.getLeftTriggerAxis()));
+
+    arm.setDefaultCommand(new ArmController(
+        arm,
+        () -> -opertatorController.getLeftY()));
+
+    opertatorController.y().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_FEEDER, arm));
+    opertatorController.x().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_SECOND_LEVEL, arm));
+    opertatorController.b().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_FIRST_LEVEL, arm));
+    opertatorController.a().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_REST, arm));
+    opertatorController.leftBumper().onTrue(new InstantCommand(() -> arm.resetEncoder()));
   }
 
   public Command getAutonomousCommand() {
