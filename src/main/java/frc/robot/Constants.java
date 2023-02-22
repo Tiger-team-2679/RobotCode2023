@@ -20,6 +20,11 @@ public final class Constants {
     public static final double VELOCITY_KP = 0.014;
     public static final double VELOCITY_KI = 0;
     public static final double VELOCITY_KD = 0.008;
+
+    public static final double VOLTAGE_KP = 0;
+    public static final double VOLTAGE_KI = 0;
+    public static final double VOLTAGE_KD = 0;
+
     public static final double MAX_VELOCITY = 4.6; // meters per second
 
   }
