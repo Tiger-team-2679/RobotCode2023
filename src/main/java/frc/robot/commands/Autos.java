@@ -5,15 +5,22 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Drivetrain;
 
 public final class Autos {
   /** Example static factory for an autonomous command. */
-  public static CommandBase getAutoCommand() {
-    return new InstantCommand(() -> {}, new SubsystemBase[]{});
+  public static CommandBase getAutoCommand(Drivetrain drivetrain, Arm arm) {
+    // return Commands.deadline(
+    //     new GetOnChargeStationAuto(drivetrain)
+    //         .andThen(new BalanceOnChargeStationAuto(drivetrain),
+    //     new MoveArmToPosePID(Constants.Arm.POSTION_REST, arm))
+    // );
+    return new GetOnChargeStationAuto(drivetrain).andThen(new BalanceOnChargeStationAuto(drivetrain));
   }
- 
+
   private Autos() {
     throw new UnsupportedOperationException("This is a utility class!");
   }

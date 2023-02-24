@@ -8,6 +8,8 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -18,7 +20,7 @@ public class Drivetrain extends SubsystemBase {
     private final TalonSRX rightMotor = new TalonSRX(Constants.Drivetrain.RIGHT_ID);
     private final TalonSRX rightMotorFollower = new TalonSRX(Constants.Drivetrain.RIGHT_FOLLOWER_ID);
 
-    private final PigeonIMU imu = new PigeonIMU(leftMotorFollower);
+    private final PigeonIMU imu = new PigeonIMU(rightMotor);
     private final Encoder leftEncoder = new Encoder(Constants.Drivetrain.LEFT_ENCODER_CHANNEL_A,
             Constants.Drivetrain.LEFT_ENCODER_CHANNEL_B);
     private final Encoder rightEncoder = new Encoder(Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_A,
@@ -118,6 +120,7 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("IMU angle", getPitch());
         if(isUsingVelocity){
             double leftPIDValue = velocityPID.calculate(getLeftSpeed() / Constants.Drivetrain.MAX_VELOCITY, targetValocityLeft);
             double rightPIDValue = velocityPID.calculate(getRightSpeed() / Constants.Drivetrain.MAX_VELOCITY, targetValocityRight);

@@ -5,7 +5,10 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
 public class GetOnChargeStationAuto extends CommandBase {
-    Drivetrain drivetrain;
+    private Drivetrain drivetrain;
+    private boolean isReversed = Constants.chargeStationBalance.IS_REVERSED;
+    private double driveSpeed = Constants.GetOnChargeStationAuto.DRIVE_SPEED * (isReversed ? -1 : 1);
+    private double finishAngle = Constants.GetOnChargeStationAuto.FINISH_ANGLE;
 
     public GetOnChargeStationAuto(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
@@ -14,7 +17,7 @@ public class GetOnChargeStationAuto extends CommandBase {
 
     @Override
     public void initialize() {
-        drivetrain.setSpeed(Constants.GetOnChargeStationAuto.DRIVE_SPEED, Constants.GetOnChargeStationAuto.DRIVE_SPEED);
+        drivetrain.setSpeed(driveSpeed, driveSpeed);
     }
 
     @Override
@@ -28,6 +31,7 @@ public class GetOnChargeStationAuto extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return drivetrain.getPitch() > Constants.GetOnChargeStationAuto.FINISH_ANGLE;
+        return (isReversed ? -1 : 1) * drivetrain.getPitch() > finishAngle;
     }
+
 }

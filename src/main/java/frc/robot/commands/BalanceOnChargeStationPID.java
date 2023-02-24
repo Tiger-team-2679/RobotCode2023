@@ -10,13 +10,16 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
 public class BalanceOnChargeStationPID extends CommandBase {
-  Drivetrain drivetrain;
-  double pidResult;
-  PIDController pidController = new PIDController(Constants.BalanceOnChargeStationPID.KP, Constants.BalanceOnChargeStationPID.KI, Constants.BalanceOnChargeStationPID.KD);
+  private Drivetrain drivetrain;
+  private double pidResult;
+  private double pitch;
+  private final boolean isReversed = Constants.chargeStationBalance.IS_REVERSED;
+  private PIDController pidController = new PIDController(Constants.BalanceOnChargeStationPID.KP, Constants.BalanceOnChargeStationPID.KI, Constants.BalanceOnChargeStationPID.KD);
 
   public BalanceOnChargeStationPID(Drivetrain drivetrain) {
     this.drivetrain = drivetrain;
     addRequirements(drivetrain);
+    pidController.setTolerance(5, 0.5);
   }
 
   @Override
@@ -24,7 +27,9 @@ public class BalanceOnChargeStationPID extends CommandBase {
 
   @Override
   public void execute() {
-    pidResult = pidController.calculate(drivetrain.getPitch(), Constants.BalanceOnChargeStationPID.FINISH_ANGLE);
+    pitch = (isReversed ? -1 : 1) * drivetrain.getPitch();
+
+    pidResult = pidController.calculate(pitch, Constants.BalanceOnChargeStationPID.FINISH_ANGLE);
     drivetrain.setSpeed(pidResult, pidResult);
   }
 

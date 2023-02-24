@@ -9,7 +9,10 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
 public class BalanceOnChargeStationAuto extends CommandBase {
-  Drivetrain drivetrain;
+  private Drivetrain drivetrain;
+  private final boolean isReversed = Constants.chargeStationBalance.IS_REVERSED;
+  private final double forwardSpeed = Constants.BalanceOnChargeStationAuto.DRIVE_SPEED_FORWARD;
+  private final double backwardsSpeed = -Constants.BalanceOnChargeStationAuto.DRIVE_SPEED_BACKWARDS;
 
   /** Creates a new BalanceOnChargeStationAuto. */
   public BalanceOnChargeStationAuto(Drivetrain drivetrain) {
@@ -26,10 +29,12 @@ public class BalanceOnChargeStationAuto extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(drivetrain.getPitch() > Constants.BalanceOnChargeStationAuto.MISTAKE_ANGLE)
-      drivetrain.setSpeed(Constants.BalanceOnChargeStationAuto.DRIVE_SPEED_FORWARD, Constants.BalanceOnChargeStationAuto.DRIVE_SPEED_FORWARD);
-    else if(drivetrain.getPitch() < Constants.BalanceOnChargeStationAuto.MISTAKE_ANGLE)
-      drivetrain.setSpeed(Constants.BalanceOnChargeStationAuto.DRIVE_SPEED_BACKWARDS, Constants.BalanceOnChargeStationAuto.DRIVE_SPEED_BACKWARDS);
+    double pitch =  (isReversed ? -1 : 1) * drivetrain.getPitch();
+
+    if(pitch > Constants.BalanceOnChargeStationAuto.MISTAKE_ANGLE)
+      drivetrain.setSpeed(forwardSpeed, forwardSpeed);
+    else if(pitch < -Constants.BalanceOnChargeStationAuto.MISTAKE_ANGLE)
+      drivetrain.setSpeed(backwardsSpeed, backwardsSpeed);
   }
 
   // Called once the command ends or is interrupted.
@@ -41,6 +46,6 @@ public class BalanceOnChargeStationAuto extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return drivetrain.getPitch() < Math.abs(Constants.BalanceOnChargeStationAuto.FINISH_ANGLE);
+    return (Math.abs(drivetrain.getPitch()) < Constants.BalanceOnChargeStationAuto.FINISH_ANGLE);
   }
 }

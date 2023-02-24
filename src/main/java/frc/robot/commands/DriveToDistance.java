@@ -7,14 +7,14 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
 public class DriveToDistance extends CommandBase {
-  Drivetrain drivetrain;
-  double pidResultRight;
-  double pidResultLeft;
-  PIDController pidController = new PIDController(Constants.DriveToDistance.KP, Constants.DriveToDistance.KI, Constants.DriveToDistance.KD);
+  private final Drivetrain drivetrain;
+  private final PIDController pidController = new PIDController(Constants.DriveToDistance.KP, Constants.DriveToDistance.KI, Constants.DriveToDistance.KD);
+  private final double distance;
 
-  public DriveToDistance(Drivetrain drivetrain) {
+  public DriveToDistance(Drivetrain drivetrain, double distance) {
     this.drivetrain = drivetrain;
     addRequirements(drivetrain);
+    this.distance = distance;
   }
 
   @Override
@@ -22,8 +22,8 @@ public class DriveToDistance extends CommandBase {
 
   @Override
   public void execute() {
-    pidResultRight = pidController.calculate(drivetrain.getRightDistanceMeters(), Constants.DriveToDistance.FINISH_POINT);
-    pidResultLeft = pidController.calculate(drivetrain.getLeftDistanceMeters(), Constants.DriveToDistance.FINISH_POINT);
+    double pidResultRight = pidController.calculate(drivetrain.getRightDistanceMeters(), distance);
+    double pidResultLeft = pidController.calculate(drivetrain.getLeftDistanceMeters(), distance);
 
     drivetrain.setSpeed(pidResultLeft, pidResultRight);
   }
