@@ -40,7 +40,7 @@ public class Drivetrain extends SubsystemBase {
 
     enum ControlType{
         VOLTAGE,
-        VELOCIYY,
+        VELOCITY,
         GRADUAL_VOLTAGE
     }
 
@@ -112,11 +112,11 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(controlType == ControlType.VOLTAGE || controlType == ControlType.GRADUAL_VOLTAGE){
-            double leftPIDValue = controlType == ControlType.VOLTAGE 
+        if(controlType == ControlType.VELOCITY || controlType == ControlType.GRADUAL_VOLTAGE){
+            double leftPIDValue = controlType == ControlType.VELOCITY 
                 ? velocityPID.calculate(leftEncoder.getRate() / Constants.Drivetrain.MAX_VELOCITY, setpointLeft)
                 : voltagePID.calculate(lastSpeedLeft, setpointLeft);
-            double rightPIDValue = controlType == ControlType.VOLTAGE 
+            double rightPIDValue = controlType == ControlType.VELOCITY 
                 ? velocityPID.calculate(rightEncoder.getRate() / Constants.Drivetrain.MAX_VELOCITY, setpointRight)
                 : voltagePID.calculate(lastSpeedright, setpointRight);
 
