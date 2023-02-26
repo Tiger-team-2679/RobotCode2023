@@ -25,8 +25,6 @@ public class RobotContainer {
   public final CommandXboxController driverController = new CommandXboxController(Constants.OI.DRIVER_PORT);
   public final CommandXboxController opertatorController = new CommandXboxController(Constants.OI.OPERTATOR_PORT);
 
-  
-
   public RobotContainer() {
     configureBindings();
   }
