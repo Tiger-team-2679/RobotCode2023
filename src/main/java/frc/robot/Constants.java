@@ -4,6 +4,7 @@ public final class Constants {
   public final class OI {
     public static final int DRIVER_PORT = 0;
     public static final int OPERTATOR_PORT = 1;
+    public static final double DEADBAND_VALUE =0.1;
   }
 
   public final class Drivetrain {
@@ -14,8 +15,8 @@ public final class Constants {
 
     public static final int LEFT_ENCODER_CHANNEL_A = 3;
     public static final int LEFT_ENCODER_CHANNEL_B = 2;
-    public static final int RIGHT_ENCODER_CHANNEL_A = 0;
-    public static final int RIGHT_ENCODER_CHANNEL_B = 1;
+    public static final int RIGHT_ENCODER_CHANNEL_A = 6;
+    public static final int RIGHT_ENCODER_CHANNEL_B = 7;
 
     public static final double VELOCITY_KP = 0.014;
     public static final double VELOCITY_KI = 0;
@@ -35,14 +36,14 @@ public final class Constants {
   
   public final class Arm {
     public static final int MOTOR_ID = 9;
-    public static final int ENCODER_ID = 4;
+    public static final int ENCODER_ID = 8;
 
     public static final double KP = 1;
     public static final double KI = 0;
     public static final double KD = 0.2;
 
-    public static final double TOLERANCE_POSTION = 0.05;
-    public static final double TOLERANCE_VELOCITY = 0;
+    public static final double TOLERANCE_POSTION = 3/360;
+    public static final double TOLERANCE_VELOCITY = 10 ;
 
     public static final double POSTION_FEEDER = 120;
     public static final double POSTION_SECOND_LEVEL = 70;

@@ -31,7 +31,9 @@ public class ArmController extends CommandBase {
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    arm.setSpeed(0);
+  }
 
   @Override
   public boolean isFinished() {
