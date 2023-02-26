@@ -71,7 +71,7 @@ public class ArcadeDrive extends CommandBase {
             leftSpeed /= maxMagnitude;
             rightSpeed /= maxMagnitude;
         }
-        
+
         drivetrain.setSpeed(leftSpeed, rightSpeed);
     }
 

@@ -19,6 +19,7 @@ public class MoveArmToPosePID extends CommandBase {
     this.targetPosition = targetPosition;
     this.arm = arm;
     addRequirements(arm);
+    pid.setSetpoint(targetPosition / 360);  
     // Use addRequirements() here to declare subsystem dependencies.
 
   }
@@ -33,8 +34,10 @@ public class MoveArmToPosePID extends CommandBase {
   @Override
   public void execute() {
     double currentPostion = arm.getAngle();
-    double pidResult = pid.calculate(currentPostion / 360, targetPosition / 360);
+    double pidResult = pid.calculate(currentPostion / 360);
     arm.setSpeed(pidResult);
+    SmartDashboard.putNumber("pid result ", pidResult);
+    SmartDashboard.putBoolean("at set point ", pid.atSetpoint());
   }
 
   // Called once the command ends or is interrupted.
@@ -46,6 +49,6 @@ public class MoveArmToPosePID extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pid.atSetpoint();
+    return false;
   }
 }
