@@ -12,8 +12,6 @@ public class Intake extends SubsystemBase {
     private TalonSRX motor = new TalonSRX(Constants.Intake.MOTOR_ID);
     private static Intake instance = null;
 
-    private double maxCurrentTested = 0;
-
     private Intake() {
         SupplyCurrentLimitConfiguration currentLimitConfiguration = new SupplyCurrentLimitConfiguration(true, 90, 0, 0);
         motor.configSupplyCurrentLimit(currentLimitConfiguration);
@@ -32,9 +30,5 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(motor.getSupplyCurrent() > maxCurrentTested) maxCurrentTested = motor.getSupplyCurrent();
-        SmartDashboard.putNumber("intake current", motor.getSupplyCurrent());
-        SmartDashboard.putNumber("intake maxCurrentTested", maxCurrentTested);
-        // This method will be called once per scheduler run
     }
 }
