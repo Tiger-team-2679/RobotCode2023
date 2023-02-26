@@ -20,7 +20,7 @@ public class Drivetrain extends SubsystemBase {
     private final TalonSRX rightMotor = new TalonSRX(Constants.Drivetrain.RIGHT_ID);
     private final TalonSRX rightMotorFollower = new TalonSRX(Constants.Drivetrain.RIGHT_FOLLOWER_ID);
 
-    private final PigeonIMU imu = new PigeonIMU(leftMotorFollower);
+    private final PigeonIMU imu = new PigeonIMU(rightMotor);
     private final Encoder leftEncoder = new Encoder(Constants.Drivetrain.LEFT_ENCODER_CHANNEL_A,
             Constants.Drivetrain.LEFT_ENCODER_CHANNEL_B);
     private final Encoder rightEncoder = new Encoder(Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_A,
@@ -108,6 +108,11 @@ public class Drivetrain extends SubsystemBase {
         return imu.getYaw();
     }
 
+    public double getPitch() {
+        return imu.getPitch();
+    }
+
+
     public double getLeftDistanceMeters() {
         return leftEncoder.getDistance();
     }
@@ -118,6 +123,8 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("IMU angle", getPitch());
+
         if(controlType == ControlType.VELOCITY || controlType == ControlType.GRADUAL_VOLTAGE){
             double leftPIDValue = controlType == ControlType.VELOCITY 
                 ? velocityPID.calculate(leftEncoder.getRate() / Constants.Drivetrain.MAX_VELOCITY, setpointLeft)
@@ -125,7 +132,7 @@ public class Drivetrain extends SubsystemBase {
             double rightPIDValue = controlType == ControlType.VELOCITY 
                 ? velocityPID.calculate(rightEncoder.getRate() / Constants.Drivetrain.MAX_VELOCITY, setpointRight)
                 : voltagePID.calculate(lastSpeedright, setpointRight);
-
+                
             double finalLeftValue = MathUtil.clamp(lastSpeedLeft + leftPIDValue, -1, 1);
             double finalRightValue = MathUtil.clamp(lastSpeedright + rightPIDValue, -1, 1);
 

@@ -66,4 +66,38 @@ public final class Constants {
 
 
   }
+
+  public final class chargeStationBalance {
+    public static final boolean IS_REVERSED = true;
+  }
+
+  public final class GetOnChargeStationAuto {
+    public static final double DRIVE_SPEED = 0.6;
+    public static final double FINISH_ANGLE = 12;
+  }
+
+  public final class BalanceOnChargeStationDistance {
+    public static final double DISTANCE = 1;
+  }
+
+  public final class BalanceOnChargeStationAuto {
+    public static final double DRIVE_SPEED_FORWARD = 0.3;
+    public static final double DRIVE_SPEED_BACKWARDS = 0.22;
+    public static final double FINISH_ANGLE = 0.5;
+    public static final double MISTAKE_ANGLE = 10;
+  }
+
+  public final class BalanceOnChargeStationPID {
+    public static final double KP = 0.2;
+    public static final double KI = 0;
+    public static final double KD = 0;
+
+    public static final double FINISH_ANGLE = 0;
+  }
+
+  public final class DriveToDistance {
+    public static final double KP = 0;
+    public static final double KI = 0;
+    public static final double KD = 0;
+  }
 }

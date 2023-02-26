@@ -10,10 +10,14 @@ import frc.robot.subsystems.Intake;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmController;
 import frc.robot.commands.Autos;
+import frc.robot.commands.BalanceOnChargeStationAuto;
+import frc.robot.commands.BalanceOnChargeStationPID;
+import frc.robot.commands.GetOnChargeStationAuto;
 import frc.robot.commands.IntakeController;
 import frc.robot.commands.MoveArmToPosePID;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -50,11 +54,9 @@ public class RobotContainer {
     opertatorController.b().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_FIRST_LEVEL, arm));
     opertatorController.a().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_REST, arm));
     opertatorController.leftBumper().onTrue(new InstantCommand(() -> arm.resetEncoder()));
-
-    
   }
 
   public Command getAutonomousCommand() {
-    return Autos.getAutoCommand();
+    return Autos.getAutoCommand(drivetrain, arm);
   }
 }
