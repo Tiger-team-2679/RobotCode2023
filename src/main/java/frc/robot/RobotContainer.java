@@ -12,9 +12,11 @@ import frc.robot.commands.ArmController;
 import frc.robot.commands.Autos;
 import frc.robot.commands.IntakeController;
 import frc.robot.commands.MoveArmToPosePID;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class RobotContainer {
   private final Drivetrain drivetrain = Drivetrain.getInstance();
@@ -23,6 +25,7 @@ public class RobotContainer {
   public final CommandXboxController driverController = new CommandXboxController(Constants.OI.DRIVER_PORT);
   public final CommandXboxController opertatorController = new CommandXboxController(Constants.OI.OPERTATOR_PORT);
 
+  
 
   public RobotContainer() {
     configureBindings();
@@ -32,14 +35,15 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(new ArcadeDrive(
         drivetrain,
         () -> -driverController.getLeftY(),
-        () -> driverController.getRightX()));
+        () -> driverController.getRightX() * 0.7));
 
     intake.setDefaultCommand(new IntakeController(
         intake,
         () -> opertatorController.getRightTriggerAxis(),
         () -> opertatorController.getLeftTriggerAxis()));
 
-    arm.setDefaultCommand(new ArmController(
+      new Trigger(() -> MathUtil.applyDeadband(opertatorController.getLeftY(), Constants.OI.DEADBAND_VALUE) !=0)
+        .whileTrue(new ArmController(
         arm,
         () -> -opertatorController.getLeftY()));
 
@@ -48,6 +52,8 @@ public class RobotContainer {
     opertatorController.b().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_FIRST_LEVEL, arm));
     opertatorController.a().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_REST, arm));
     opertatorController.leftBumper().onTrue(new InstantCommand(() -> arm.resetEncoder()));
+
+    
   }
 
   public Command getAutonomousCommand() {

@@ -15,9 +15,11 @@ public class Arm extends SubsystemBase {
     private static Arm instance = null;
     private DutyCycleEncoder encoder = new DutyCycleEncoder(Constants.Arm.ENCODER_ID);
     private DigitalInput armlimitSwitch = new DigitalInput(Constants.Arm.LIMITSWITCH_ID);
+    private double maxCurrentTested = 0;
     
 
     private Arm() {
+        motor.setSmartCurrentLimit(20);
         encoder.setDistancePerRotation(360);
         motor.setInverted(true);
         motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -25,8 +27,11 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if(motor.getOutputCurrent() > maxCurrentTested) maxCurrentTested = motor.getOutputCurrent();
         SmartDashboard.putNumber("get() angle encoder arm", getAngle());
         SmartDashboard.putBoolean("limit switch", !armlimitSwitch.get());
+        SmartDashboard.putNumber("arm current", motor.getOutputCurrent());
+        SmartDashboard.putNumber("arm maxCurrentTested", maxCurrentTested);
         if(!armlimitSwitch.get())resetEncoder();
         // This method will be called once per scheduler run
     }
