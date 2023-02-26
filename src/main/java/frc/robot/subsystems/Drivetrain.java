@@ -33,7 +33,7 @@ public class Drivetrain extends SubsystemBase {
     private double setpointLeft = 0;
     private double setpointRight = 0;
     private double lastSpeedLeft = 0;
-    private double lastSpeedright = 0;
+    private double lastSpeedRight = 0;
 
     private static Drivetrain instance = null;
     private ControlType controlType = ControlType.VOLTAGE;
@@ -81,10 +81,12 @@ public class Drivetrain extends SubsystemBase {
 
 
     private void set(double leftDemand, double rightDemand) {
+        leftDemand = MathUtil.clamp(leftDemand, -1, 1);
+        rightDemand = MathUtil.clamp(rightDemand, -1, 1);
         leftMotor.set(ControlMode.PercentOutput, leftDemand);
         rightMotor.set(ControlMode.PercentOutput, rightDemand);
         lastSpeedLeft = leftDemand;
-        lastSpeedright = rightDemand;
+        lastSpeedRight = rightDemand;
     }
 
     public void setVelocity(double leftDemand, double rightDemand) {
@@ -101,6 +103,7 @@ public class Drivetrain extends SubsystemBase {
 
     public void setSpeed(double leftDemand, double rightDemand){
         controlType = ControlType.VOLTAGE;
+
         set(leftDemand, rightDemand);
     }
 
@@ -131,10 +134,10 @@ public class Drivetrain extends SubsystemBase {
                 : voltagePID.calculate(lastSpeedLeft, setpointLeft);
             double rightPIDValue = controlType == ControlType.VELOCITY 
                 ? velocityPID.calculate(rightEncoder.getRate() / Constants.Drivetrain.MAX_VELOCITY, setpointRight)
-                : voltagePID.calculate(lastSpeedright, setpointRight);
+                : voltagePID.calculate(lastSpeedRight, setpointRight);
                 
             double finalLeftValue = MathUtil.clamp(lastSpeedLeft + leftPIDValue, -1, 1);
-            double finalRightValue = MathUtil.clamp(lastSpeedright + rightPIDValue, -1, 1);
+            double finalRightValue = MathUtil.clamp(lastSpeedRight + rightPIDValue, -1, 1);
 
             set(finalLeftValue, finalRightValue);
         }

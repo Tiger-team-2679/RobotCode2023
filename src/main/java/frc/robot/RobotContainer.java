@@ -10,14 +10,10 @@ import frc.robot.subsystems.Intake;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmController;
 import frc.robot.commands.Autos;
-import frc.robot.commands.BalanceOnChargeStationAuto;
-import frc.robot.commands.BalanceOnChargeStationPID;
-import frc.robot.commands.GetOnChargeStationAuto;
 import frc.robot.commands.IntakeController;
 import frc.robot.commands.MoveArmToPosePID;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -27,7 +23,7 @@ public class RobotContainer {
   private final Intake intake = Intake.getInstance();
   private final Arm arm = Arm.getInstance();
   public final CommandXboxController driverController = new CommandXboxController(Constants.OI.DRIVER_PORT);
-  public final CommandXboxController opertatorController = new CommandXboxController(Constants.OI.OPERTATOR_PORT);
+  public final CommandXboxController operatorController = new CommandXboxController(Constants.OI.OPERATOR_PORT);
 
   public RobotContainer() {
     configureBindings();
@@ -35,25 +31,28 @@ public class RobotContainer {
 
   private void configureBindings() {
     drivetrain.setDefaultCommand(new ArcadeDrive(
-        drivetrain,
-        () -> -driverController.getLeftY(),
-        () -> driverController.getRightX() * 0.7));
+            drivetrain,
+            () -> -driverController.getLeftY(),
+            driverController::getRightX,
+            () -> driverController.getHID().getLeftBumper(),
+            () -> driverController.getHID().getRightBumper()
+    ));
 
     intake.setDefaultCommand(new IntakeController(
         intake,
-        () -> opertatorController.getRightTriggerAxis(),
-        () -> opertatorController.getLeftTriggerAxis()));
+            operatorController::getRightTriggerAxis,
+            operatorController::getLeftTriggerAxis));
 
-      new Trigger(() -> MathUtil.applyDeadband(opertatorController.getLeftY(), Constants.OI.DEADBAND_VALUE) !=0)
+      new Trigger(() -> MathUtil.applyDeadband(operatorController.getLeftY(), Constants.OI.DEADBAND_VALUE) != 0)
         .whileTrue(new ArmController(
         arm,
-        () -> -opertatorController.getLeftY()));
+        () -> -operatorController.getLeftY()));
 
     opertatorController.y().onTrue(new MoveArmToPosePID(Constants.Arm.POSITION_THIRD_LEVEL, arm,Constants.Arm.KP_THIRD, Constants.Arm.KD_THIRD, Constants.Arm.KI_THIRD));
-    opertatorController.x().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_SECOND_LEVEL, arm, Constants.Arm.KP_SECOND, Constants.Arm.KD_SECOND, Constants.Arm.KI_SECOND));
-    opertatorController.b().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_FIRST_LEVEL, arm, Constants.Arm.KP_FIRST, Constants.Arm.KD_FIRST, Constants.Arm.KI_FIRST));
-    opertatorController.a().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_REST, arm, Constants.Arm.KP_REST, Constants.Arm.KD_REST, Constants.Arm.KI_REST));
-    opertatorController.leftBumper().onTrue(new InstantCommand(() -> arm.resetEncoder()));
+    opertatorController.x().onTrue(new MoveArmToPosePID(Constants.Arm.POSITION_SECOND_LEVEL, arm, Constants.Arm.KP_SECOND, Constants.Arm.KD_SECOND, Constants.Arm.KI_SECOND));
+    opertatorController.b().onTrue(new MoveArmToPosePID(Constants.Arm.POSITION_FIRST_LEVEL, arm, Constants.Arm.KP_FIRST, Constants.Arm.KD_FIRST, Constants.Arm.KI_FIRST));
+    opertatorController.a().onTrue(new MoveArmToPosePID(Constants.Arm.POSITION_REST, arm, Constants.Arm.KP_REST, Constants.Arm.KD_REST, Constants.Arm.KI_REST));
+    operatorController.leftBumper().onTrue(new InstantCommand(arm::resetEncoder));
   }
 
   public Command getAutonomousCommand() {

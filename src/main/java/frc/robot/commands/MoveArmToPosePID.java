@@ -11,7 +11,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 
 public class MoveArmToPosePID extends CommandBase {
-  private Arm arm;
+  private final Arm arm;
   private double targetPosition;
   private final PIDController pid;
 
@@ -21,16 +21,12 @@ public class MoveArmToPosePID extends CommandBase {
     this.targetPosition = targetPosition;
     this.arm = arm;
     addRequirements(arm);
-    //pid.setSetpoint(targetPosition / 360);
-
-    // Use addRequirements() here to declare subsystem dependencies.
-
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    pid.setTolerance(Constants.Arm.TOLERANCE_POSTION,Constants.Arm.TOLERANCE_VELOCITY);
+    pid.setTolerance(Constants.Arm.TOLERANCE_POSITION ,Constants.Arm.TOLERANCE_VELOCITY);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
