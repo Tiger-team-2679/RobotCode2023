@@ -13,7 +13,7 @@ public class ArcadeDrive extends CommandBase {
     private final Drivetrain drivetrain;
 
     private final DoubleSupplier forwardDemandSupplier;
-    private final DoubleSupplier backwardDemandSupplier;
+    private final DoubleSupplier rotationDemandSupplier;
 
     private final BooleanSupplier IsSensitiveForwardSupplier;
     private final BooleanSupplier IsSensitiveRotationSupplier;
@@ -26,14 +26,14 @@ public class ArcadeDrive extends CommandBase {
     public ArcadeDrive(
             Drivetrain drivetrain,
             DoubleSupplier forwardDemandSupplier,
-            DoubleSupplier backwardDemandSupplier,
+            DoubleSupplier rotationDemandSupplier,
             BooleanSupplier isSensitiveForwardSupplier,
             BooleanSupplier isSensitiveRotationSupplier
     ) {
         this.drivetrain = drivetrain;
         addRequirements(this.drivetrain);
         this.forwardDemandSupplier = forwardDemandSupplier;
-        this.backwardDemandSupplier = backwardDemandSupplier;
+        this.rotationDemandSupplier = rotationDemandSupplier;
         this.IsSensitiveForwardSupplier = isSensitiveForwardSupplier;
         this.IsSensitiveRotationSupplier = isSensitiveRotationSupplier;
     }
@@ -45,7 +45,7 @@ public class ArcadeDrive extends CommandBase {
     @Override
     public void execute() {
         double forwardDemand = forwardDemandSupplier.getAsDouble();
-        double rotationDemand = backwardDemandSupplier.getAsDouble();
+        double rotationDemand = rotationDemandSupplier.getAsDouble();
 
         forwardDemand = MathUtil.applyDeadband(forwardDemand, 0.1);
         rotationDemand = MathUtil.applyDeadband(rotationDemand, 0.1);
