@@ -120,11 +120,6 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("drivetrin right current", rightMotor.getSupplyCurrent());
-        SmartDashboard.putNumber("drivetrin right follower current", rightMotorFollower.getSupplyCurrent());
-        SmartDashboard.putNumber("drivetrin left current", leftMotor.getSupplyCurrent());
-        SmartDashboard.putNumber("drivetrin left follower current", leftMotorFollower.getSupplyCurrent());
-
         if(isUsingVelocity){
             double leftPIDValue = velocityPID.calculate(getLeftSpeed() / Constants.Drivetrain.MAX_VELOCITY, targetValocityLeft);
             double rightPIDValue = velocityPID.calculate(getRightSpeed() / Constants.Drivetrain.MAX_VELOCITY, targetValocityRight);
