@@ -14,7 +14,7 @@ public class Arm extends SubsystemBase {
     private CANSparkMax motor = new CANSparkMax(Constants.Arm.MOTOR_ID, MotorType.kBrushless);
     private static Arm instance = null;
     private DutyCycleEncoder encoder = new DutyCycleEncoder(Constants.Arm.ENCODER_ID);
-    private DigitalInput armlimitSwitch = new DigitalInput(Constants.Arm.LIMITSWITCH_ID);    
+    private DigitalInput armlimitSwitch = new DigitalInput(Constants.Arm.LIMIT_SWITCH_ID);
 
     private Arm() {
         motor.setSmartCurrentLimit(20);

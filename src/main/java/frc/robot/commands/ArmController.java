@@ -8,8 +8,8 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 
 public class ArmController extends CommandBase {
-  private Arm arm;
-  private DoubleSupplier demandSupplier;
+  private final Arm arm;
+  private final DoubleSupplier demandSupplier;
 
   public ArmController(Arm arm, DoubleSupplier demandSupplier) {
     this.arm = arm;

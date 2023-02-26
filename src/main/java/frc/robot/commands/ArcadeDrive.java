@@ -1,9 +1,11 @@
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
 public class ArcadeDrive extends CommandBase {
@@ -12,11 +14,27 @@ public class ArcadeDrive extends CommandBase {
     private final DoubleSupplier forwardDemandSupplier;
     private final DoubleSupplier backwardDemandSupplier;
 
-    public ArcadeDrive(Drivetrain drivetrain, DoubleSupplier forwardDemandSupplier, DoubleSupplier backwardDemandSupplier) {
+    private final BooleanSupplier IsSensitiveForwardSupplier;
+    private final BooleanSupplier IsSensitiveRotationSupplier;
+
+    private final double forwardMultiplier = Constants.ArcadeDrive.FORWARD_MULTIPLIER;
+    private final double sensitiveForwardMultiplier = Constants.ArcadeDrive.FORWARD_SENSITIVE_MULTIPLIER;
+    private final double rotationMultiplier = Constants.ArcadeDrive.ROTATION_MULTIPLIER;
+    private final double sensitiveRotationMultiplier = Constants.ArcadeDrive.ROTATION_SENSITIVE_MULTIPLIER;
+
+    public ArcadeDrive(
+            Drivetrain drivetrain,
+            DoubleSupplier forwardDemandSupplier,
+            DoubleSupplier backwardDemandSupplier,
+            BooleanSupplier isSensitiveForwardSupplier,
+            BooleanSupplier isSensitiveRotationSupplier
+    ) {
         this.drivetrain = drivetrain;
         addRequirements(this.drivetrain);
         this.forwardDemandSupplier = forwardDemandSupplier;
         this.backwardDemandSupplier = backwardDemandSupplier;
+        this.IsSensitiveForwardSupplier = isSensitiveForwardSupplier;
+        this.IsSensitiveRotationSupplier = isSensitiveRotationSupplier;
     }
 
     @Override
@@ -25,14 +43,18 @@ public class ArcadeDrive extends CommandBase {
 
     @Override
     public void execute() {
-        double forwardDemand = MathUtil.clamp(forwardDemandSupplier.getAsDouble(), -1.0, 1.0);
-        double rotationDemand = MathUtil.clamp(backwardDemandSupplier.getAsDouble(), -1.0, 1.0);
+        double forwardDemand = forwardDemandSupplier.getAsDouble();
+        double rotationDemand = backwardDemandSupplier.getAsDouble();
 
-        if((forwardDemand < 0.2 && forwardDemand > 0) || (forwardDemand > -0.2 && forwardDemand < 0))
-            forwardDemand = 0;
-        
-        if((rotationDemand < 0.2 && rotationDemand > 0) || (rotationDemand > -0.2 && rotationDemand < 0))
-            rotationDemand = 0;
+        forwardDemand *= IsSensitiveForwardSupplier.getAsBoolean() ? forwardMultiplier : sensitiveForwardMultiplier;
+        forwardDemand *= IsSensitiveRotationSupplier.getAsBoolean() ? rotationMultiplier : sensitiveRotationMultiplier;
+
+        forwardDemand = MathUtil.clamp(forwardDemand, -1.0, 1.0);
+        rotationDemand = MathUtil.clamp(rotationDemand, -1.0, 1.0);
+
+
+        forwardDemand = MathUtil.applyDeadband(forwardDemand, 0.1);
+        rotationDemand = MathUtil.applyDeadband(rotationDemand, 0.1);
 
         
         // Square the inputs (while preserving the sign) to increase fine control

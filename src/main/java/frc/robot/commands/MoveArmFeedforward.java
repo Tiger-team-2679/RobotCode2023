@@ -13,7 +13,7 @@ import frc.robot.subsystems.Arm;
 public class MoveArmFeedforward extends CommandBase {
   Arm arm ;
   double targetPosition;
-  private final PIDController pid = new PIDController(Constants.Arm.KPFeedForward, Constants.Arm.KIFeedForrward, Constants.Arm.KDFeedForward);
+  private final PIDController pid = new PIDController(Constants.Arm.KPFeedForward, Constants.Arm.KIFeedForward, Constants.Arm.KDFeedForward);
   ArmFeedforward feedforward = new ArmFeedforward(Constants.Arm.KS, Constants.Arm.KG, Constants.Arm.KV, Constants.Arm.KA);
   /** Creates a new ArmFeedforward. */
   public MoveArmFeedforward(double targetPosition,Arm arm) {
@@ -27,7 +27,7 @@ public class MoveArmFeedforward extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    pid.setTolerance(Constants.Arm.TOLERANCE_POSTION,Constants.Arm.TOLERANCE_VELOCITY);
+    pid.setTolerance(Constants.Arm.TOLERANCE_POSITION,Constants.Arm.TOLERANCE_VELOCITY);
 
   }
 
@@ -35,7 +35,7 @@ public class MoveArmFeedforward extends CommandBase {
   @Override
   public void execute() {
     double currentPostion = arm.getAngle();
-    arm.setSpeed(pid.calculate(currentPostion, targetPosition) + feedforward.calculate(Math.toRadians(Constants.Arm.POSTION_FEEDER), Constants.Arm.MAX_SPEED));
+    arm.setSpeed(pid.calculate(currentPostion, targetPosition) + feedforward.calculate(Math.toRadians(Constants.Arm.POSITION_FEEDER), Constants.Arm.MAX_SPEED));
     ;
   }
 
