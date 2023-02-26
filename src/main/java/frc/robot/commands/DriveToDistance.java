@@ -2,6 +2,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
@@ -24,6 +25,9 @@ public class DriveToDistance extends CommandBase {
   public void execute() {
     double pidResultRight = pidController.calculate(drivetrain.getRightDistanceMeters(), distance);
     double pidResultLeft = pidController.calculate(drivetrain.getLeftDistanceMeters(), distance);
+
+    SmartDashboard.putNumber("left", drivetrain.getLeftDistanceMeters());
+    SmartDashboard.putNumber("right", drivetrain.getRightDistanceMeters());
 
     drivetrain.setSpeed(pidResultLeft, pidResultRight);
   }

@@ -7,11 +7,13 @@ package frc.robot;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.commands.DriveToDistance;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmController;
 import frc.robot.commands.Autos;
 import frc.robot.commands.BalanceOnChargeStationAuto;
 import frc.robot.commands.BalanceOnChargeStationPID;
+import frc.robot.commands.ConeAuto;
 import frc.robot.commands.GetOnChargeStationAuto;
 import frc.robot.commands.IntakeController;
 import frc.robot.commands.MoveArmToPosePID;
@@ -21,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import java.lang.*;
 
 public class RobotContainer {
   private final Drivetrain drivetrain = Drivetrain.getInstance();
@@ -54,9 +57,13 @@ public class RobotContainer {
     opertatorController.b().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_FIRST_LEVEL, arm));
     opertatorController.a().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_REST, arm));
     opertatorController.leftBumper().onTrue(new InstantCommand(() -> arm.resetEncoder()));
+
+    driverController.x().onTrue(new ConeAuto(intake).andThen(new DriveToDistance(drivetrain, -1)));
+    driverController.b().onTrue(new DriveToDistance(drivetrain, -1));
+    
   }
 
   public Command getAutonomousCommand() {
-    return Autos.getAutoCommand(drivetrain, arm);
+    return new ConeAuto(intake);
   }
 }

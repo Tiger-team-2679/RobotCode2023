@@ -32,6 +32,7 @@ public final class Constants {
 
   public final class Intake {
     public static final int MOTOR_ID = 7;
+    public static final double INTAKE_SPEED = 0.8;
   }
   
   public final class Arm {
@@ -96,7 +97,7 @@ public final class Constants {
   }
 
   public final class DriveToDistance {
-    public static final double KP = 0;
+    public static final double KP = 0.5;
     public static final double KI = 0;
     public static final double KD = 0;
   }

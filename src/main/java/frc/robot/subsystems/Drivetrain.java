@@ -20,7 +20,7 @@ public class Drivetrain extends SubsystemBase {
     private final TalonSRX rightMotor = new TalonSRX(Constants.Drivetrain.RIGHT_ID);
     private final TalonSRX rightMotorFollower = new TalonSRX(Constants.Drivetrain.RIGHT_FOLLOWER_ID);
 
-    private final PigeonIMU imu = new PigeonIMU(rightMotor);
+    private final PigeonIMU imu = new PigeonIMU(rightMotorFollower);
     private final Encoder leftEncoder = new Encoder(Constants.Drivetrain.LEFT_ENCODER_CHANNEL_A,
             Constants.Drivetrain.LEFT_ENCODER_CHANNEL_B);
     private final Encoder rightEncoder = new Encoder(Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_A,
@@ -88,7 +88,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void setVelocity(double leftDemand, double rightDemand) {
-        controlType = ControlType.VELOCIYY;
+        controlType = ControlType.VELOCITY;
         setpointLeft = leftDemand;
         setpointRight = rightDemand;
     }
