@@ -73,7 +73,7 @@ public class ArcadeDrive extends CommandBase {
         }
 
 
-        drivetrain.setGradualSpeed(leftSpeed, rightSpeed);
+        drivetrain.setSpeed(leftSpeed, rightSpeed);
     }
 
     // Called once the command ends or is interrupted.
