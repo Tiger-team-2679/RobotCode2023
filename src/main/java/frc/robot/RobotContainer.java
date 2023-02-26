@@ -49,10 +49,10 @@ public class RobotContainer {
         arm,
         () -> -opertatorController.getLeftY()));
 
-    opertatorController.y().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_FEEDER, arm));
-    opertatorController.x().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_SECOND_LEVEL, arm));
-    opertatorController.b().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_FIRST_LEVEL, arm));
-    opertatorController.a().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_REST, arm));
+    opertatorController.y().onTrue(new MoveArmToPosePID(Constants.Arm.POSITION_THIRD_LEVEL, arm,Constants.Arm.KP_THIRD, Constants.Arm.KD_THIRD, Constants.Arm.KI_THIRD));
+    opertatorController.x().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_SECOND_LEVEL, arm, Constants.Arm.KP_SECOND, Constants.Arm.KD_SECOND, Constants.Arm.KI_SECOND));
+    opertatorController.b().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_FIRST_LEVEL, arm, Constants.Arm.KP_FIRST, Constants.Arm.KD_FIRST, Constants.Arm.KI_FIRST));
+    opertatorController.a().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_REST, arm, Constants.Arm.KP_REST, Constants.Arm.KD_REST, Constants.Arm.KI_REST));
     opertatorController.leftBumper().onTrue(new InstantCommand(() -> arm.resetEncoder()));
   }
 
