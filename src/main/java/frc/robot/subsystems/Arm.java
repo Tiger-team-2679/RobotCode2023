@@ -25,7 +25,6 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(motor.getOutputCurrent() > maxCurrentTested) maxCurrentTested = motor.getOutputCurrent();
         SmartDashboard.putNumber("get() angle encoder arm", getAngle());
         SmartDashboard.putBoolean("limit switch", !armlimitSwitch.get());
         if(!armlimitSwitch.get())resetEncoder();
