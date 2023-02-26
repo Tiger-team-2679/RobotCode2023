@@ -14,9 +14,7 @@ public class Arm extends SubsystemBase {
     private CANSparkMax motor = new CANSparkMax(Constants.Arm.MOTOR_ID, MotorType.kBrushless);
     private static Arm instance = null;
     private DutyCycleEncoder encoder = new DutyCycleEncoder(Constants.Arm.ENCODER_ID);
-    private DigitalInput armlimitSwitch = new DigitalInput(Constants.Arm.LIMITSWITCH_ID);
-    private double maxCurrentTested = 0;
-    
+    private DigitalInput armlimitSwitch = new DigitalInput(Constants.Arm.LIMITSWITCH_ID);    
 
     private Arm() {
         motor.setSmartCurrentLimit(20);
@@ -30,8 +28,6 @@ public class Arm extends SubsystemBase {
         if(motor.getOutputCurrent() > maxCurrentTested) maxCurrentTested = motor.getOutputCurrent();
         SmartDashboard.putNumber("get() angle encoder arm", getAngle());
         SmartDashboard.putBoolean("limit switch", !armlimitSwitch.get());
-        SmartDashboard.putNumber("arm current", motor.getOutputCurrent());
-        SmartDashboard.putNumber("arm maxCurrentTested", maxCurrentTested);
         if(!armlimitSwitch.get())resetEncoder();
         // This method will be called once per scheduler run
     }
@@ -39,19 +35,6 @@ public class Arm extends SubsystemBase {
 
     public void setSpeed(double speedDemand) {
         motor.set(MathUtil.clamp(speedDemand, -0.2, 0.2));
-    }
-
-    public double getTorque(double angle){
-        double r = 0.2; //radius m
-        double f = 0.1;//weight kg
-        return f * r * Math.sin(angle);
-    }
-
-    public double getTorqueToSpeed(double t){
-        double x = 2222.222*t - 5888.88;
-        double power = -0.00000027*x*x + 0.00162*x + 0.003;
-        //power = speed * torque
-        return (power / t);
     }
 
     public double getAngle() {
@@ -68,8 +51,5 @@ public class Arm extends SubsystemBase {
 
     public void resetEncoder(){
         encoder.reset();
-    }
-    public void resetEncoder2(){
-        encoder.setPositionOffset(50);
     }
 }
