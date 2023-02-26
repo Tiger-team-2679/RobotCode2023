@@ -5,21 +5,24 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 
 public class MoveArmToPosePID extends CommandBase {
   private Arm arm;
-  private final PIDController pid = new PIDController(Constants.Arm.KP, Constants.Arm.KI, Constants.Arm.KD);
   private double targetPosition;
+  private final PIDController pid;
 
   /** Creates a new ArmPID. */
-  public MoveArmToPosePID(double targetPosition, Arm arm) {
+  public MoveArmToPosePID(double targetPosition, Arm arm, double kp, double kd, double ki) {
+    pid = new PIDController(kp, ki, kd);
     this.targetPosition = targetPosition;
     this.arm = arm;
     addRequirements(arm);
-    pid.setSetpoint(targetPosition / 360);  
+    //pid.setSetpoint(targetPosition / 360);
+
     // Use addRequirements() here to declare subsystem dependencies.
 
   }
@@ -34,10 +37,11 @@ public class MoveArmToPosePID extends CommandBase {
   @Override
   public void execute() {
     double currentPostion = arm.getAngle();
-    double pidResult = pid.calculate(currentPostion / 360);
+    double pidResult = pid.calculate(currentPostion / 360, targetPosition / 360);
     arm.setSpeed(pidResult);
     SmartDashboard.putNumber("pid result ", pidResult);
     SmartDashboard.putBoolean("at set point ", pid.atSetpoint());
+    
   }
 
   // Called once the command ends or is interrupted.

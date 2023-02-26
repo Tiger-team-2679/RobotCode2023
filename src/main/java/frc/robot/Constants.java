@@ -38,16 +38,33 @@ public final class Constants {
     public static final int MOTOR_ID = 9;
     public static final int ENCODER_ID = 8;
 
-    public static final double KP = 1;
-    public static final double KI = 0;
-    public static final double KD = 0.2;
+    public static final double KP_REST = 2.7;
+    public static final double KI_REST = 0;
+    public static final double KD_REST = 0.3;
+
+    public static final double KP_FIRST = 1.6;
+    public static final double KI_FIRST = 0.01;
+    public static final double KD_FIRST = 0.3;
+
+    public static final double KP_SECOND = 1.9;
+    public static final double KI_SECOND = 0.015;
+    public static final double KD_SECOND = 0.5;
+
+    public static final double KP_THIRD = 2.4;
+    public static final double KI_THIRD = 0.018;
+    public static final double KD_THIRD = 0.05;
+
+    public static final double KP_FEEDER = 0;
+    public static final double KI_FEEDER = 0;
+    public static final double KD_FEEDER = 0;
 
     public static final double TOLERANCE_POSTION = 3/360;
     public static final double TOLERANCE_VELOCITY = 10 ;
 
-    public static final double POSTION_FEEDER = 120;
-    public static final double POSTION_SECOND_LEVEL = 70;
-    public static final double POSTION_FIRST_LEVEL = 30;
+    public static final double POSTION_FEEDER = 0;
+    public static final double POSITION_THIRD_LEVEL = 100;
+    public static final double POSTION_SECOND_LEVEL = 80;
+    public static final double POSTION_FIRST_LEVEL = 40;
     public static final double POSTION_REST = 0;
 
     // feed forward 

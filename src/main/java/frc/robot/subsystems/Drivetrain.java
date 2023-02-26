@@ -88,7 +88,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void setVelocity(double leftDemand, double rightDemand) {
-        controlType = ControlType.VELOCIYY;
+        controlType = ControlType.VELOCITY;
         setpointLeft = leftDemand;
         setpointRight = rightDemand;
     }
