@@ -39,6 +39,10 @@ public final class Autos {
     );
   }
 
+  public static Command releaseConeAndBalanceChargeStation(Intake intake, Drivetrain drivetrain, Arm arm, BalancingOptions balancingOption) {
+    return new ConeReleaseAuto(intake).andThen(balanceChargeStation(drivetrain, arm, balancingOption));
+  };
+
   private Autos() {
     throw new UnsupportedOperationException("This is a utility class!");
   }

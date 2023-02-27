@@ -36,13 +36,16 @@ public class RobotContainer {
 
     autoCommandChooser.setDefaultOption(
             "Release cone and drive backward",
-            () -> Autos.releaseConeAndDriveBackwards(intake, drivetrain)
-    );
+            () -> Autos.releaseConeAndDriveBackwards(intake, drivetrain));
 
-    autoCommandChooser.setDefaultOption(
+    autoCommandChooser.addOption(
             "Balance on charge station",
-            () -> Autos.balanceChargeStation(drivetrain, arm, autoBalancingOptionChooser.getSelected())
-    );
+            () -> Autos.balanceChargeStation(drivetrain, arm, autoBalancingOptionChooser.getSelected()));
+
+    if(Constants.Autos.ChargeStationBalance.IS_REVERSED)
+      autoCommandChooser.addOption(
+              "Release cone and balance on charge station",
+              () -> Autos.releaseConeAndBalanceChargeStation(intake, drivetrain, arm, autoBalancingOptionChooser.getSelected()));
   }
 
   private void configureBindings() {
