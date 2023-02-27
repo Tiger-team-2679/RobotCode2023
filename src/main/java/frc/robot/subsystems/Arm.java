@@ -11,10 +11,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
-    private CANSparkMax motor = new CANSparkMax(Constants.Arm.MOTOR_ID, MotorType.kBrushless);
     private static Arm instance = null;
-    private DutyCycleEncoder encoder = new DutyCycleEncoder(Constants.Arm.ENCODER_ID);
-    private DigitalInput armlimitSwitch = new DigitalInput(Constants.Arm.LIMIT_SWITCH_ID);
+    private final CANSparkMax motor = new CANSparkMax(Constants.Arm.MOTOR_ID, MotorType.kBrushless);
+    private final DutyCycleEncoder encoder = new DutyCycleEncoder(Constants.Arm.ENCODER_ID);
+    private final DigitalInput armLimitSwitch = new DigitalInput(Constants.Arm.LIMIT_SWITCH_ID);
+    private final double SPEED_LIMIT = Constants.Arm.SPEED_LIMIT;
+
 
     private Arm() {
         motor.setSmartCurrentLimit(20);
@@ -25,30 +27,28 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("get() angle encoder arm", getAngle());
-        SmartDashboard.putBoolean("limit switch", !armlimitSwitch.get());
-        if(!armlimitSwitch.get())resetEncoder();
-        // This method will be called once per scheduler run
+        SmartDashboard.putNumber("arm angle", getAngle());
+        SmartDashboard.putBoolean("limit switch", !armLimitSwitch.get());
+        if(!armLimitSwitch.get()) resetEncoder();
     }
 
 
     public void setSpeed(double speedDemand) {
-        motor.set(MathUtil.clamp(speedDemand, -0.2, 0.2));
+        motor.set(MathUtil.clamp(speedDemand, -SPEED_LIMIT, SPEED_LIMIT));
     }
 
     public double getAngle() {
         return -encoder.getDistance();
     }
 
+    public void resetEncoder(){
+        encoder.reset();
+    }
 
     public static Arm getInstance() {
         if (instance == null) {
             instance = new Arm();
         }
         return instance;
-    }
-
-    public void resetEncoder(){
-        encoder.reset();
     }
 }

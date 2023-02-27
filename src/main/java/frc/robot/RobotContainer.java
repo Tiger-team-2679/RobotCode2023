@@ -4,14 +4,10 @@
 
 package frc.robot;
 
+import frc.robot.commands.*;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
-import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.ArmController;
-import frc.robot.commands.Autos;
-import frc.robot.commands.IntakeController;
-import frc.robot.commands.MoveArmToPosePID;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -30,6 +26,9 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+
+    // driver
+
     drivetrain.setDefaultCommand(new ArcadeDrive(
             drivetrain,
             () -> -driverController.getLeftY(),
@@ -38,24 +37,27 @@ public class RobotContainer {
             () -> driverController.rightBumper().getAsBoolean()
     ));
 
+    // operator
+
     intake.setDefaultCommand(new IntakeController(
         intake,
             operatorController::getRightTriggerAxis,
             operatorController::getLeftTriggerAxis));
 
-      new Trigger(() -> MathUtil.applyDeadband(operatorController.getLeftY(), Constants.OI.DEADBAND_VALUE) != 0)
+    new Trigger(() -> MathUtil.applyDeadband(operatorController.getLeftY(), Constants.OI.JOYSTICKS_DEADBAND_VALUE) != 0)
         .whileTrue(new ArmController(
-        arm,
-        () -> -operatorController.getLeftY()));
+            arm,
+            () -> -operatorController.getLeftY()));
 
     operatorController.y().onTrue(new MoveArmToPosePID(Constants.Arm.POSITION_THIRD_LEVEL, arm,Constants.Arm.KP_THIRD, Constants.Arm.KD_THIRD, Constants.Arm.KI_THIRD));
     operatorController.x().onTrue(new MoveArmToPosePID(Constants.Arm.POSITION_SECOND_LEVEL, arm, Constants.Arm.KP_SECOND, Constants.Arm.KD_SECOND, Constants.Arm.KI_SECOND));
     operatorController.b().onTrue(new MoveArmToPosePID(Constants.Arm.POSITION_FIRST_LEVEL, arm, Constants.Arm.KP_FIRST, Constants.Arm.KD_FIRST, Constants.Arm.KI_FIRST));
     operatorController.a().onTrue(new MoveArmToPosePID(Constants.Arm.POSITION_REST, arm, Constants.Arm.KP_REST, Constants.Arm.KD_REST, Constants.Arm.KI_REST));
     operatorController.leftBumper().onTrue(new InstantCommand(arm::resetEncoder));
+    operatorController.rightBumper().onTrue(new InstantCommand(() -> arm.setSpeed(0)));
   }
 
   public Command getAutonomousCommand() {
-    return Autos.getAutoCommand(drivetrain, arm);
+    return Autos.putConeAndDriveBackwards(intake, drivetrain);
   }
 }

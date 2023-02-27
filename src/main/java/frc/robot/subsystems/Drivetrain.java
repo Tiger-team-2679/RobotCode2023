@@ -15,27 +15,32 @@ import frc.robot.Constants;
 
 
 public class Drivetrain extends SubsystemBase {
+    private static Drivetrain instance = null;
     private final TalonSRX leftMotor = new TalonSRX(Constants.Drivetrain.LEFT_ID);
     private final TalonSRX leftMotorFollower = new TalonSRX(Constants.Drivetrain.LEFT_FOLLOWER_ID);
     private final TalonSRX rightMotor = new TalonSRX(Constants.Drivetrain.RIGHT_ID);
     private final TalonSRX rightMotorFollower = new TalonSRX(Constants.Drivetrain.RIGHT_FOLLOWER_ID);
 
-    private final PigeonIMU imu = new PigeonIMU(rightMotor);
+    private final PigeonIMU imu = new PigeonIMU(rightMotorFollower);
     private final Encoder leftEncoder = new Encoder(Constants.Drivetrain.LEFT_ENCODER_CHANNEL_A,
             Constants.Drivetrain.LEFT_ENCODER_CHANNEL_B);
     private final Encoder rightEncoder = new Encoder(Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_A,
             Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_B);
-    private final PIDController velocityPID = new PIDController(Constants.Drivetrain.VELOCITY_KP, Constants.Drivetrain.VELOCITY_KI,
+
+    private final PIDController leftVelocityPID = new PIDController(Constants.Drivetrain.VELOCITY_KP, Constants.Drivetrain.VELOCITY_KI,
                     Constants.Drivetrain.VELOCITY_KD);
-    private final PIDController voltagePID = new PIDController(Constants.Drivetrain.VOLTAGE_KP, Constants.Drivetrain.VOLTAGE_KI,
-                    Constants.Drivetrain.VOLTAGE_KD);            
-    
-    private double setpointLeft = 0;
-    private double setpointRight = 0;
+
+    private final PIDController rightVelocityPID = new PIDController(Constants.Drivetrain.VELOCITY_KP, Constants.Drivetrain.VELOCITY_KI,
+            Constants.Drivetrain.VELOCITY_KD);
+
+    private final PIDController leftVoltagePID = new PIDController(Constants.Drivetrain.VOLTAGE_KP, Constants.Drivetrain.VOLTAGE_KI,
+                    Constants.Drivetrain.VOLTAGE_KD);
+
+    private final PIDController rightVoltagePID = new PIDController(Constants.Drivetrain.VOLTAGE_KP, Constants.Drivetrain.VOLTAGE_KI,
+                    Constants.Drivetrain.VOLTAGE_KD);
+
     private double lastSpeedLeft = 0;
     private double lastSpeedRight = 0;
-
-    private static Drivetrain instance = null;
     private ControlType controlType = ControlType.VOLTAGE;
 
     enum ControlType{
@@ -44,9 +49,13 @@ public class Drivetrain extends SubsystemBase {
         GRADUAL_VOLTAGE
     }
 
-    /** Creates a new Drivetrain. */
     private Drivetrain() {
-        SupplyCurrentLimitConfiguration currentLimitConfiguration = new SupplyCurrentLimitConfiguration(true, 90, 0, 0);
+        SupplyCurrentLimitConfiguration currentLimitConfiguration = new SupplyCurrentLimitConfiguration(
+                true,
+                90,
+                0,
+                0
+        );
         rightMotor.configSupplyCurrentLimit(currentLimitConfiguration);
         rightMotorFollower.configSupplyCurrentLimit(currentLimitConfiguration);
         leftMotor.configSupplyCurrentLimit(currentLimitConfiguration);
@@ -69,14 +78,12 @@ public class Drivetrain extends SubsystemBase {
         int pulsesInRound = 2048;
 
         double distancePerRound = wheelRadiusInMeters * 2 * Math.PI;
-        double roundsPerPules = 1 / (double) pulsesInRound;
+        double roundsPerPules = 1.0 / pulsesInRound;
 
         double distancePerPules = distancePerRound * roundsPerPules;    
 
         rightEncoder.setDistancePerPulse(distancePerPules);
         leftEncoder.setDistancePerPulse(distancePerPules);
-
-        imu.setYaw(0);
     }
 
 
@@ -91,24 +98,19 @@ public class Drivetrain extends SubsystemBase {
 
     public void setVelocity(double leftDemand, double rightDemand) {
         controlType = ControlType.VELOCITY;
-        setpointLeft = leftDemand;
-        setpointRight = rightDemand;
+        leftVelocityPID.setSetpoint(leftDemand);
+        rightVelocityPID.setSetpoint(rightDemand);
     }
 
     public void setGradualSpeed(double leftDemand, double rightDemand){
         controlType = ControlType.GRADUAL_VOLTAGE;
-        setpointLeft = leftDemand;
-        setpointRight = rightDemand;
+        leftVoltagePID.setSetpoint(leftDemand);
+        rightVoltagePID.setSetpoint(rightDemand);
     }
 
     public void setSpeed(double leftDemand, double rightDemand){
         controlType = ControlType.VOLTAGE;
-
         set(leftDemand, rightDemand);
-    }
-
-    public double getYaw() {
-        return imu.getYaw();
     }
 
     public double getPitch() {
@@ -126,15 +128,15 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("IMU angle", getPitch());
+        SmartDashboard.putNumber("IMU pitch", getPitch());
 
         if(controlType == ControlType.VELOCITY || controlType == ControlType.GRADUAL_VOLTAGE){
             double leftPIDValue = controlType == ControlType.VELOCITY 
-                ? velocityPID.calculate(leftEncoder.getRate() / Constants.Drivetrain.MAX_VELOCITY, setpointLeft)
-                : voltagePID.calculate(lastSpeedLeft, setpointLeft);
+                ? leftVelocityPID.calculate(leftEncoder.getRate() / Constants.Drivetrain.MAX_VELOCITY)
+                : leftVoltagePID.calculate(lastSpeedLeft);
             double rightPIDValue = controlType == ControlType.VELOCITY 
-                ? velocityPID.calculate(rightEncoder.getRate() / Constants.Drivetrain.MAX_VELOCITY, setpointRight)
-                : voltagePID.calculate(lastSpeedRight, setpointRight);
+                ? rightVelocityPID.calculate(rightEncoder.getRate() / Constants.Drivetrain.MAX_VELOCITY)
+                : rightVoltagePID.calculate(lastSpeedRight);
                 
             double finalLeftValue = MathUtil.clamp(lastSpeedLeft + leftPIDValue, -1, 1);
             double finalRightValue = MathUtil.clamp(lastSpeedRight + rightPIDValue, -1, 1);

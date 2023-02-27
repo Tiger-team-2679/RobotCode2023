@@ -23,11 +23,10 @@ public class ArmController extends CommandBase {
   @Override
   public void execute() {
     double demand = demandSupplier.getAsDouble();
-
     demand = MathUtil.clamp(demand, -1.0, 1.0);
-    demand = MathUtil.applyDeadband(demand, 0.2);
+    demand = MathUtil.applyDeadband(demand, Constants.OI.JOYSTICKS_DEADBAND_VALUE);
 
-    arm.setSpeed(demand * Constants.Arm.multiplierController);
+    arm.setSpeed(demand * Constants.Arm.CONTROLLER_MULTIPLIER);
   }
 
   @Override

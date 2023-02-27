@@ -6,11 +6,13 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
 public class BalanceOnChargeStationDistance extends SequentialCommandGroup {
+  private final double DISTANCE_METERS = Constants.Autos.ChargeStationBalance.Distance.DISTANCE_METERS;
+  private final boolean IS_REVERSED = Constants.Autos.ChargeStationBalance.IS_REVERSED;
   public BalanceOnChargeStationDistance(Drivetrain drivetrain) {
     addCommands(
-      new DriveToDistance(drivetrain, Constants.BalanceOnChargeStationDistance.DISTANCE),
+      new DriveToDistance(drivetrain, (IS_REVERSED ? -1 : 1) * DISTANCE_METERS),
       new WaitCommand(0.5),
-      new BalanceOnChargeStationAuto(drivetrain)
+      new BalanceOnChargeStationBangBang(drivetrain)
     );
   }
 }
