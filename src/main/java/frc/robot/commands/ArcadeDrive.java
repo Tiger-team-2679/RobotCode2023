@@ -1,22 +1,39 @@
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
 public class ArcadeDrive extends CommandBase {
     private final Drivetrain drivetrain;
 
     private final DoubleSupplier forwardDemandSupplier;
-    private final DoubleSupplier backwardDemandSupplier;
+    private final DoubleSupplier rotationDemandSupplier;
+    private final BooleanSupplier IsSensitiveForwardSupplier;
+    private final BooleanSupplier IsSensitiveRotationSupplier;
 
-    public ArcadeDrive(Drivetrain drivetrain, DoubleSupplier forwardDemandSupplier, DoubleSupplier backwardDemandSupplier) {
+    private final double FORWARD_MULTIPLIER = Constants.ArcadeDrive.FORWARD_MULTIPLIER;
+    private final double SENSITIVE_FORWARD_MULTIPLIER = Constants.ArcadeDrive.SENSITIVE_FORWARD_MULTIPLIER;
+    private final double ROTATION_MULTIPLIER = Constants.ArcadeDrive.ROTATION_MULTIPLIER;
+    private final double SENSITIVE_ROTATION_MULTIPLIER = Constants.ArcadeDrive.SENSITIVE_ROTATION_MULTIPLIER;
+
+    public ArcadeDrive(
+            Drivetrain drivetrain,
+            DoubleSupplier forwardDemandSupplier,
+            DoubleSupplier rotationDemandSupplier,
+            BooleanSupplier isSensitiveForwardSupplier,
+            BooleanSupplier isSensitiveRotationSupplier
+    ) {
         this.drivetrain = drivetrain;
         addRequirements(this.drivetrain);
         this.forwardDemandSupplier = forwardDemandSupplier;
-        this.backwardDemandSupplier = backwardDemandSupplier;
+        this.rotationDemandSupplier = rotationDemandSupplier;
+        this.IsSensitiveForwardSupplier = isSensitiveForwardSupplier;
+        this.IsSensitiveRotationSupplier = isSensitiveRotationSupplier;
     }
 
     @Override
@@ -25,16 +42,18 @@ public class ArcadeDrive extends CommandBase {
 
     @Override
     public void execute() {
-        double forwardDemand = MathUtil.clamp(forwardDemandSupplier.getAsDouble(), -1.0, 1.0);
-        double rotationDemand = MathUtil.clamp(backwardDemandSupplier.getAsDouble(), -1.0, 1.0);
+        double forwardDemand = forwardDemandSupplier.getAsDouble();
+        double rotationDemand = rotationDemandSupplier.getAsDouble();
 
-        if((forwardDemand < 0.2 && forwardDemand > 0) || (forwardDemand > -0.2 && forwardDemand < 0))
-            forwardDemand = 0;
+        forwardDemand = MathUtil.applyDeadband(forwardDemand, Constants.OI.JOYSTICKS_DEADBAND_VALUE);
+        rotationDemand = MathUtil.applyDeadband(rotationDemand, Constants.OI.JOYSTICKS_DEADBAND_VALUE);
         
-        if((rotationDemand < 0.2 && rotationDemand > 0) || (rotationDemand > -0.2 && rotationDemand < 0))
-            rotationDemand = 0;
+        forwardDemand = MathUtil.clamp(forwardDemand, -1.0, 1.0);
+        rotationDemand = MathUtil.clamp(rotationDemand, -1.0, 1.0);
 
-        
+        forwardDemand *= IsSensitiveForwardSupplier.getAsBoolean() ? SENSITIVE_FORWARD_MULTIPLIER : FORWARD_MULTIPLIER;
+        rotationDemand *= IsSensitiveRotationSupplier.getAsBoolean() ? SENSITIVE_ROTATION_MULTIPLIER : ROTATION_MULTIPLIER;
+
         // Square the inputs (while preserving the sign) to increase fine control
         // while permitting full power.
         forwardDemand = Math.copySign(forwardDemand * forwardDemand, forwardDemand);
@@ -75,12 +94,10 @@ public class ArcadeDrive extends CommandBase {
         drivetrain.setSpeed(leftSpeed, rightSpeed);
     }
 
-    // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
     }
 
-    // Returns true when the command should end.
     @Override
     public boolean isFinished() {
         return false;

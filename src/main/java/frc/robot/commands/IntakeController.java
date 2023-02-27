@@ -6,9 +6,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
 
 public class IntakeController extends CommandBase {
-  private Intake intake;
-  private DoubleSupplier forwardDemandSupplier;
-  private DoubleSupplier backwardDemandSupplier;
+  private final Intake intake;
+  private final DoubleSupplier forwardDemandSupplier;
+  private final DoubleSupplier backwardDemandSupplier;
 
   public IntakeController(Intake intake, DoubleSupplier forwardDemandSupplier, DoubleSupplier backwardDemandSupplier) {
     this.intake = intake;

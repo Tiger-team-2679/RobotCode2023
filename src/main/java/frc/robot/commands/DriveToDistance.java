@@ -1,4 +1,3 @@
-
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -9,13 +8,25 @@ import frc.robot.subsystems.Drivetrain;
 
 public class DriveToDistance extends CommandBase {
   private final Drivetrain drivetrain;
-  private final PIDController pidController = new PIDController(Constants.DriveToDistance.KP, Constants.DriveToDistance.KI, Constants.DriveToDistance.KD);
-  private final double distance;
+  private final PIDController pidControllerLeft = new PIDController(
+          Constants.DriveToDistance.KP,
+          Constants.DriveToDistance.KI,
+          Constants.DriveToDistance.KD);
+  private final PIDController pidControllerRight = new PIDController(
+          Constants.DriveToDistance.KP,
+          Constants.DriveToDistance.KI,
+          Constants.DriveToDistance.KD);
+  private final double POSITION_TOLERANCE = Constants.DriveToDistance.POSITION_TOLERANCE;
+  private final double VELOCITY_TOLERANCE = Constants.DriveToDistance.VELOCITY_TOLERANCE;
 
-  public DriveToDistance(Drivetrain drivetrain, double distance) {
+  public DriveToDistance(Drivetrain drivetrain, double meters) {
     this.drivetrain = drivetrain;
     addRequirements(drivetrain);
-    this.distance = distance;
+
+    pidControllerLeft.setTolerance(POSITION_TOLERANCE, VELOCITY_TOLERANCE);
+    pidControllerLeft.setSetpoint(meters);
+    pidControllerRight.setTolerance(POSITION_TOLERANCE, VELOCITY_TOLERANCE);
+    pidControllerRight.setSetpoint(meters);
   }
 
   @Override
@@ -23,11 +34,8 @@ public class DriveToDistance extends CommandBase {
 
   @Override
   public void execute() {
-    double pidResultRight = pidController.calculate(drivetrain.getRightDistanceMeters(), distance);
-    double pidResultLeft = pidController.calculate(drivetrain.getLeftDistanceMeters(), distance);
-
-    SmartDashboard.putNumber("left", drivetrain.getLeftDistanceMeters());
-    SmartDashboard.putNumber("right", drivetrain.getRightDistanceMeters());
+    double pidResultLeft = pidControllerLeft.calculate(drivetrain.getLeftDistanceMeters());
+    double pidResultRight = pidControllerRight.calculate(drivetrain.getRightDistanceMeters());
 
     drivetrain.setSpeed(pidResultLeft, pidResultRight);
   }
@@ -39,6 +47,6 @@ public class DriveToDistance extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return pidController.atSetpoint();
+    return pidControllerLeft.atSetpoint() && pidControllerRight.atSetpoint();
   }
 }

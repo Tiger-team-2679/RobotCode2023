@@ -4,66 +4,60 @@
 
 package frc.robot;
 
+import frc.robot.commands.*;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
-import frc.robot.commands.DriveToDistance;
-import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.ArmController;
-import frc.robot.commands.Autos;
-import frc.robot.commands.BalanceOnChargeStationAuto;
-import frc.robot.commands.BalanceOnChargeStationPID;
-import frc.robot.commands.ConeAuto;
-import frc.robot.commands.GetOnChargeStationAuto;
-import frc.robot.commands.IntakeController;
-import frc.robot.commands.MoveArmToPosePID;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import java.lang.*;
 
 public class RobotContainer {
   private final Drivetrain drivetrain = Drivetrain.getInstance();
   private final Intake intake = Intake.getInstance();
   private final Arm arm = Arm.getInstance();
   public final CommandXboxController driverController = new CommandXboxController(Constants.OI.DRIVER_PORT);
-  public final CommandXboxController opertatorController = new CommandXboxController(Constants.OI.OPERTATOR_PORT);
+  public final CommandXboxController operatorController = new CommandXboxController(Constants.OI.OPERATOR_PORT);
 
   public RobotContainer() {
     configureBindings();
   }
 
   private void configureBindings() {
+
+    // driver
+
     drivetrain.setDefaultCommand(new ArcadeDrive(
-        drivetrain,
-        () -> -driverController.getLeftY(),
-        () -> driverController.getRightX() * 0.7));
+            drivetrain,
+            () -> -driverController.getLeftY(),
+            driverController::getRightX,
+            () -> driverController.leftBumper().getAsBoolean(),
+            () -> driverController.rightBumper().getAsBoolean()
+    ));
+
+    // operator
 
     intake.setDefaultCommand(new IntakeController(
         intake,
-        () -> opertatorController.getRightTriggerAxis(),
-        () -> opertatorController.getLeftTriggerAxis()));
+            operatorController::getRightTriggerAxis,
+            operatorController::getLeftTriggerAxis));
 
-      new Trigger(() -> MathUtil.applyDeadband(opertatorController.getLeftY(), Constants.OI.DEADBAND_VALUE) !=0)
+    new Trigger(() -> MathUtil.applyDeadband(operatorController.getLeftY(), Constants.OI.JOYSTICKS_DEADBAND_VALUE) != 0)
         .whileTrue(new ArmController(
-        arm,
-        () -> -opertatorController.getLeftY()));
+            arm,
+            () -> -operatorController.getLeftY()));
 
-    opertatorController.y().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_FEEDER, arm));
-    opertatorController.x().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_SECOND_LEVEL, arm));
-    opertatorController.b().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_FIRST_LEVEL, arm));
-    opertatorController.a().onTrue(new MoveArmToPosePID(Constants.Arm.POSTION_REST, arm));
-    opertatorController.leftBumper().onTrue(new InstantCommand(() -> arm.resetEncoder()));
-
-    driverController.x().onTrue(new ConeAuto(intake).andThen(new DriveToDistance(drivetrain, -1)));
-    driverController.b().onTrue(new DriveToDistance(drivetrain, -1));
-    
+    operatorController.y().onTrue(new MoveArmToPosePID(Constants.Arm.POSITION_THIRD_LEVEL, arm,Constants.Arm.KP_THIRD, Constants.Arm.KD_THIRD, Constants.Arm.KI_THIRD));
+    operatorController.x().onTrue(new MoveArmToPosePID(Constants.Arm.POSITION_SECOND_LEVEL, arm, Constants.Arm.KP_SECOND, Constants.Arm.KD_SECOND, Constants.Arm.KI_SECOND));
+    operatorController.b().onTrue(new MoveArmToPosePID(Constants.Arm.POSITION_FIRST_LEVEL, arm, Constants.Arm.KP_FIRST, Constants.Arm.KD_FIRST, Constants.Arm.KI_FIRST));
+    operatorController.a().onTrue(new MoveArmToPosePID(Constants.Arm.POSITION_REST, arm, Constants.Arm.KP_REST, Constants.Arm.KD_REST, Constants.Arm.KI_REST));
+    operatorController.leftBumper().onTrue(new InstantCommand(arm::resetEncoder));
+    operatorController.rightBumper().onTrue(new InstantCommand(() -> arm.setSpeed(0)));
   }
 
   public Command getAutonomousCommand() {
-    return new ConeAuto(intake);
+    return Autos.putConeAndDriveBackwards(intake, drivetrain);
   }
 }

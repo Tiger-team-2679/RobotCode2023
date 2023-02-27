@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -10,16 +6,23 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
 public class BalanceOnChargeStationPID extends CommandBase {
-  private Drivetrain drivetrain;
-  private double pidResult;
-  private double pitch;
-  private final boolean isReversed = Constants.chargeStationBalance.IS_REVERSED;
-  private PIDController pidController = new PIDController(Constants.BalanceOnChargeStationPID.KP, Constants.BalanceOnChargeStationPID.KI, Constants.BalanceOnChargeStationPID.KD);
+  private final Drivetrain drivetrain;
+  private final double POSITION_TOLERANCE = Constants.Autos.ChargeStationBalance.PID.POSITION_TOLERANCE;
+  private final double VELOCITY_TOLERANCE = Constants.Autos.ChargeStationBalance.PID.VELOCITY_TOLERANCE;
+  private final double TARGET_ANGLE = Constants.Autos.ChargeStationBalance.PID.TARGET_ANGLE;
+
+
+  private final PIDController pidController = new PIDController(
+      Constants.Autos.ChargeStationBalance.PID.KP,
+      Constants.Autos.ChargeStationBalance.PID.KI,
+      Constants.Autos.ChargeStationBalance.PID.KD
+  );
 
   public BalanceOnChargeStationPID(Drivetrain drivetrain) {
     this.drivetrain = drivetrain;
     addRequirements(drivetrain);
-    pidController.setTolerance(5, 0.5);
+    pidController.setTolerance(POSITION_TOLERANCE, VELOCITY_TOLERANCE);
+    pidController.setSetpoint(TARGET_ANGLE);
   }
 
   @Override
@@ -27,9 +30,8 @@ public class BalanceOnChargeStationPID extends CommandBase {
 
   @Override
   public void execute() {
-    pitch = (isReversed ? -1 : 1) * drivetrain.getPitch();
-
-    pidResult = pidController.calculate(pitch, Constants.BalanceOnChargeStationPID.FINISH_ANGLE);
+    double pitch = drivetrain.getPitch();
+    double pidResult = pidController.calculate(pitch);
     drivetrain.setSpeed(pidResult, pidResult);
   }
 
