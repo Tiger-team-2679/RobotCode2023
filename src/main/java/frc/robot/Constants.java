@@ -9,10 +9,10 @@ public final class Constants {
 
   public static final class ArcadeDrive {
     public static final double FORWARD_MULTIPLIER = 1;
-    public static final double SENSITIVE_FORWARD_MULTIPLIER = 0.7;
+    public static final double SENSITIVE_FORWARD_MULTIPLIER = 0.5;
 
     public static final double ROTATION_MULTIPLIER = 0.7;
-    public static final double SENSITIVE_ROTATION_MULTIPLIER = 0.7;
+    public static final double SENSITIVE_ROTATION_MULTIPLIER = 0.3;
   }
 
   public static final class Drivetrain {
@@ -35,7 +35,6 @@ public final class Constants {
     public static final double VOLTAGE_KD = 0;
 
     public static final double MAX_VELOCITY = 4.6; // meters per second
-
   }
 
   public static final class Intake {
