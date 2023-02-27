@@ -9,7 +9,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 
 public final class Autos {
-  public static Command putConeAndDriveBackwards(Intake intake, Drivetrain drivetrain) {
+  public static Command releaseConeAndDriveBackwards(Intake intake, Drivetrain drivetrain) {
     return new ConeReleaseAuto(intake).andThen(new DriveToDistance(drivetrain, -Constants.Autos.ReleaseConeAndDriveBackwards.DRIVE_DISTANCE));
   };
 

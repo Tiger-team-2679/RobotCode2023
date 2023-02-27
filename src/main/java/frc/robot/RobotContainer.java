@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
@@ -20,9 +21,28 @@ public class RobotContainer {
   private final Arm arm = Arm.getInstance();
   public final CommandXboxController driverController = new CommandXboxController(Constants.OI.DRIVER_PORT);
   public final CommandXboxController operatorController = new CommandXboxController(Constants.OI.OPERATOR_PORT);
+  private interface CommandSupplier {
+    Command getCommand();
+  }
+  private final SendableChooser<CommandSupplier> autoCommandChooser = new SendableChooser<>();
+  private final SendableChooser<Autos.BalancingOptions> autoBalancingOptionChooser = new SendableChooser<>();
 
   public RobotContainer() {
     configureBindings();
+
+    autoBalancingOptionChooser.setDefaultOption("Bang Bang", Autos.BalancingOptions.BANG_BANG);
+    autoBalancingOptionChooser.addOption("PID", Autos.BalancingOptions.PID);
+    autoBalancingOptionChooser.addOption("Distance", Autos.BalancingOptions.DISTANCE);
+
+    autoCommandChooser.setDefaultOption(
+            "Release cone and drive backward",
+            () -> Autos.releaseConeAndDriveBackwards(intake, drivetrain)
+    );
+
+    autoCommandChooser.setDefaultOption(
+            "Balance on charge station",
+            () -> Autos.balanceChargeStation(drivetrain, arm, autoBalancingOptionChooser.getSelected())
+    );
   }
 
   private void configureBindings() {
@@ -58,6 +78,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Autos.putConeAndDriveBackwards(intake, drivetrain);
+    return autoCommandChooser.getSelected().getCommand();
   }
 }
