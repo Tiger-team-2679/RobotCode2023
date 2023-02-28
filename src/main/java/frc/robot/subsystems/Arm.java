@@ -19,7 +19,7 @@ public class Arm extends SubsystemBase {
 
 
     private Arm() {
-        motor.setSmartCurrentLimit(20);
+        motor.setSmartCurrentLimit(Constants.Arm.CURRENT_LIMIT_AMP);
         encoder.setDistancePerRotation(360);
         motor.setInverted(true);
         motor.setIdleMode(CANSparkMax.IdleMode.kBrake);

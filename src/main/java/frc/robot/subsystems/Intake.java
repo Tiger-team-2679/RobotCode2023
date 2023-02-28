@@ -15,7 +15,7 @@ public class Intake extends SubsystemBase {
     private Intake() {
         SupplyCurrentLimitConfiguration currentLimitConfiguration = new SupplyCurrentLimitConfiguration(
                 true,
-                90,
+                Constants.Intake.CURRENT_LIMIT_AMP,
                 0,
                 0
         );

@@ -52,7 +52,7 @@ public class Drivetrain extends SubsystemBase {
     private Drivetrain() {
         SupplyCurrentLimitConfiguration currentLimitConfiguration = new SupplyCurrentLimitConfiguration(
                 true,
-                90,
+                Constants.Drivetrain.CURRENT_LIMIT_AMP,
                 0,
                 0
         );
