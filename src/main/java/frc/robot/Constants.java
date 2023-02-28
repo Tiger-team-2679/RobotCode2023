@@ -82,9 +82,9 @@ public final class Constants {
 
   public static final class Autos {
     public static final class DriveToDistance {
-      public static final double KP = 0.5;
+      public static final double KP = 0.7;
       public static final double KI = 0;
-      public static final double KD = 0;
+      public static final double KD = 0.1;
 
       public static final double POSITION_TOLERANCE = 0.05;
       public static final double VELOCITY_TOLERANCE = 0.02;
