@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
@@ -20,13 +22,49 @@ public class RobotContainer {
   private final Arm arm = Arm.getInstance();
   public final CommandXboxController driverController = new CommandXboxController(Constants.OI.DRIVER_PORT);
   public final CommandXboxController operatorController = new CommandXboxController(Constants.OI.OPERATOR_PORT);
+  private interface CommandSupplier { Command getCommand(Timer timer); }
+  private final SendableChooser<CommandSupplier> firstAutoCommandChooser = new SendableChooser<>();
+  private final SendableChooser<CommandSupplier> secondAutoCommandChooser = new SendableChooser<>();
+  private final SendableChooser<Autos.BalancingOptions> autoBalancingOptionChooser = new SendableChooser<>();
 
   public RobotContainer() {
     configureBindings();
+
+    autoBalancingOptionChooser.setDefaultOption("Bang Bang", Autos.BalancingOptions.BANG_BANG);
+    autoBalancingOptionChooser.addOption("PID", Autos.BalancingOptions.PID);
+    autoBalancingOptionChooser.addOption("Distance Bang Bang", Autos.BalancingOptions.DISTANCE_BANG_BANG);
+    autoBalancingOptionChooser.addOption("Distance PID", Autos.BalancingOptions.DISTANCE_PID);
+
+    firstAutoCommandChooser.setDefaultOption(
+            "Release Cone",
+            (Timer timerFromAutoStart) -> Autos.releaseCone(intake));
+
+    firstAutoCommandChooser.addOption(
+            "Release Cube",
+            (Timer timerFromAutoStart) -> Autos.releaseCube(arm, intake));
+
+    firstAutoCommandChooser.addOption(
+            "None",
+            (Timer timerFromAutoStart) -> new InstantCommand());
+
+    secondAutoCommandChooser.setDefaultOption(
+            "Balance charge station",
+            (Timer timerFromAutoStart) -> Autos.balanceChargeStation(
+                    drivetrain,
+                    arm,
+                    autoBalancingOptionChooser.getSelected(),
+                    timerFromAutoStart
+            )
+    );
+
+    secondAutoCommandChooser.setDefaultOption(
+            "Drive Backwards Outside Community",
+            (Timer timerFromAutoStart) -> Autos.driveBackwardsOutsideCommunity(drivetrain)
+    );
+//    if(Constants.Autos.ChargeStationBalance.IS_REVERSED)
   }
 
   private void configureBindings() {
-
     // driver
 
     drivetrain.setDefaultCommand(new ArcadeDrive(
@@ -49,15 +87,16 @@ public class RobotContainer {
             arm,
             () -> -operatorController.getLeftY()));
 
-    operatorController.y().onTrue(new MoveArmToPosePID(Constants.Arm.POSITION_THIRD_LEVEL, arm,Constants.Arm.KP_THIRD, Constants.Arm.KD_THIRD, Constants.Arm.KI_THIRD));
-    operatorController.x().onTrue(new MoveArmToPosePID(Constants.Arm.POSITION_SECOND_LEVEL, arm, Constants.Arm.KP_SECOND, Constants.Arm.KD_SECOND, Constants.Arm.KI_SECOND));
-    operatorController.b().onTrue(new MoveArmToPosePID(Constants.Arm.POSITION_FIRST_LEVEL, arm, Constants.Arm.KP_FIRST, Constants.Arm.KD_FIRST, Constants.Arm.KI_FIRST));
-    operatorController.a().onTrue(new MoveArmToPosePID(Constants.Arm.POSITION_REST, arm, Constants.Arm.KP_REST, Constants.Arm.KD_REST, Constants.Arm.KI_REST));
+    operatorController.a().onTrue(new MoveArmToPosition(arm, MoveArmToPosition.Positions.REST));
+    operatorController.b().onTrue(new MoveArmToPosition(arm, MoveArmToPosition.Positions.FIRST));
+    operatorController.x().onTrue(new MoveArmToPosition(arm, MoveArmToPosition.Positions.SECOND));
+    operatorController.y().onTrue(new MoveArmToPosition(arm, MoveArmToPosition.Positions.THIRD));
     operatorController.leftBumper().onTrue(new InstantCommand(arm::resetEncoder));
     operatorController.rightBumper().onTrue(new InstantCommand(() -> arm.setSpeed(0)));
   }
 
-  public Command getAutonomousCommand() {
-    return Autos.putConeAndDriveBackwards(intake, drivetrain);
+  public Command getAutonomousCommand(Timer timerFromAutoStart) {
+    return firstAutoCommandChooser.getSelected().getCommand(timerFromAutoStart)
+            .andThen(secondAutoCommandChooser.getSelected().getCommand(timerFromAutoStart));
   }
 }

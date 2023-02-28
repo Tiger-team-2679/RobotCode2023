@@ -117,6 +117,13 @@ public class Drivetrain extends SubsystemBase {
         return imu.getPitch();
     }
 
+    public double getYaw() {
+        return imu.getYaw();
+    }
+
+    public void setYaw(double angle) {
+        imu.setYaw(angle);
+    }
 
     public double getLeftDistanceMeters() {
         return leftEncoder.getDistance();

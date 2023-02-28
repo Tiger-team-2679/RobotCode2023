@@ -9,15 +9,15 @@ import frc.robot.subsystems.Drivetrain;
 public class DriveToDistance extends CommandBase {
   private final Drivetrain drivetrain;
   private final PIDController pidControllerLeft = new PIDController(
-          Constants.DriveToDistance.KP,
-          Constants.DriveToDistance.KI,
-          Constants.DriveToDistance.KD);
+          Constants.Autos.DriveToDistance.KP,
+          Constants.Autos.DriveToDistance.KI,
+          Constants.Autos.DriveToDistance.KD);
   private final PIDController pidControllerRight = new PIDController(
-          Constants.DriveToDistance.KP,
-          Constants.DriveToDistance.KI,
-          Constants.DriveToDistance.KD);
-  private final double POSITION_TOLERANCE = Constants.DriveToDistance.POSITION_TOLERANCE;
-  private final double VELOCITY_TOLERANCE = Constants.DriveToDistance.VELOCITY_TOLERANCE;
+          Constants.Autos.DriveToDistance.KP,
+          Constants.Autos.DriveToDistance.KI,
+          Constants.Autos.DriveToDistance.KD);
+  private final double POSITION_TOLERANCE = Constants.Autos.DriveToDistance.POSITION_TOLERANCE;
+  private final double VELOCITY_TOLERANCE = Constants.Autos.DriveToDistance.VELOCITY_TOLERANCE;
 
   public DriveToDistance(Drivetrain drivetrain, double meters) {
     this.drivetrain = drivetrain;
