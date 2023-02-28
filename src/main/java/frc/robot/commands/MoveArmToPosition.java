@@ -24,7 +24,7 @@ public class MoveArmToPosition extends CommandBase {
         return pidControllerFirst;
       case SECOND:
         PIDController pidControllerSecond
-                = new PIDController(Constants.Arm.KD_SECOND, Constants.Arm.KD_SECOND, Constants.Arm.KD_SECOND);
+                = new PIDController(Constants.Arm.KP_SECOND, Constants.Arm.KI_SECOND, Constants.Arm.KD_SECOND);
         pidControllerSecond.setSetpoint(Constants.Arm.ANGLE_SECOND / 360);
         return pidControllerSecond;
       case THIRD:
