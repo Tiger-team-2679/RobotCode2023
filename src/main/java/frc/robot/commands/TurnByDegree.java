@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
@@ -31,7 +32,9 @@ public class TurnByDegree extends CommandBase {
     public void execute() {
         double currAngle = drivetrain.getYaw() / 360;
         double pidResult = pidController.calculate(currAngle);
-        drivetrain.setSpeed(pidResult, -pidResult);
+        drivetrain.setSpeed(-pidResult, pidResult);
+
+        SmartDashboard.putNumber("degrees yaw", drivetrain.getYaw());
     }
 
     @Override
