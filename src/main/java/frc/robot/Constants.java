@@ -8,11 +8,11 @@ public final class Constants {
   }
 
   public static final class ArcadeDrive {
-    public static final double FORWARD_MULTIPLIER = 1;
-    public static final double SENSITIVE_FORWARD_MULTIPLIER = 0.5;
+    public static final double FORWARD_MULTIPLIER = 0.7;
+    public static final double SENSITIVE_FORWARD_MULTIPLIER = 1;
 
-    public static final double ROTATION_MULTIPLIER = 0.7;
-    public static final double SENSITIVE_ROTATION_MULTIPLIER = 0.3;
+    public static final double ROTATION_MULTIPLIER = 0.5;
+    public static final double SENSITIVE_ROTATION_MULTIPLIER = 0.7;
   }
 
   public static final class Drivetrain {
@@ -75,16 +75,16 @@ public final class Constants {
 
     public static final double ANGLE_FEEDER = 0;
     public static final double ANGLE_THIRD = 100;
-    public static final double ANGLE_SECOND = 80;
+    public static final double ANGLE_SECOND = 85;
     public static final double ANGLE_FIRST = 40;
     public static final double ANGLE_REST = 0;
   }
 
   public static final class Autos {
     public static final class DriveToDistance {
-      public static final double KP = 0.5;
+      public static final double KP = 0.7;
       public static final double KI = 0;
-      public static final double KD = 0;
+      public static final double KD = 0.1;
 
       public static final double POSITION_TOLERANCE = 0.05;
       public static final double VELOCITY_TOLERANCE = 0.02;
