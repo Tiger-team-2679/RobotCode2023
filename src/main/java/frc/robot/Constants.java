@@ -26,6 +26,8 @@ public final class Constants {
     public static final int RIGHT_ENCODER_CHANNEL_A = 6;
     public static final int RIGHT_ENCODER_CHANNEL_B = 7;
 
+    public static final int CURRENT_LIMIT_AMP = 30;
+
     public static final double VELOCITY_KP = 0.014;
     public static final double VELOCITY_KI = 0;
     public static final double VELOCITY_KD = 0.008;
@@ -39,12 +41,15 @@ public final class Constants {
 
   public static final class Intake {
     public static final int MOTOR_ID = 7;
+    public static final int CURRENT_LIMIT_AMP = 30;
   }
   
   public static final class Arm {
     public static final int MOTOR_ID = 9;
     public static final int ENCODER_ID = 8;
     public static final int LIMIT_SWITCH_ID = 9;
+
+    public static final int CURRENT_LIMIT_AMP = 20;
 
     public static final double SPEED_LIMIT = 0.2;
     public static final double CONTROLLER_MULTIPLIER = 0.2;
