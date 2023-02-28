@@ -1,22 +1,38 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 
 public final class Autos {
-  public static Command releaseConeAndDriveBackwards(Intake intake, Drivetrain drivetrain) {
-    return new ConeReleaseAuto(intake).andThen(new DriveToDistance(drivetrain, -Constants.Autos.ReleaseConeAndDriveBackwards.DRIVE_DISTANCE));
-  };
+  public static Command releaseCone(Intake intake) {
+    return new InstantCommand(() -> intake.setSpeed(Constants.Autos.ReleaseCone.RELEASE_SPEED))
+            .andThen(new WaitCommand(Constants.Autos.ReleaseCone.RELEASE_TIME_SECONDS))
+            .andThen(new InstantCommand(() -> intake.setSpeed(0)));
+  }
+
+  public static Command releaseCube(Arm arm, Intake intake) {
+    return new MoveArmToPosition(arm, MoveArmToPosition.Positions.FIRST)
+            .andThen(new InstantCommand(() -> intake.setSpeed(Constants.Autos.ReleaseCube.RELEASE_SPEED)))
+            .andThen(new WaitCommand(Constants.Autos.ReleaseCube.RELEASE_TIME_SECONDS))
+            .andThen(new InstantCommand(() -> intake.setSpeed(0)));
+  }
+
+  public static Command driveBackwardsOutsideCommunity(Drivetrain drivetrain) {
+    return new DriveToDistance(drivetrain, -Constants.Autos.DriveBackwardsOutsideCommunity.DISTANCE_METERS);
+  }
 
   public enum BalancingOptions {
     BANG_BANG,
     PID,
-    DISTANCE
+    DISTANCE_BANG_BANG,
+    DISTANCE_PID
   }
 
   private static Command getBalancingCommand(Drivetrain drivetrain, BalancingOptions balancingOption) {
@@ -25,23 +41,25 @@ public final class Autos {
         return new BalanceOnChargeStationBangBang(drivetrain);
       case PID:
         return new BalanceOnChargeStationPID(drivetrain);
-      case DISTANCE:
-        return new BalanceOnChargeStationDistance(drivetrain);
+      case DISTANCE_BANG_BANG:
+        return new BalanceOnChargeStationDistance(drivetrain, false);
+      case DISTANCE_PID:
+        return new BalanceOnChargeStationDistance(drivetrain, true);
     }
     return new InstantCommand();
   };
 
-  public static Command balanceChargeStation(Drivetrain drivetrain, Arm arm, BalancingOptions balancingOption) {
+  public static Command balanceChargeStation(Drivetrain drivetrain, Arm arm, BalancingOptions balancingOption, Timer timerFromAutoStart) {
+    Command balancingCommand = getBalancingCommand(drivetrain, balancingOption);
     return Commands.deadline(
             new GetOnChargeStationAuto(drivetrain)
-                    .andThen(getBalancingCommand(drivetrain, balancingOption)),
-            new MoveArmToPosePID(Constants.Arm.POSITION_REST, arm, Constants.Arm.KP_REST, Constants.Arm.KD_REST, Constants.Arm.KI_REST)
+                    .andThen(balancingCommand)
+                    .until(() -> timerFromAutoStart.hasElapsed(Constants.Autos.ChargeStationBalance.TIMEOUT_SECONDS_BEFORE_TURNING))
+                    .andThen(new TurnByDegree(drivetrain, Constants.Autos.ChargeStationBalance.TURNING_ANGLE))
+                    .unless(balancingCommand::isFinished),
+            new MoveArmToPosition(arm, MoveArmToPosition.Positions.REST)
     );
   }
-
-  public static Command releaseConeAndBalanceChargeStation(Intake intake, Drivetrain drivetrain, Arm arm, BalancingOptions balancingOption) {
-    return new ConeReleaseAuto(intake).andThen(balanceChargeStation(drivetrain, arm, balancingOption));
-  };
 
   private Autos() {
     throw new UnsupportedOperationException("This is a utility class!");

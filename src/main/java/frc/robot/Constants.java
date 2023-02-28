@@ -71,27 +71,58 @@ public final class Constants {
     public static final double KI_FEEDER = 0;
     public static final double KD_FEEDER = 0;
 
-    // positions
+    // angles
 
-    public static final double POSITION_FEEDER = 0;
-    public static final double POSITION_THIRD_LEVEL = 100;
-    public static final double POSITION_SECOND_LEVEL = 80;
-    public static final double POSITION_FIRST_LEVEL = 40;
-    public static final double POSITION_REST = 0;
-  }
-
-  public static final class DriveToDistance {
-    public static final double KP = 0.5;
-    public static final double KI = 0;
-    public static final double KD = 0;
-
-    public static final double POSITION_TOLERANCE = 0.05;
-    public static final double VELOCITY_TOLERANCE = 0.02;
+    public static final double ANGLE_FEEDER = 0;
+    public static final double ANGLE_THIRD = 100;
+    public static final double ANGLE_SECOND = 80;
+    public static final double ANGLE_FIRST = 40;
+    public static final double ANGLE_REST = 0;
   }
 
   public static final class Autos {
+    public static final class DriveToDistance {
+      public static final double KP = 0.5;
+      public static final double KI = 0;
+      public static final double KD = 0;
+
+      public static final double POSITION_TOLERANCE = 0.05;
+      public static final double VELOCITY_TOLERANCE = 0.02;
+    }
+
+    public static final class TurnByAngle {
+      public static final double KP = 0.5;
+      public static final double KI = 0;
+      public static final double KD = 0;
+
+      public static final double POSITION_TOLERANCE = 0.05;
+      public static final double VELOCITY_TOLERANCE = 0.02;
+
+    }
+
+    public static final class ReleaseCone {
+      public static final double RELEASE_SPEED = 0.8;
+      public static final double RELEASE_TIME_SECONDS = 1;
+    }
+
+    public static final class ReleaseCube {
+      public static final double RELEASE_SPEED = 0.6;
+      public static final double RELEASE_TIME_SECONDS = 1;
+    }
+
+    public static final class DriveBackwardsOutsideCommunity {
+      public static final double DISTANCE_METERS = 4;
+    }
+
+    public static final class GetOnChargeStationAuto {
+      public static final double DRIVE_SPEED = 0.6;
+      public static final double FINISH_ANGLE = 12;
+    }
+
     public static final class ChargeStationBalance {
       public static final boolean IS_REVERSED = true;
+      public static final double TIMEOUT_SECONDS_BEFORE_TURNING = 10;
+      public static final double TURNING_ANGLE = 90;
 
       public static final class BangBang {
         public static final double DRIVE_SPEED_FORWARD = 0.3;
@@ -112,19 +143,9 @@ public final class Constants {
 
       public static final class Distance {
         public static final double DISTANCE_METERS = 1;
+        public static final double WAIT_TIME_SECONDS = 0.5;
       }
-    }
 
-    public static final class GetOnChargeStationAuto {
-      public static final double DRIVE_SPEED = 0.6;
-      public static final double FINISH_ANGLE = 12;
-    }
-
-    public static final class ReleaseConeAndDriveBackwards {
-      public static final double RELEASE_SPEED = 0.8;
-      public static final double RELEASE_TIME_SECONDS = 1;
-      public static final double DRIVE_DISTANCE = 1;
     }
   }
-
 }
