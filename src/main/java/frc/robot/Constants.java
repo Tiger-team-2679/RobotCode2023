@@ -91,9 +91,9 @@ public final class Constants {
     }
 
     public static final class TurnByAngle {
-      public static final double KP = 1.5;
+      public static final double KP = 2.6;
       public static final double KI = 0;
-      public static final double KD = 0;
+      public static final double KD = 0.5;
 
       public static final double POSITION_TOLERANCE = 0.05;
       public static final double VELOCITY_TOLERANCE = 0.02;
