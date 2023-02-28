@@ -12,16 +12,22 @@ import frc.robot.subsystems.Intake;
 
 public final class Autos {
   public static Command releaseCone(Intake intake) {
-    return new InstantCommand(() -> intake.setSpeed(Constants.Autos.ReleaseCone.RELEASE_SPEED))
+    return new InstantCommand(() -> intake.setSpeed(Constants.Autos.ReleaseCone.RELEASE_SPEED), intake)
             .andThen(new WaitCommand(Constants.Autos.ReleaseCone.RELEASE_TIME_SECONDS))
-            .andThen(new InstantCommand(() -> intake.setSpeed(0)));
+            .andThen(new InstantCommand(() -> intake.setSpeed(0), intake));
   }
 
   public static Command releaseCube(Arm arm, Intake intake) {
-    return new MoveArmToPosition(arm, MoveArmToPosition.Positions.FIRST)
-            .andThen(new InstantCommand(() -> intake.setSpeed(Constants.Autos.ReleaseCube.RELEASE_SPEED)))
+    return new MoveArmToPosition(arm, MoveArmToPosition.Positions.SECOND)
+            .withTimeout(Constants.Autos.ReleaseCube.ARM_MOVE_TO_SECOND_TIME_SECONDS)
+            .andThen(new InstantCommand(() -> intake.setSpeed(Constants.Autos.ReleaseCube.RELEASE_SPEED), intake))
             .andThen(new WaitCommand(Constants.Autos.ReleaseCube.RELEASE_TIME_SECONDS))
-            .andThen(new InstantCommand(() -> intake.setSpeed(0)));
+            .andThen(new InstantCommand(() -> intake.setSpeed(0), intake)
+            .andThen(
+              new MoveArmToPosition(arm, MoveArmToPosition.Positions.REST))
+              .withTimeout(Constants.Autos.ReleaseCube.ARM_MOVE_TO_SECOND_TIME_SECONDS
+            )
+    );
   }
 
   public static Command driveBackwardsOutsideCommunity(Drivetrain drivetrain) {

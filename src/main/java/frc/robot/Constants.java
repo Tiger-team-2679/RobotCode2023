@@ -108,6 +108,8 @@ public final class Constants {
     public static final class ReleaseCube {
       public static final double RELEASE_SPEED = 0.6;
       public static final double RELEASE_TIME_SECONDS = 1;
+      public static final double ARM_MOVE_TO_SECOND_TIME_SECONDS = 2;
+      public static final double ARM_MOVE_TO_REST_TIME_SECONDS = 2;
     }
 
     public static final class DriveBackwardsOutsideCommunity {

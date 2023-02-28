@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
@@ -36,6 +37,7 @@ public class RobotContainer {
     autoBalancingOptionChooser.addOption("PID", Autos.BalancingOptions.PID);
     autoBalancingOptionChooser.addOption("Distance Bang Bang", Autos.BalancingOptions.DISTANCE_BANG_BANG);
     autoBalancingOptionChooser.addOption("Distance PID", Autos.BalancingOptions.DISTANCE_PID);
+    SmartDashboard.putData("Auto Balancing Option", autoBalancingOptionChooser);
 
     firstAutoCommandChooser.setDefaultOption(
             "Release Cone",
@@ -49,8 +51,10 @@ public class RobotContainer {
             "None",
             (Timer timerFromAutoStart) -> new InstantCommand());
 
+    SmartDashboard.putData("First Auto Command", firstAutoCommandChooser);
+
     secondAutoCommandChooser.setDefaultOption(
-            "Balance charge station",
+            "Balance On Charge Station",
             (Timer timerFromAutoStart) -> Autos.balanceChargeStation(
                     drivetrain,
                     arm,
@@ -59,12 +63,18 @@ public class RobotContainer {
             )
     );
 
-    secondAutoCommandChooser.setDefaultOption(
+    secondAutoCommandChooser.addOption(
             "Drive Backwards Outside Community",
             (Timer timerFromAutoStart) -> Autos.driveBackwardsOutsideCommunity(drivetrain)
     );
-//    if(Constants.Autos.ChargeStationBalance.IS_REVERSED)
-  }
+
+    secondAutoCommandChooser.addOption(
+            "None",
+            (Timer timerFromAutoStart) -> new InstantCommand());
+
+
+    SmartDashboard.putData("Second Auto Command", secondAutoCommandChooser);
+}
 
   private void configureBindings() {
     // driver
@@ -94,7 +104,7 @@ public class RobotContainer {
     operatorController.x().onTrue(new MoveArmToPosition(arm, MoveArmToPosition.Positions.SECOND));
     operatorController.y().onTrue(new MoveArmToPosition(arm, MoveArmToPosition.Positions.THIRD));
     operatorController.leftBumper().onTrue(new InstantCommand(arm::resetEncoder));
-    operatorController.rightBumper().onTrue(new InstantCommand(() -> arm.setSpeed(0)));
+    operatorController.rightBumper().onTrue(new InstantCommand(() -> arm.setSpeed(0), arm));
   }
 
   public Command getAutonomousCommand(Timer timerFromAutoStart) {
