@@ -91,7 +91,7 @@ public final class Constants {
     }
 
     public static final class TurnByAngle {
-      public static final double KP = 0.5;
+      public static final double KP = 1.5;
       public static final double KI = 0;
       public static final double KD = 0;
 
