@@ -23,12 +23,15 @@ public class Arm extends SubsystemBase {
         encoder.setDistancePerRotation(360);
         motor.setInverted(true);
         motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        encoder.setPositionOffset(0.5456);
     }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("arm angle", getAngle());
         SmartDashboard.putBoolean("limit switch", !armLimitSwitch.get());
+        SmartDashboard.putNumber("arm angle positionOffset", encoder.getPositionOffset());
+    
         if(!armLimitSwitch.get()) resetEncoder();
     }
 

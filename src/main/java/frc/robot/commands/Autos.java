@@ -34,35 +34,8 @@ public final class Autos {
     return new DriveToDistance(drivetrain, -Constants.Autos.DriveBackwardsOutsideCommunity.DISTANCE_METERS);
   }
 
-  public enum BalancingOptions {
-    BANG_BANG,
-    PID,
-    DISTANCE_BANG_BANG,
-    DISTANCE_PID
-  }
-
-  private static Command getBalancingCommand(Drivetrain drivetrain, BalancingOptions balancingOption) {
-    switch(balancingOption){
-      case BANG_BANG:
-        return new BalanceOnChargeStationBangBang(drivetrain);
-      case PID:
-        return new BalanceOnChargeStationPID(drivetrain);
-      case DISTANCE_BANG_BANG:
-        return new BalanceOnChargeStationDistance(drivetrain, false);
-      case DISTANCE_PID:
-        return new BalanceOnChargeStationDistance(drivetrain, true);
-    }
-    return new InstantCommand();
-  };
-
-  public static Command balanceChargeStation(Drivetrain drivetrain, Arm arm, BalancingOptions balancingOption, Timer timerFromAutoStart) {
-    // return Commands.deadline(
-    //         new GetOnChargeStationAuto(drivetrain)
-    //                 .andThen(new BalanceOnChargeStationPID(drivetrain)),
-    //         new MoveArmToPosition(arm, MoveArmToPosition.Positions.REST)
-    // );
+  public static Command balanceChargeStation(Drivetrain drivetrain, Arm arm) {
     return new GetOnChargeStationAuto(drivetrain).andThen(new BalanceOnChargeStationPID(drivetrain));
-
   }
 
   private Autos() {

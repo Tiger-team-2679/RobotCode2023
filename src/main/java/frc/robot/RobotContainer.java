@@ -27,53 +27,43 @@ public class RobotContainer {
   private final Arm arm = Arm.getInstance();
   public final CommandXboxController driverController = new CommandXboxController(Constants.OI.DRIVER_PORT);
   public final CommandXboxController operatorController = new CommandXboxController(Constants.OI.OPERATOR_PORT);
-  private interface CommandSupplier { Command getCommand(Timer timer); }
+  private interface CommandSupplier { Command getCommand(); }
   private final SendableChooser<CommandSupplier> firstAutoCommandChooser = new SendableChooser<>();
   private final SendableChooser<CommandSupplier> secondAutoCommandChooser = new SendableChooser<>();
-  private final SendableChooser<Autos.BalancingOptions> autoBalancingOptionChooser = new SendableChooser<>();
 
   public RobotContainer() {
     CameraServer.startAutomaticCapture();
     configureBindings();
-
-    autoBalancingOptionChooser.setDefaultOption("Bang Bang", Autos.BalancingOptions.BANG_BANG);
-    autoBalancingOptionChooser.addOption("PID", Autos.BalancingOptions.PID);
-    autoBalancingOptionChooser.addOption("Distance Bang Bang", Autos.BalancingOptions.DISTANCE_BANG_BANG);
-    autoBalancingOptionChooser.addOption("Distance PID", Autos.BalancingOptions.DISTANCE_PID);
-    SmartDashboard.putData("Auto Balancing Option", autoBalancingOptionChooser);
-
     firstAutoCommandChooser.setDefaultOption(
             "Release Cone",
-            (Timer timerFromAutoStart) -> Autos.releaseCone(intake));
+            () -> Autos.releaseCone(intake));
 
     firstAutoCommandChooser.addOption(
             "Release Cube",
-            (Timer timerFromAutoStart) -> Autos.releaseCube(arm, intake));
+            () -> Autos.releaseCube(arm, intake));
 
     firstAutoCommandChooser.addOption(
             "None",
-            (Timer timerFromAutoStart) -> new InstantCommand());
+            () -> new InstantCommand());
 
     SmartDashboard.putData("First Auto Command", firstAutoCommandChooser);
 
     secondAutoCommandChooser.setDefaultOption(
             "Balance On Charge Station",
-            (Timer timerFromAutoStart) -> Autos.balanceChargeStation(
+            () -> Autos.balanceChargeStation(
                     drivetrain,
-                    arm,
-                    autoBalancingOptionChooser.getSelected(),
-                    timerFromAutoStart
+                    arm
             )
     );
 
     secondAutoCommandChooser.addOption(
             "Drive Backwards Outside Community",
-            (Timer timerFromAutoStart) -> Autos.driveBackwardsOutsideCommunity(drivetrain)
+            () -> Autos.driveBackwardsOutsideCommunity(drivetrain)
     );
 
     secondAutoCommandChooser.addOption(
             "None",
-            (Timer timerFromAutoStart) -> new InstantCommand());
+            () -> new InstantCommand());
 
 
     SmartDashboard.putData("Second Auto Command", secondAutoCommandChooser);
@@ -110,8 +100,8 @@ public class RobotContainer {
     operatorController.rightBumper().onTrue(new InstantCommand(() -> arm.setSpeed(0), arm));
   }
 
-  public Command getAutonomousCommand(Timer timerFromAutoStart) {
-    return firstAutoCommandChooser.getSelected().getCommand(timerFromAutoStart)
-            .andThen(secondAutoCommandChooser.getSelected().getCommand(timerFromAutoStart));
+  public Command getAutonomousCommand() {
+    return firstAutoCommandChooser.getSelected().getCommand()
+            .andThen(secondAutoCommandChooser.getSelected().getCommand());
   }
 }
