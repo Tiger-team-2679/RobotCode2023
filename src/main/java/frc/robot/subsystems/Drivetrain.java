@@ -150,8 +150,9 @@ public class Drivetrain extends SubsystemBase {
 
             set(finalLeftValue, finalRightValue);
 
-            
         }
+        SmartDashboard.putNumber("left distance meter", getRightDistanceMeters());
+        SmartDashboard.putNumber("right distance meter", getRightDistanceMeters());
     }
 
     public static Drivetrain getInstance() {

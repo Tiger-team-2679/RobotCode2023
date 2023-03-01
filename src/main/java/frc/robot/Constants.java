@@ -118,24 +118,27 @@ public final class Constants {
     }
 
     public static final class DriveBackwardsOutsideCommunity {
-      public static final double DISTANCE_METERS = 4;
+      public static final double DISTANCE_METERS = 3.5;
     }
 
     public static final class GetOnChargeStationAuto {
       public static final double DRIVE_SPEED = 0.6;
-      public static final double FINISH_ANGLE = 12;
+      public static final double FINISH_ANGLE = 17;
     }
 
     public static final class ChargeStationBalance {
       public static final boolean IS_REVERSED = true;
-      public static final double TIMEOUT_SECONDS_BEFORE_TURNING = 10;
+      public static final double TIMEOUT_SECONDS_BEFORE_TURNING = 12;
       public static final double TURNING_ANGLE = 90;
 
       public static final class BangBang {
-        public static final double DRIVE_SPEED_FORWARD = 0.3;
-        public static final double DRIVE_SPEED_BACKWARDS = 0.22;
-        public static final double FINISH_ANGLE = 0.5;
-        public static final double MISTAKE_ANGLE = 10;
+        public static final double DRIVE_SPEED_FORWARD = 0.23;
+        public static final double DRIVE_SPEED_BACKWARDS = 0.2;
+        public static final double FINISH_ANGLE = 2;
+        public static final double MISTAKE_ANGLE = 13;
+        public static final double FINISH_VELOCITY = 4;
+        public static final double MISTAKE_ANGLE_BACKWARD = 5;
+        public static final double DISTANCE_TO_CENTER = 1;
       }
 
       public static final class PID {

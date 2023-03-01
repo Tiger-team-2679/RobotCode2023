@@ -25,7 +25,7 @@ public final class Autos {
             .andThen(new InstantCommand(() -> intake.setSpeed(0), intake)
             .andThen(
               new MoveArmToPosition(arm, MoveArmToPosition.Positions.REST))
-              .withTimeout(Constants.Autos.ReleaseCube.ARM_MOVE_TO_SECOND_TIME_SECONDS
+              .withTimeout(Constants.Autos.ReleaseCube.ARM_MOVE_TO_REST_TIME_SECONDS
             )
     );
   }
