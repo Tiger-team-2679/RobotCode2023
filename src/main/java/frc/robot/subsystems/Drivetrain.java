@@ -114,7 +114,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getPitch() {
-        return imu.getPitch();
+        return imu.getPitch() + 4.3;
     }
 
     public double getYaw() {
@@ -151,8 +151,6 @@ public class Drivetrain extends SubsystemBase {
             set(finalLeftValue, finalRightValue);
 
         }
-        SmartDashboard.putNumber("left distance meter", getRightDistanceMeters());
-        SmartDashboard.putNumber("right distance meter", getRightDistanceMeters());
     }
 
     public static Drivetrain getInstance() {

@@ -133,16 +133,16 @@ public final class Constants {
 
       public static final class BangBang {
         public static final double DRIVE_SPEED_FORWARD = 0.23;
-        public static final double DRIVE_SPEED_BACKWARDS = 0.2;
+        public static final double DRIVE_SPEED_BACKWARDS = 0.35;
         public static final double FINISH_ANGLE = 2;
-        public static final double MISTAKE_ANGLE = 13;
+        public static final double MISTAKE_ANGLE = 8;
         public static final double FINISH_VELOCITY = 4;
         public static final double MISTAKE_ANGLE_BACKWARD = 5;
-        public static final double DISTANCE_TO_CENTER = 1;
+        public static final double DISTANCE_TO_CENTER = 1.7;
       }
 
       public static final class PID {
-        public static final double KP = 0.2;
+        public static final double KP = 0.017;
         public static final double KI = 0;
         public static final double KD = 0;
 

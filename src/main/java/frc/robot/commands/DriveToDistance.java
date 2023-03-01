@@ -23,9 +23,9 @@ public class DriveToDistance extends CommandBase {
     addRequirements(drivetrain);
 
     pidControllerLeft.setTolerance(POSITION_TOLERANCE, VELOCITY_TOLERANCE);
-    pidControllerLeft.setSetpoint(meters);
+    pidControllerLeft.setSetpoint(meters + drivetrain.getLeftDistanceMeters());
     pidControllerRight.setTolerance(POSITION_TOLERANCE, VELOCITY_TOLERANCE);
-    pidControllerRight.setSetpoint(meters);
+    pidControllerRight.setSetpoint(meters + drivetrain.getRightDistanceMeters());
   }
 
   @Override

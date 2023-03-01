@@ -36,13 +36,11 @@ public class BalanceOnChargeStationBangBang extends CommandBase {
     this.drivetrain = drivetrain;
     addRequirements(drivetrain);
     rightDistancePID.setSetpoint((IS_REVERSED ? -1 : 1) * DISTANCE_TO_CENTER);
-    rightDistancePID.setSetpoint((IS_REVERSED ? -1 : 1) * DISTANCE_TO_CENTER);
+    leftDistancePID.setSetpoint((IS_REVERSED ? -1 : 1) * DISTANCE_TO_CENTER);
   }
 
   @Override
   public void initialize() {
-    startLeftDistance = drivetrain.getLeftDistanceMeters();
-    startRightDistance = drivetrain.getRightDistanceMeters();
   }
 
   @Override
@@ -57,10 +55,10 @@ public class BalanceOnChargeStationBangBang extends CommandBase {
     double pidResultLeft = leftDistancePID.calculate(drivetrain.getLeftDistanceMeters() - startLeftDistance);
     double pidResultRight = rightDistancePID.calculate(drivetrain.getRightDistanceMeters() - startRightDistance);
 
-    if(pitch > MISTAKE_ANGLE)
-      drivetrain.setSpeed(forwardSpeed + pidResultLeft, forwardSpeed + pidResultRight);
-    else if(pitch < -MISTAKE_ANGLE_BACKWARD)
-      drivetrain.setSpeed(backwardsSpeed - pidResultLeft, backwardsSpeed - pidResultRight);
+    // if(pitch > MISTAKE_ANGLE)
+    //   drivetrain.setSpeed(forwardSpeed + pidResultLeft, forwardSpeed + pidResultRight);
+    // else if(pitch < -MISTAKE_ANGLE_BACKWARD)
+    //   drivetrain.setSpeed(backwardsSpeed + pidResultLeft, backwardsSpeed + pidResultRight);
   }
 
   @Override

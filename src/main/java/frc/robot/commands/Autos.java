@@ -56,15 +56,13 @@ public final class Autos {
   };
 
   public static Command balanceChargeStation(Drivetrain drivetrain, Arm arm, BalancingOptions balancingOption, Timer timerFromAutoStart) {
-    Command balancingCommand = getBalancingCommand(drivetrain, balancingOption);
-    return Commands.deadline(
-            new GetOnChargeStationAuto(drivetrain)
-                    .andThen(balancingCommand)
-                    .until(() -> timerFromAutoStart.hasElapsed(Constants.Autos.ChargeStationBalance.TIMEOUT_SECONDS_BEFORE_TURNING))
-                    .andThen(new TurnByDegree(drivetrain, Constants.Autos.ChargeStationBalance.TURNING_ANGLE))
-                    .unless(balancingCommand::isFinished),
-            new MoveArmToPosition(arm, MoveArmToPosition.Positions.REST)
-    );
+    // return Commands.deadline(
+    //         new GetOnChargeStationAuto(drivetrain)
+    //                 .andThen(new BalanceOnChargeStationPID(drivetrain)),
+    //         new MoveArmToPosition(arm, MoveArmToPosition.Positions.REST)
+    // );
+    return new GetOnChargeStationAuto(drivetrain).andThen(new BalanceOnChargeStationPID(drivetrain));
+
   }
 
   private Autos() {
