@@ -83,6 +83,7 @@ public final class Constants {
     public static final double ANGLE_SECOND = 85;
     public static final double ANGLE_FIRST = 40;
     public static final double ANGLE_REST = 0;
+    public static final double ENCODER_OFFSET = 0.5456;
   }
 
   public static final class Autos {
@@ -102,7 +103,6 @@ public final class Constants {
 
       public static final double POSITION_TOLERANCE = 0.05;
       public static final double VELOCITY_TOLERANCE = 0.02;
-
     }
 
     public static final class ReleaseCone {
@@ -124,38 +124,19 @@ public final class Constants {
     public static final class GetOnChargeStationAuto {
       public static final double DRIVE_SPEED = 0.6;
       public static final double FINISH_ANGLE = 17;
+      public static final double TIMEOUT_SECONDS = 4.5;
     }
 
-    public static final class ChargeStationBalance {
+    public static final class BalanceOnChargeStationAuto {
       public static final boolean IS_REVERSED = true;
-      public static final double TIMEOUT_SECONDS_BEFORE_TURNING = 12;
-      public static final double TURNING_ANGLE = 90;
 
-      public static final class BangBang {
-        public static final double DRIVE_SPEED_FORWARD = 0.23;
-        public static final double DRIVE_SPEED_BACKWARDS = 0.35;
-        public static final double FINISH_ANGLE = 2;
-        public static final double MISTAKE_ANGLE = 8;
-        public static final double FINISH_VELOCITY = 4;
-        public static final double MISTAKE_ANGLE_BACKWARD = 5;
-        public static final double DISTANCE_TO_CENTER = 1.7;
-      }
+      public static final double KP = 0.017;
+      public static final double KI = 0;
+      public static final double KD = 0;
 
-      public static final class PID {
-        public static final double KP = 0.017;
-        public static final double KI = 0;
-        public static final double KD = 0;
-
-        public static final double TARGET_ANGLE = 0;
-        public static final double POSITION_TOLERANCE = 5;
-        public static final double VELOCITY_TOLERANCE = 0.2;
-      }
-
-      public static final class Distance {
-        public static final double DISTANCE_METERS = 1;
-        public static final double WAIT_TIME_SECONDS = 0.5;
-      }
-
+      public static final double TARGET_ANGLE = 0;
+      public static final double POSITION_TOLERANCE = 5;
+      public static final double VELOCITY_TOLERANCE = 0.2;
     }
   }
 }

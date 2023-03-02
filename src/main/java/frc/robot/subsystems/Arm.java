@@ -23,7 +23,7 @@ public class Arm extends SubsystemBase {
         encoder.setDistancePerRotation(360);
         motor.setInverted(true);
         motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        encoder.setPositionOffset(0.5456);
+        encoder.setPositionOffset(Constants.Arm.ENCODER_OFFSET);
     }
 
     @Override

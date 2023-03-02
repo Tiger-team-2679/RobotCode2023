@@ -1,8 +1,6 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
@@ -35,7 +33,8 @@ public final class Autos {
   }
 
   public static Command balanceChargeStation(Drivetrain drivetrain, Arm arm) {
-    return new GetOnChargeStationAuto(drivetrain).andThen(new BalanceOnChargeStationPID(drivetrain));
+    return new GetOnChargeStationAuto(drivetrain).withTimeout(Constants.Autos.GetOnChargeStationAuto.TIMEOUT_SECONDS)
+      .andThen(new BalanceOnChargeStationAuto(drivetrain));
   }
 
   private Autos() {

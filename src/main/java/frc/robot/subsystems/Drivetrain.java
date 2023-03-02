@@ -43,6 +43,9 @@ public class Drivetrain extends SubsystemBase {
     private double lastSpeedRight = 0;
     private ControlType controlType = ControlType.VOLTAGE;
 
+    private double pitchOffset = 0;
+
+
     enum ControlType{
         VOLTAGE,
         VELOCITY,
@@ -114,7 +117,11 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getPitch() {
-        return imu.getPitch() + 4.3;
+        return imu.getPitch() - pitchOffset;
+    }
+
+    public void resetPitch() {
+        pitchOffset = imu.getPitch();
     }
 
     public double getYaw() {
