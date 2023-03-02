@@ -44,6 +44,12 @@ public final class Constants {
     public static final int CURRENT_LIMIT_AMP = 30;
   }
   
+  public static final class Lifter {
+    public static final int MOTOR_ID = 10;
+    public static final double CURRENT_LIMIT_AMP = 30;
+    public static final double MULTIPLIER = 0.2;
+  };
+
   public static final class Arm {
     public static final int MOTOR_ID = 9;
     public static final int ENCODER_ID = 8;

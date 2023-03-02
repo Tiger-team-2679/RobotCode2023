@@ -11,6 +11,7 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Lifter;
 
 import java.time.Instant;
 
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   private final Drivetrain drivetrain = Drivetrain.getInstance();
   private final Intake intake = Intake.getInstance();
+  private final Lifter lifter = Lifter.getInstance();
   private final Arm arm = Arm.getInstance();
   public final CommandXboxController driverController = new CommandXboxController(Constants.OI.DRIVER_PORT);
   public final CommandXboxController operatorController = new CommandXboxController(Constants.OI.OPERATOR_PORT);
@@ -86,6 +88,8 @@ public class RobotContainer {
         intake,
             operatorController::getRightTriggerAxis,
             operatorController::getLeftTriggerAxis));
+
+    lifter.setDefaultCommand(new LifterController(lifter, () -> -operatorController.getRightY()));
 
     new Trigger(() -> MathUtil.applyDeadband(operatorController.getLeftY(), Constants.OI.JOYSTICKS_DEADBAND_VALUE) != 0)
         .whileTrue(new ArmController(
