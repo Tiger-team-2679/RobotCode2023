@@ -5,20 +5,21 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
-public class BalanceOnChargeStationPID extends CommandBase {
+public class BalanceOnChargeStationAuto extends CommandBase {
   private final Drivetrain drivetrain;
-  private final double POSITION_TOLERANCE = Constants.Autos.ChargeStationBalance.PID.POSITION_TOLERANCE;
-  private final double VELOCITY_TOLERANCE = Constants.Autos.ChargeStationBalance.PID.VELOCITY_TOLERANCE;
-  private final double TARGET_ANGLE = Constants.Autos.ChargeStationBalance.PID.TARGET_ANGLE;
+  private final double POSITION_TOLERANCE = Constants.Autos.BalanceOnChargeStationAuto.POSITION_TOLERANCE;
+  private final double VELOCITY_TOLERANCE = Constants.Autos.BalanceOnChargeStationAuto.VELOCITY_TOLERANCE;
+  private final double TARGET_ANGLE = Constants.Autos.BalanceOnChargeStationAuto.TARGET_ANGLE;
+  private final boolean IS_REVERSED = Constants.Autos.BalanceOnChargeStationAuto.IS_REVERSED;
 
 
   private final PIDController pidController = new PIDController(
-      Constants.Autos.ChargeStationBalance.PID.KP,
-      Constants.Autos.ChargeStationBalance.PID.KI,
-      Constants.Autos.ChargeStationBalance.PID.KD
+      Constants.Autos.BalanceOnChargeStationAuto.KP,
+      Constants.Autos.BalanceOnChargeStationAuto.KI,
+      Constants.Autos.BalanceOnChargeStationAuto.KD
   );
 
-  public BalanceOnChargeStationPID(Drivetrain drivetrain) {
+  public BalanceOnChargeStationAuto(Drivetrain drivetrain) {
     this.drivetrain = drivetrain;
     addRequirements(drivetrain);
     pidController.setTolerance(POSITION_TOLERANCE, VELOCITY_TOLERANCE);
@@ -30,7 +31,7 @@ public class BalanceOnChargeStationPID extends CommandBase {
 
   @Override
   public void execute() {
-    double pitch = drivetrain.getPitch();
+    double pitch = (IS_REVERSED ? -1 : 1) * drivetrain.getPitch();
     double pidResult = pidController.calculate(pitch);
     drivetrain.setSpeed(pidResult, pidResult);
   }

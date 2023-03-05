@@ -44,6 +44,12 @@ public final class Constants {
     public static final int CURRENT_LIMIT_AMP = 30;
   }
   
+  public static final class Lifter {
+    public static final int MOTOR_ID = 10;
+    public static final double CURRENT_LIMIT_AMP = 30;
+    public static final double MULTIPLIER = 0.2;
+  };
+
   public static final class Arm {
     public static final int MOTOR_ID = 9;
     public static final int ENCODER_ID = 8;
@@ -72,6 +78,11 @@ public final class Constants {
     public static final double KI_THIRD = 0.018;
     public static final double KD_THIRD = 0.05;
 
+    public static final double KP_MAX = 2.5;
+    public static final double KI_MAX = 0.019;
+    public static final double KD_MAX = 0.05;
+
+
     public static final double KP_FEEDER = 0;
     public static final double KI_FEEDER = 0;
     public static final double KD_FEEDER = 0;
@@ -83,6 +94,7 @@ public final class Constants {
     public static final double ANGLE_SECOND = 85;
     public static final double ANGLE_FIRST = 40;
     public static final double ANGLE_REST = 0;
+    public static final double ENCODER_OFFSET = 0.5456;
   }
 
   public static final class Autos {
@@ -102,7 +114,6 @@ public final class Constants {
 
       public static final double POSITION_TOLERANCE = 0.05;
       public static final double VELOCITY_TOLERANCE = 0.02;
-
     }
 
     public static final class ReleaseCone {
@@ -113,46 +124,37 @@ public final class Constants {
     public static final class ReleaseCube {
       public static final double RELEASE_SPEED = 0.6;
       public static final double RELEASE_TIME_SECONDS = 1;
-      public static final double ARM_MOVE_TO_SECOND_TIME_SECONDS = 2;
+      public static final double ARM_MOVE_TO_SECOND_TIME_SECONDS = 2.5;
+      public static final double ARM_MOVE_TO_REST_TIME_SECONDS = 2;
+    }
+
+    public static final class ReleaseCubeToThird {
+      public static final double RELEASE_SPEED = 0.8;
+      public static final double RELEASE_TIME_SECONDS = 1;
+      public static final double ARM_MOVE_TO_SECOND_TIME_SECONDS = 2.5;
       public static final double ARM_MOVE_TO_REST_TIME_SECONDS = 2;
     }
 
     public static final class DriveBackwardsOutsideCommunity {
-      public static final double DISTANCE_METERS = 4;
+      public static final double DISTANCE_METERS = 3.5;
     }
 
     public static final class GetOnChargeStationAuto {
       public static final double DRIVE_SPEED = 0.6;
-      public static final double FINISH_ANGLE = 12;
+      public static final double FINISH_ANGLE = 17;
+      public static final double TIMEOUT_SECONDS = 4.5;
     }
 
-    public static final class ChargeStationBalance {
+    public static final class BalanceOnChargeStationAuto {
       public static final boolean IS_REVERSED = true;
-      public static final double TIMEOUT_SECONDS_BEFORE_TURNING = 10;
-      public static final double TURNING_ANGLE = 90;
 
-      public static final class BangBang {
-        public static final double DRIVE_SPEED_FORWARD = 0.3;
-        public static final double DRIVE_SPEED_BACKWARDS = 0.22;
-        public static final double FINISH_ANGLE = 0.5;
-        public static final double MISTAKE_ANGLE = 10;
-      }
+      public static final double KP = 0.017;
+      public static final double KI = 0;
+      public static final double KD = 0;
 
-      public static final class PID {
-        public static final double KP = 0.2;
-        public static final double KI = 0;
-        public static final double KD = 0;
-
-        public static final double TARGET_ANGLE = 0;
-        public static final double POSITION_TOLERANCE = 5;
-        public static final double VELOCITY_TOLERANCE = 0.2;
-      }
-
-      public static final class Distance {
-        public static final double DISTANCE_METERS = 1;
-        public static final double WAIT_TIME_SECONDS = 0.5;
-      }
-
+      public static final double TARGET_ANGLE = 0;
+      public static final double POSITION_TOLERANCE = 1.5;
+      public static final double VELOCITY_TOLERANCE = 0.2;
     }
   }
 }
