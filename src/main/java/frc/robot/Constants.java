@@ -78,6 +78,11 @@ public final class Constants {
     public static final double KI_THIRD = 0.018;
     public static final double KD_THIRD = 0.05;
 
+    public static final double KP_MAX = 2.5;
+    public static final double KI_MAX = 0.019;
+    public static final double KD_MAX = 0.05;
+
+
     public static final double KP_FEEDER = 0;
     public static final double KI_FEEDER = 0;
     public static final double KD_FEEDER = 0;
@@ -119,7 +124,14 @@ public final class Constants {
     public static final class ReleaseCube {
       public static final double RELEASE_SPEED = 0.6;
       public static final double RELEASE_TIME_SECONDS = 1;
-      public static final double ARM_MOVE_TO_SECOND_TIME_SECONDS = 2;
+      public static final double ARM_MOVE_TO_SECOND_TIME_SECONDS = 2.5;
+      public static final double ARM_MOVE_TO_REST_TIME_SECONDS = 2;
+    }
+
+    public static final class ReleaseCubeToThird {
+      public static final double RELEASE_SPEED = 0.8;
+      public static final double RELEASE_TIME_SECONDS = 1;
+      public static final double ARM_MOVE_TO_SECOND_TIME_SECONDS = 2.5;
       public static final double ARM_MOVE_TO_REST_TIME_SECONDS = 2;
     }
 
@@ -141,7 +153,7 @@ public final class Constants {
       public static final double KD = 0;
 
       public static final double TARGET_ANGLE = 0;
-      public static final double POSITION_TOLERANCE = 5;
+      public static final double POSITION_TOLERANCE = 1.5;
       public static final double VELOCITY_TOLERANCE = 0.2;
     }
   }

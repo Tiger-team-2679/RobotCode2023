@@ -19,7 +19,6 @@ public class GetOnChargeStationAuto extends CommandBase {
         double DRIVE_SPEED = Constants.Autos.GetOnChargeStationAuto.DRIVE_SPEED;
         double driveSpeed = (IS_REVERSED ? -1 : 1) * DRIVE_SPEED;
 
-        drivetrain.resetPitch();
         drivetrain.setSpeed(driveSpeed, driveSpeed);
     }
 
