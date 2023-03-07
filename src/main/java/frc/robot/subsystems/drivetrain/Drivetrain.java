@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -11,40 +11,38 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
 
 public class Drivetrain extends SubsystemBase {
     private static Drivetrain instance = null;
-    private final TalonSRX leftMotor = new TalonSRX(Constants.Drivetrain.LEFT_ID);
-    private final TalonSRX leftMotorFollower = new TalonSRX(Constants.Drivetrain.LEFT_FOLLOWER_ID);
-    private final TalonSRX rightMotor = new TalonSRX(Constants.Drivetrain.RIGHT_ID);
-    private final TalonSRX rightMotorFollower = new TalonSRX(Constants.Drivetrain.RIGHT_FOLLOWER_ID);
+    private final TalonSRX leftMotor = new TalonSRX(DrivetrainConstants.LEFT_ID);
+    private final TalonSRX leftMotorFollower = new TalonSRX(DrivetrainConstants.LEFT_FOLLOWER_ID);
+    private final TalonSRX rightMotor = new TalonSRX(DrivetrainConstants.RIGHT_ID);
+    private final TalonSRX rightMotorFollower = new TalonSRX(DrivetrainConstants.RIGHT_FOLLOWER_ID);
 
     private final PigeonIMU imu = new PigeonIMU(rightMotorFollower);
-    private final Encoder leftEncoder = new Encoder(Constants.Drivetrain.LEFT_ENCODER_CHANNEL_A,
-            Constants.Drivetrain.LEFT_ENCODER_CHANNEL_B);
-    private final Encoder rightEncoder = new Encoder(Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_A,
-            Constants.Drivetrain.RIGHT_ENCODER_CHANNEL_B);
+    private final Encoder leftEncoder = new Encoder(DrivetrainConstants.LEFT_ENCODER_CHANNEL_A,
+            DrivetrainConstants.LEFT_ENCODER_CHANNEL_B);
+    private final Encoder rightEncoder = new Encoder(DrivetrainConstants.RIGHT_ENCODER_CHANNEL_A,
+            DrivetrainConstants.RIGHT_ENCODER_CHANNEL_B);
 
-    private final PIDController leftVelocityPID = new PIDController(Constants.Drivetrain.VELOCITY_KP, Constants.Drivetrain.VELOCITY_KI,
-                    Constants.Drivetrain.VELOCITY_KD);
+    private final PIDController leftVelocityPID = new PIDController(DrivetrainConstants.VELOCITY_KP, DrivetrainConstants.VELOCITY_KI,
+                    DrivetrainConstants.VELOCITY_KD);
 
-    private final PIDController rightVelocityPID = new PIDController(Constants.Drivetrain.VELOCITY_KP, Constants.Drivetrain.VELOCITY_KI,
-            Constants.Drivetrain.VELOCITY_KD);
+    private final PIDController rightVelocityPID = new PIDController(DrivetrainConstants.VELOCITY_KP, DrivetrainConstants.VELOCITY_KI,
+            DrivetrainConstants.VELOCITY_KD);
 
-    private final PIDController leftVoltagePID = new PIDController(Constants.Drivetrain.VOLTAGE_KP, Constants.Drivetrain.VOLTAGE_KI,
-                    Constants.Drivetrain.VOLTAGE_KD);
+    private final PIDController leftVoltagePID = new PIDController(DrivetrainConstants.VOLTAGE_KP, DrivetrainConstants.VOLTAGE_KI,
+                    DrivetrainConstants.VOLTAGE_KD);
 
-    private final PIDController rightVoltagePID = new PIDController(Constants.Drivetrain.VOLTAGE_KP, Constants.Drivetrain.VOLTAGE_KI,
-                    Constants.Drivetrain.VOLTAGE_KD);
+    private final PIDController rightVoltagePID = new PIDController(DrivetrainConstants.VOLTAGE_KP, DrivetrainConstants.VOLTAGE_KI,
+                    DrivetrainConstants.VOLTAGE_KD);
 
     private double lastSpeedLeft = 0;
     private double lastSpeedRight = 0;
     private ControlType controlType = ControlType.VOLTAGE;
 
     private double pitchOffset = 0;
-
 
     enum ControlType{
         VOLTAGE,
@@ -55,7 +53,7 @@ public class Drivetrain extends SubsystemBase {
     private Drivetrain() {
         SupplyCurrentLimitConfiguration currentLimitConfiguration = new SupplyCurrentLimitConfiguration(
                 true,
-                Constants.Drivetrain.CURRENT_LIMIT_AMP,
+                DrivetrainConstants.CURRENT_LIMIT_AMP,
                 0,
                 0
         );
@@ -146,10 +144,10 @@ public class Drivetrain extends SubsystemBase {
 
         if(controlType == ControlType.VELOCITY || controlType == ControlType.GRADUAL_VOLTAGE){
             double leftPIDValue = controlType == ControlType.VELOCITY 
-                ? leftVelocityPID.calculate(leftEncoder.getRate() / Constants.Drivetrain.MAX_VELOCITY)
+                ? leftVelocityPID.calculate(leftEncoder.getRate() / DrivetrainConstants.MAX_VELOCITY)
                 : leftVoltagePID.calculate(lastSpeedLeft);
             double rightPIDValue = controlType == ControlType.VELOCITY 
-                ? rightVelocityPID.calculate(rightEncoder.getRate() / Constants.Drivetrain.MAX_VELOCITY)
+                ? rightVelocityPID.calculate(rightEncoder.getRate() / DrivetrainConstants.MAX_VELOCITY)
                 : rightVoltagePID.calculate(lastSpeedRight);
                 
             double finalLeftValue = MathUtil.clamp(lastSpeedLeft + leftPIDValue, -1, 1);

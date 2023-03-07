@@ -1,11 +1,11 @@
-package frc.robot.commands;
+package frc.robot.subsystems.arm.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmConstants;
 
-public class MoveArmToPosition extends CommandBase {
+public class MoveArmToPositionPID extends CommandBase {
   private final Arm arm;
   private final PIDController pidController;
 
@@ -14,23 +14,23 @@ public class MoveArmToPosition extends CommandBase {
     switch(position) {
       case REST:
         PIDController pidControllerRest
-                = new PIDController(Constants.Arm.KP_REST, Constants.Arm.KI_REST, Constants.Arm.KD_REST);
-        pidControllerRest.setSetpoint(Constants.Arm.ANGLE_REST / 360);
+                = new PIDController(ArmConstants.PID.KP_REST, ArmConstants.PID.KI_REST, ArmConstants.PID.KD_REST);
+        pidControllerRest.setSetpoint(ArmConstants.ANGLE_REST / 360);
         return pidControllerRest;
       case FIRST:
         PIDController pidControllerFirst
-                = new PIDController(Constants.Arm.KP_FIRST, Constants.Arm.KI_FIRST, Constants.Arm.KD_FIRST);
-        pidControllerFirst.setSetpoint(Constants.Arm.ANGLE_FIRST / 360);
+                = new PIDController(ArmConstants.PID.KP_FIRST, ArmConstants.PID.KI_FIRST, ArmConstants.PID.KD_FIRST);
+        pidControllerFirst.setSetpoint(ArmConstants.ANGLE_FIRST / 360);
         return pidControllerFirst;
       case SECOND:
         PIDController pidControllerSecond
-                = new PIDController(Constants.Arm.KP_SECOND, Constants.Arm.KI_SECOND, Constants.Arm.KD_SECOND);
-        pidControllerSecond.setSetpoint(Constants.Arm.ANGLE_SECOND / 360);
+                = new PIDController(ArmConstants.PID.KP_SECOND, ArmConstants.PID.KI_SECOND, ArmConstants.PID.KD_SECOND);
+        pidControllerSecond.setSetpoint(ArmConstants.ANGLE_SECOND / 360);
         return pidControllerSecond;
       case THIRD:
         PIDController pidControllerThird
-                = new PIDController(Constants.Arm.KP_THIRD, Constants.Arm.KI_THIRD, Constants.Arm.KD_THIRD);
-        pidControllerThird.setSetpoint(Constants.Arm.ANGLE_THIRD / 360);
+                = new PIDController(ArmConstants.PID.KP_THIRD, ArmConstants.PID.KI_THIRD, ArmConstants.PID.KD_THIRD);
+        pidControllerThird.setSetpoint(ArmConstants.ANGLE_THIRD / 360);
         return pidControllerThird;
     }
     return new PIDController(0, 0, 0);
@@ -43,7 +43,7 @@ public class MoveArmToPosition extends CommandBase {
     THIRD
   }
 
-  public MoveArmToPosition(Arm arm, Positions position) {
+  public MoveArmToPositionPID(Arm arm, Positions position) {
     this.arm = arm;
     addRequirements(arm);
 

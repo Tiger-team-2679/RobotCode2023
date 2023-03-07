@@ -6,12 +6,13 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.*;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Lifter;
-
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.commands.ArmController;
+import frc.robot.subsystems.arm.commands.MoveArmToPositionPID;
+import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.commands.ArcadeDrive;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.commands.IntakeController;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
     private final Drivetrain drivetrain = Drivetrain.getInstance();
     private final Intake intake = Intake.getInstance();
-    // private final Lifter lifter = Lifter.getInstance();
     private final Arm arm = Arm.getInstance();
     public final CommandXboxController driverController = new CommandXboxController(Constants.OI.DRIVER_PORT);
     public final CommandXboxController operatorController = new CommandXboxController(Constants.OI.OPERATOR_PORT);
@@ -85,19 +85,16 @@ public class RobotContainer {
                 operatorController::getRightTriggerAxis,
                 operatorController::getLeftTriggerAxis));
 
-        // lifter.setDefaultCommand(new LifterController(lifter, () ->
-        // -operatorController.getRightY()));
-
         new Trigger(() -> MathUtil.applyDeadband(operatorController.getLeftY(),
                 Constants.OI.JOYSTICKS_DEADBAND_VALUE) != 0)
                 .whileTrue(new ArmController(
                         arm,
                         () -> -operatorController.getLeftY()));
 
-        operatorController.a().onTrue(new MoveArmToPosition(arm, MoveArmToPosition.Positions.REST));
-        operatorController.b().onTrue(new MoveArmToPosition(arm, MoveArmToPosition.Positions.FIRST));
-        operatorController.x().onTrue(new MoveArmToPosition(arm, MoveArmToPosition.Positions.SECOND));
-        operatorController.y().onTrue(new MoveArmToPosition(arm, MoveArmToPosition.Positions.THIRD));
+        operatorController.a().onTrue(new MoveArmToPositionPID(arm, MoveArmToPositionPID.Positions.REST));
+        operatorController.b().onTrue(new MoveArmToPositionPID(arm, MoveArmToPositionPID.Positions.FIRST));
+        operatorController.x().onTrue(new MoveArmToPositionPID(arm, MoveArmToPositionPID.Positions.SECOND));
+        operatorController.y().onTrue(new MoveArmToPositionPID(arm, MoveArmToPositionPID.Positions.THIRD));
         operatorController.leftBumper().onTrue(new InstantCommand(arm::resetEncoder));
         operatorController.rightBumper().onTrue(new InstantCommand(() -> arm.setSpeed(0), arm));
     }

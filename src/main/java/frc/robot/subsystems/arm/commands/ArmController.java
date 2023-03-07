@@ -1,11 +1,12 @@
-package frc.robot.commands;
+package frc.robot.subsystems.arm.commands;
 
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmConstants;
 
 public class ArmController extends CommandBase {
   private final Arm arm;
@@ -26,7 +27,7 @@ public class ArmController extends CommandBase {
     demand = MathUtil.clamp(demand, -1.0, 1.0);
     demand = MathUtil.applyDeadband(demand, Constants.OI.JOYSTICKS_DEADBAND_VALUE);
 
-    arm.setSpeed(demand * Constants.Arm.CONTROLLER_MULTIPLIER);
+    arm.setSpeed(demand * ArmConstants.Controller.MULTIPLIER);
   }
 
   @Override

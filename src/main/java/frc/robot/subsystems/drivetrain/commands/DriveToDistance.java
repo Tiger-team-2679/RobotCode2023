@@ -1,9 +1,9 @@
-package frc.robot.commands;
+package frc.robot.subsystems.drivetrain.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 
 public class DriveToDistance extends CommandBase {
   private final Drivetrain drivetrain;
