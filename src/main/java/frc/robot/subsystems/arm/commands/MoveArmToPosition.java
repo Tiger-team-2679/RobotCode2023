@@ -39,7 +39,7 @@ public class MoveArmToPosition extends CommandBase {
   public void execute() {
     double currentPostion = arm.getAngle();
     TrapezoidProfile.State setpoints = trapezoidProfile.calculate(timer.get());
-    feedForwardResult = feedforward.calculate(Math.toRadians(setpoints.velocity), setpoints.velocity);
+    feedForwardResult = feedforward.calculate(Math.toRadians(setpoints.position), setpoints.velocity);
     arm.setSpeed(pid.calculate(currentPostion, setpoints.position) + feedForwardResult);
   }
 
