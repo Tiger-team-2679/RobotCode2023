@@ -39,7 +39,7 @@ public class Arm extends SubsystemBase {
         motor.set(MathUtil.clamp(speedDemand, -SPEED_LIMIT, SPEED_LIMIT));
     }
     public void setVoltage(double speedDemand){
-        motor.setVoltage(MathUtil.clamp(speedDemand, -2, 2));
+        motor.setVoltage(MathUtil.clamp(speedDemand, -12, 12));
     }
 
     public double getAngle() {

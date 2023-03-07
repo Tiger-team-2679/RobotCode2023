@@ -28,6 +28,8 @@ public final class ArmConstants {
 
         public static final double TOLERANCE_POSITION = 0;
         public static final double TOLERANCE_VELOCITY = 0;
+        public static final double MAX_VELOCITY = 50;
+        public static final double MAX_ACCELERATION = 90;
     }
 
     public static final class PID {
