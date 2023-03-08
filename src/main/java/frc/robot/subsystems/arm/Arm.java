@@ -64,7 +64,7 @@ public class Arm extends SubsystemBase {
     }
 
     public void setVoltageElbow(double demand) {
-        motorShoulder.setVoltage(MathUtil.clamp(demand, -12, 12));
+        motorElbow.setVoltage(MathUtil.clamp(demand, -12, 12));
     }
 
     public double getShoulderAngle() {
