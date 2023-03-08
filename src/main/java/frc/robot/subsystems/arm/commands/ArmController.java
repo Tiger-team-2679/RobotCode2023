@@ -4,6 +4,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.Arm;
@@ -52,15 +53,17 @@ public class ArmController extends CommandBase {
     elbowDemand *= ArmConstants.Controller.MULTIPLIER_ELBOW;
 
     if (shoulderDemand == 0) {
+      // arm.setVoltageShoulder(2);
       double targetPosition = arm.getShoulderAngle();
       arm.setVoltageShoulder(shoulderFeedforward.calculate(Math.toRadians(targetPosition), 0));
+      SmartDashboard.putNumber("feedforward result", shoulderFeedforward.calculate(Math.toRadians(targetPosition), 0));
     } else {
       arm.setSpeedShoulder(shoulderDemand);
     }
 
     if (elbowDemand == 0) {
-      double targetPosition = arm.getElbowAngle();
-      arm.setVoltageElbow(elbowFeedforward.calculate(Math.toRadians(targetPosition), 0));
+      // double targetPosition = arm.getElbowAngle();
+      // arm.setVoltageElbow(elbowFeedforward.calculate(Math.toRadians(targetPosition), 0));
     } else {
       arm.setSpeedElbow(elbowDemand);
     }

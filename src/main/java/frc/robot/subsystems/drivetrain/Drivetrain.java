@@ -141,6 +141,8 @@ public class Drivetrain extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("IMU pitch", getPitch());
+        SmartDashboard.putNumber("left encoder drivetrain", getLeftDistanceMeters());
+        SmartDashboard.putNumber("right encoder drivetrain", getRightDistanceMeters());
 
         if(controlType == ControlType.VELOCITY || controlType == ControlType.GRADUAL_VOLTAGE){
             double leftPIDValue = controlType == ControlType.VELOCITY 

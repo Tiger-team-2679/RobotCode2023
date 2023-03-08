@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Arm extends SubsystemBase {
     private static Arm instance = null;
     private final CANSparkMax motorShoulder = new CANSparkMax(ArmConstants.MOTOR_SHOULDER_ID, MotorType.kBrushless);
-    private final CANSparkMax motorShoulderFollower = new CANSparkMax(ArmConstants.MOTOR_SHOULDER_ID,
+    private final CANSparkMax motorShoulderFollower = new CANSparkMax(ArmConstants.MOTOR_SHOULDER_FOLLOWER_ID,
             MotorType.kBrushless);
     private final CANSparkMax motorElbow = new CANSparkMax(ArmConstants.MOTOR_ELBOW_ID, MotorType.kBrushless);
     private final DutyCycleEncoder encoderShoulder = new DutyCycleEncoder(ArmConstants.ENCODER_SHOULDER_ID);
@@ -26,11 +26,9 @@ public class Arm extends SubsystemBase {
     private Arm() {
         motorShoulder.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT_ELBOW_AMP);
         motorShoulderFollower.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT_ELBOW_AMP);
-        motorShoulder.setInverted(true);
-        motorShoulderFollower.setInverted(true);
         motorShoulder.setIdleMode(CANSparkMax.IdleMode.kBrake);
         motorShoulderFollower.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        motorShoulderFollower.follow(motorShoulder);
+        motorShoulderFollower.follow(motorShoulder, true);
 
         motorElbow.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT_SHOULDER_AMP);
         motorElbow.setIdleMode(CANSparkMax.IdleMode.kBrake);
