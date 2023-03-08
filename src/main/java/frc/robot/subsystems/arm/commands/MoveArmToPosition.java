@@ -10,46 +10,98 @@ import frc.robot.subsystems.arm.ArmConstants;
 
 public class MoveArmToPosition extends CommandBase {
   private final Arm arm;
-  private double feedForwardResult;
-  private final PIDController pid = new PIDController(ArmConstants.Feedforward.KP, ArmConstants.Feedforward.KI,
-      ArmConstants.Feedforward.KD);
-  private final ArmFeedforward feedforward = new ArmFeedforward(ArmConstants.Feedforward.KS,
-      ArmConstants.Feedforward.KG, ArmConstants.Feedforward.KV, ArmConstants.Feedforward.KA);
-  private final TrapezoidProfile trapezoidProfile;
+
+  private final ArmFeedforward feedForwardShoulder = new ArmFeedforward(
+      ArmConstants.Feedforward.Shoulder.KS,
+      ArmConstants.Feedforward.Shoulder.KG,
+      ArmConstants.Feedforward.Shoulder.KV,
+      ArmConstants.Feedforward.Shoulder.KA);
+
+  private final ArmFeedforward feedforwardElbow = new ArmFeedforward(
+      ArmConstants.Feedforward.Elbow.KS,
+      ArmConstants.Feedforward.Elbow.KG,
+      ArmConstants.Feedforward.Elbow.KV,
+      ArmConstants.Feedforward.Elbow.KA);
+
+  private final PIDController pidControllerShoulder = new PIDController(
+      ArmConstants.Feedforward.Shoulder.KP,
+      ArmConstants.Feedforward.Shoulder.KI,
+      ArmConstants.Feedforward.Shoulder.KD);
+
+  private final PIDController pidControllerElbow = new PIDController(
+      ArmConstants.Feedforward.Elbow.KP,
+      ArmConstants.Feedforward.Elbow.KI,
+      ArmConstants.Feedforward.Elbow.KD);
+
+  private TrapezoidProfile trapezoidProfileShoulder;
+  private TrapezoidProfile trapezoidProfileElbow;
+
+  private final double targetPositionShoulder;
+  private final double targetPositionElbow;
+
   private final Timer timer = new Timer();
 
-  public MoveArmToPosition(double targetPosition, Arm arm) {
+  public MoveArmToPosition(Arm arm, double targetPositionShoulder, double targetPositionElbow) {
     this.arm = arm;
     addRequirements(this.arm);
 
-    trapezoidProfile = new TrapezoidProfile(
-      new TrapezoidProfile.Constraints(ArmConstants.Feedforward.MAX_VELOCITY, ArmConstants.Feedforward.MAX_ACCELERATION),
-      new TrapezoidProfile.State(targetPosition, 0),
-      new TrapezoidProfile.State(arm.getAngle(), 0)
-    );
+    this.targetPositionShoulder = targetPositionShoulder;
+    this.targetPositionElbow = targetPositionElbow;
   }
 
   @Override
   public void initialize() {
-    pid.setTolerance(ArmConstants.Feedforward.TOLERANCE_POSITION, ArmConstants.Feedforward.TOLERANCE_VELOCITY);
     timer.restart();
+
+    pidControllerShoulder.setTolerance(
+        ArmConstants.Feedforward.Shoulder.TOLERANCE_POSITION,
+        ArmConstants.Feedforward.Shoulder.TOLERANCE_VELOCITY);
+    pidControllerElbow.setTolerance(
+        ArmConstants.Feedforward.Elbow.TOLERANCE_POSITION,
+        ArmConstants.Feedforward.Elbow.TOLERANCE_VELOCITY);
+
+    trapezoidProfileShoulder = new TrapezoidProfile(
+        new TrapezoidProfile.Constraints(
+            ArmConstants.Feedforward.Shoulder.MAX_VELOCITY,
+            ArmConstants.Feedforward.Shoulder.MAX_ACCELERATION),
+        new TrapezoidProfile.State(targetPositionShoulder, 0),
+        new TrapezoidProfile.State(arm.getShoulderAngle(), 0));
+
+    trapezoidProfileElbow = new TrapezoidProfile(
+        new TrapezoidProfile.Constraints(
+            ArmConstants.Feedforward.Elbow.MAX_VELOCITY,
+            ArmConstants.Feedforward.Elbow.MAX_ACCELERATION),
+        new TrapezoidProfile.State(targetPositionElbow, 0),
+        new TrapezoidProfile.State(arm.getElbowAngle(), 0));
   }
 
   @Override
   public void execute() {
-    double currentPostion = arm.getAngle();
-    TrapezoidProfile.State setpoints = trapezoidProfile.calculate(timer.get());
-    feedForwardResult = feedforward.calculate(Math.toRadians(setpoints.position), setpoints.velocity);
-    arm.setSpeed(pid.calculate(currentPostion, setpoints.position) + feedForwardResult);
+    TrapezoidProfile.State setpointsShoulder = trapezoidProfileShoulder.calculate(timer.get());
+    TrapezoidProfile.State setpointsElbow = trapezoidProfileElbow.calculate(timer.get());
+
+    double feedForwardResultShoulder = feedForwardShoulder.calculate(
+        Math.toRadians(setpointsShoulder.position),
+        setpointsShoulder.velocity);
+    double feedforwardResultElbow = feedforwardElbow.calculate(
+        Math.toRadians(setpointsElbow.position),
+        setpointsElbow.velocity);
+
+    double demandVoltageShoulder = pidControllerShoulder.calculate(arm.getShoulderAngle(), setpointsShoulder.position)
+        + feedForwardResultShoulder;
+    double demandVoltageElbow = pidControllerElbow.calculate(arm.getShoulderAngle(), setpointsElbow.position)
+        + feedforwardResultElbow;
+
+    arm.setVoltageShoulder(demandVoltageShoulder);
+    arm.setVoltageElbow(demandVoltageElbow);
   }
 
   @Override
   public void end(boolean interrupted) {
-    arm.setSpeed(0);
   }
 
   @Override
   public boolean isFinished() {
-    return pid.atSetpoint();
+    return pidControllerShoulder.atSetpoint() && pidControllerElbow.atSetpoint();
   }
 }

@@ -11,43 +11,78 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase {
     private static Arm instance = null;
-    private final CANSparkMax motor = new CANSparkMax(ArmConstants.MOTOR_ID, MotorType.kBrushless);
-    private final DutyCycleEncoder encoder = new DutyCycleEncoder(ArmConstants.ENCODER_ID);
-    private final DigitalInput armLimitSwitch = new DigitalInput(ArmConstants.LIMIT_SWITCH_ID);
-    private final double SPEED_LIMIT = ArmConstants.SPEED_LIMIT;
+    private final CANSparkMax motorShoulder = new CANSparkMax(ArmConstants.MOTOR_SHOULDER_ID, MotorType.kBrushless);
+    private final CANSparkMax motorShoulderFollower = new CANSparkMax(ArmConstants.MOTOR_SHOULDER_ID,
+            MotorType.kBrushless);
+    private final CANSparkMax motorElbow = new CANSparkMax(ArmConstants.MOTOR_ELBOW_ID, MotorType.kBrushless);
+    private final DutyCycleEncoder encoderShoulder = new DutyCycleEncoder(ArmConstants.ENCODER_SHOULDER_ID);
+    private final DutyCycleEncoder encoderElbow = new DutyCycleEncoder(ArmConstants.ENCODER_ELBOW_ID);
+    private final DigitalInput limitSwitch = new DigitalInput(ArmConstants.LIMIT_SWITCH_ID);
+    private final double SPEED_LIMIT_SHOULDER = ArmConstants.SPEED_LIMIT_SHOULDER;
+    private final double SPEED_LIMIT_ELBOW = ArmConstants.SPEED_LIMIT_ELBOW;
 
+    private boolean isLimitSwitchSafetyMode = true;
 
     private Arm() {
-        motor.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT_AMP);
-        encoder.setDistancePerRotation(360);
-        motor.setInverted(true);
-        motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        encoder.setPositionOffset(ArmConstants.ENCODER_OFFSET);
+        motorShoulder.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT_ELBOW_AMP);
+        motorShoulderFollower.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT_ELBOW_AMP);
+        motorShoulder.setInverted(true);
+        motorShoulderFollower.setInverted(true);
+        motorShoulder.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        motorShoulderFollower.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        motorShoulderFollower.follow(motorShoulder);
+
+        motorElbow.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT_SHOULDER_AMP);
+        motorElbow.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
+        encoderShoulder.setPositionOffset(ArmConstants.ENCODER_OFFSET_SHOULDER);
+        encoderShoulder.setDistancePerRotation(360);
+        encoderElbow.setPositionOffset(ArmConstants.ENCODER_OFFSET_ELBOW);
+        encoderElbow.setDistancePerRotation(360);
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("arm angle", getAngle());
-        SmartDashboard.putBoolean("limit switch", !armLimitSwitch.get());
-        SmartDashboard.putNumber("arm angle positionOffset", encoder.getPositionOffset());
-    
-        if(!armLimitSwitch.get()) resetEncoder();
+        SmartDashboard.putNumber("arm angle shoulder", getShoulderAngle());
+        SmartDashboard.putNumber("arm angle shoulder", getElbowAngle());
+        SmartDashboard.putBoolean("arm limit switch", !limitSwitch.get());
+        SmartDashboard.putBoolean("arm is safety mode", isLimitSwitchSafetyMode);
     }
 
-
-    public void setSpeed(double speedDemand) {
-        motor.set(MathUtil.clamp(speedDemand, -SPEED_LIMIT, SPEED_LIMIT));
-    }
-    public void setVoltage(double speedDemand){
-        motor.setVoltage(MathUtil.clamp(speedDemand, -12, 12));
+    public void setSpeedShoulder(double demand) {
+        motorShoulder.set(isLimitSwitchSafetyMode && !limitSwitch.get() && demand < 0
+                ? 0
+                : MathUtil.clamp(demand, -SPEED_LIMIT_SHOULDER, SPEED_LIMIT_SHOULDER));
     }
 
-    public double getAngle() {
-        return -encoder.getDistance();
+    public void setSpeedElbow(double demand) {
+        motorElbow.set(MathUtil.clamp(demand, -SPEED_LIMIT_ELBOW, SPEED_LIMIT_ELBOW));
     }
 
-    public void resetEncoder(){
-        encoder.reset();
+    public void setVoltageShoulder(double demand) {
+        motorShoulder.setVoltage(isLimitSwitchSafetyMode && !limitSwitch.get() && demand < 0
+                ? 0
+                : MathUtil.clamp(demand, -12, 12));
+    }
+
+    public void setVoltageElbow(double demand) {
+        motorShoulder.setVoltage(MathUtil.clamp(demand, -12, 12));
+    }
+
+    public double getShoulderAngle() {
+        return -encoderShoulder.getDistance();
+    }
+
+    public double getElbowAngle() {
+        return -encoderShoulder.getDistance();
+    }
+
+    public void setLimitSwitchSafetyMode(boolean isLimitSwitchSafetyMode) {
+        this.isLimitSwitchSafetyMode = isLimitSwitchSafetyMode;
+    }
+
+    public boolean getLimitSwitchSafetyMode() {
+        return isLimitSwitchSafetyMode;
     }
 
     public static Arm getInstance() {

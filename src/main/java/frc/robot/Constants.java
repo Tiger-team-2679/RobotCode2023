@@ -7,9 +7,6 @@ public final class Constants {
     public static final double JOYSTICKS_DEADBAND_VALUE = 0.1;
   }
 
-  public static final class Arm {
-  }
-
   public static final class Autos {
     public static final class DriveToDistance {
       public static final double KP = 0.7;
