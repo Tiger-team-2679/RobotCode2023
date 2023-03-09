@@ -10,6 +10,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.BalanceOnChargeStation;
 import frc.robot.subsystems.drivetrain.commands.DriveToDistance;
 import frc.robot.subsystems.drivetrain.commands.GetOnChargeStation;
+import frc.robot.subsystems.drivetrain.commands.TurnByDegree;
 import frc.robot.subsystems.intake.Intake;
 
 public final class Autos {
@@ -45,8 +46,11 @@ public final class Autos {
     );
   }
 
-  public static Command driveBackwardsOutsideCommunity(Drivetrain drivetrain) {
-    return new DriveToDistance(drivetrain, -Constants.Autos.DriveBackwardsOutsideCommunity.DISTANCE_METERS);
+  public static Command driveBackwardsOutsideCommunity(Drivetrain drivetrain, boolean turnOnFinish) {
+    Command driveToDistanceCommand = new DriveToDistance(drivetrain, -Constants.Autos.DriveBackwardsOutsideCommunity.DISTANCE_METERS);
+    return turnOnFinish 
+      ? driveToDistanceCommand.withTimeout(Constants.Autos.DriveBackwardsOutsideCommunity.WAIT_TIME).andThen(new TurnByDegree(drivetrain, Constants.Autos.DriveBackwardsOutsideCommunity.TURN_ENGLE))
+      : driveToDistanceCommand;
   }
 
   public static Command balanceChargeStation(Drivetrain drivetrain, Arm arm) {

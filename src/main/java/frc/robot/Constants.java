@@ -13,7 +13,7 @@ public final class Constants {
       public static final double KI = 0;
       public static final double KD = 0.1;
 
-      public static final double POSITION_TOLERANCE = 0.05;
+      public static final double POSITION_TOLERANCE = 0.10;
       public static final double VELOCITY_TOLERANCE = 0.02;
     }
 
@@ -47,6 +47,8 @@ public final class Constants {
 
     public static final class DriveBackwardsOutsideCommunity {
       public static final double DISTANCE_METERS = 3.5;
+      public static final double TURN_ENGLE = 180;
+      public static final double WAIT_TIME =3.5;
     }
 
     public static final class GetOnChargeStationAuto {

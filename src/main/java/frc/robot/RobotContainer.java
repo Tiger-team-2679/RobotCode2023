@@ -55,8 +55,12 @@ public class RobotContainer {
                         arm));
 
         secondAutoCommandChooser.addOption(
+                "Drive Backwards Outside Community and turn 180 degrease",
+                () -> Autos.driveBackwardsOutsideCommunity(drivetrain,true));
+
+        secondAutoCommandChooser.addOption(
                 "Drive Backwards Outside Community",
-                () -> Autos.driveBackwardsOutsideCommunity(drivetrain));
+                () -> Autos.driveBackwardsOutsideCommunity(drivetrain, false));
 
         secondAutoCommandChooser.addOption(
                 "None",
