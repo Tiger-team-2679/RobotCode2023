@@ -37,8 +37,8 @@ public class ArmController extends CommandBase {
     elbowDemand = MathUtil.clamp(elbowDemand, -1.0, 1.0);
     elbowDemand = MathUtil.applyDeadband(elbowDemand, Constants.OI.JOYSTICKS_DEADBAND_VALUE);
 
-    shoulderDemand *= ArmConstants.Controller.MULTIPLIER_SHOULDER;
-    elbowDemand *= ArmConstants.Controller.MULTIPLIER_ELBOW;
+    shoulderDemand *= ArmConstants.Controller.MULTIPLIER_SHOULDER * 12;
+    elbowDemand *= ArmConstants.Controller.MULTIPLIER_ELBOW * 12;
 
     ArmValues<Double> feedforwardResults = arm.calculateFeedforward(
       arm.getShoulderAngle(),
