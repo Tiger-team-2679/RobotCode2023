@@ -11,7 +11,7 @@ public final class ArmConstants {
   public static final double ENCODER_OFFSET_ELBOW = 0.3011;
 
   public static final int CURRENT_LIMIT_SHOULDER_AMP = 20;
-  public static final int CURRENT_LIMIT_ELBOW_AMP = 30;
+  public static final int CURRENT_LIMIT_ELBOW_AMP = 20;
 
   public static final double SPEED_LIMIT_SHOULDER = 0.2;
   public static final double SPEED_LIMIT_ELBOW = 0.2;
