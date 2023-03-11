@@ -1,6 +1,5 @@
 package frc.robot.subsystems.arm;
 
-import frc.robot.subsystems.arm.ArmConstants;
 import org.ejml.data.MatrixType;
 import org.ejml.simple.SimpleMatrix;
 
@@ -114,7 +113,7 @@ public class DoubleJointArmFeedforward {
      * @param theta2DotDot the angular acceleration of the elbow joint. [rad/s^2]
      * @return the voltage feedforward required to move the arm in the given state. [V]
      */
-    public ArmFeedForward calculate(double theta1, double theta2, double theta1Dot, double theta2Dot, double theta1DotDot, double theta2DotDot) {
+    public ArmValues<Double> calculate(double theta1, double theta2, double theta1Dot, double theta2Dot, double theta1DotDot, double theta2DotDot) {
         updateMMatrix(theta2);
         updateCMatrix(theta2, theta1Dot, theta2Dot);
         updateTgVector(theta1, theta2);
@@ -134,25 +133,6 @@ public class DoubleJointArmFeedforward {
 
         SimpleMatrix u = B_INV.mult(M.plus(C).plus(Kb).plus(Tg_VECTOR));
 
-        return new ArmFeedForward(u.get(0, 0), u.get(1, 0));
-    }
-
-    /**
-     * Calculates the voltage feedforward required to move the arm in a certain state.
-     */
-    public static class ArmFeedForward {
-        double shoulderFeedForward;
-        double elbowFeedForward;
-
-        /**
-         * Constructor.
-         *
-         * @param shoulderFeedForward the voltage feedforward required to move the shoulder joint. [V]
-         * @param elbowFeedForward    the voltage feedforward required to move the elbow joint. [V]
-         */
-        public ArmFeedForward(double shoulderFeedForward, double elbowFeedForward) {
-            this.shoulderFeedForward = shoulderFeedForward;
-            this.elbowFeedForward = elbowFeedForward;
-        }
-    }
+        return new ArmValues<Double>(u.get(0, 0), u.get(1, 0));
+    }    
 }

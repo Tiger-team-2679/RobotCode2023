@@ -6,10 +6,10 @@ public final class DrivetrainConstants {
     public static final int RIGHT_ID = 5;
     public static final int RIGHT_FOLLOWER_ID = 6;
 
-    public static final int LEFT_ENCODER_CHANNEL_A = 3;
-    public static final int LEFT_ENCODER_CHANNEL_B = 2;
-    public static final int RIGHT_ENCODER_CHANNEL_A = 6;
-    public static final int RIGHT_ENCODER_CHANNEL_B = 7;
+    public static final int LEFT_ENCODER_CHANNEL_A = 1;
+    public static final int LEFT_ENCODER_CHANNEL_B = 0;
+    public static final int RIGHT_ENCODER_CHANNEL_A = 4;
+    public static final int RIGHT_ENCODER_CHANNEL_B = 5;
 
     public static final int CURRENT_LIMIT_AMP = 30;
 

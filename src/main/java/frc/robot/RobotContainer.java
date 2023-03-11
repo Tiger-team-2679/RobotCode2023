@@ -11,11 +11,9 @@ import frc.robot.subsystems.drivetrain.commands.ArcadeDrive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeController;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class RobotContainer {
     private final Drivetrain drivetrain = Drivetrain.getInstance();
@@ -108,7 +106,7 @@ public class RobotContainer {
                 ArmConstants.ANGLE_THIRD_ELBOW));
 
         operatorController.leftBumper().onTrue(new InstantCommand(
-                () -> arm.setLimitSwitchSafetyMode(!arm.getLimitSwitchSafetyMode())));
+                () -> arm.setEmergencyMode(!arm.getEmergencyMode())));
         operatorController.rightBumper().whileTrue(
                 new InstantCommand(() -> {
                     arm.setSpeedShoulder(0);

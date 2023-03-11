@@ -7,101 +7,99 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmConstants;
+import frc.robot.subsystems.arm.ArmValues;
 
 public class MoveArmToPosition extends CommandBase {
-  private final Arm arm;
+    private final Arm arm;
 
-  private final ArmFeedforward feedForwardShoulder = new ArmFeedforward(
-      ArmConstants.Feedforward.Shoulder.KS,
-      ArmConstants.Feedforward.Shoulder.KG,
-      ArmConstants.Feedforward.Shoulder.KV,
-      ArmConstants.Feedforward.Shoulder.KA);
+    private TrapezoidProfile trapezoidProfileShoulder;
+    private TrapezoidProfile trapezoidProfileElbow;
 
-  private final ArmFeedforward feedforwardElbow = new ArmFeedforward(
-      ArmConstants.Feedforward.Elbow.KS,
-      ArmConstants.Feedforward.Elbow.KG,
-      ArmConstants.Feedforward.Elbow.KV,
-      ArmConstants.Feedforward.Elbow.KA);
+    private double targetPositionShoulder;
+    private double targetPositionElbow;
 
-  private final PIDController pidControllerShoulder = new PIDController(
-      ArmConstants.Feedforward.Shoulder.KP,
-      ArmConstants.Feedforward.Shoulder.KI,
-      ArmConstants.Feedforward.Shoulder.KD);
+    private boolean shouldMoveShoulder = true;
+    private boolean shouldMoveElbow = true;
 
-  private final PIDController pidControllerElbow = new PIDController(
-      ArmConstants.Feedforward.Elbow.KP,
-      ArmConstants.Feedforward.Elbow.KI,
-      ArmConstants.Feedforward.Elbow.KD);
+    private final Timer timer = new Timer();
 
-  private TrapezoidProfile trapezoidProfileShoulder;
-  private TrapezoidProfile trapezoidProfileElbow;
+    public enum Joint {
+        SHOULDER,
+        ELBOW
+    }
 
-  private final double targetPositionShoulder;
-  private final double targetPositionElbow;
+    public MoveArmToPosition(Arm arm, double targetPosition, Joint joint) {
+        this(arm,
+                joint == Joint.SHOULDER ? targetPosition : 0,
+                joint == Joint.ELBOW ? targetPosition : 0);
 
-  private final Timer timer = new Timer();
+        if (joint == Joint.ELBOW) {
+            shouldMoveShoulder = false;
+        } else {
+            shouldMoveElbow = false;
+        }
 
-  public MoveArmToPosition(Arm arm, double targetPositionShoulder, double targetPositionElbow) {
-    this.arm = arm;
-    addRequirements(this.arm);
+    }
 
-    this.targetPositionShoulder = targetPositionShoulder;
-    this.targetPositionElbow = targetPositionElbow;
-  }
+    public MoveArmToPosition(Arm arm, double targetPositionShoulder, double targetPositionElbow) {
+        this.arm = arm;
+        addRequirements(arm);
 
-  @Override
-  public void initialize() {
-    timer.restart();
+        this.targetPositionShoulder = targetPositionShoulder;
+        this.targetPositionElbow = targetPositionElbow;
+    }
 
-    pidControllerShoulder.setTolerance(
-        ArmConstants.Feedforward.Shoulder.TOLERANCE_POSITION,
-        ArmConstants.Feedforward.Shoulder.TOLERANCE_VELOCITY);
-    pidControllerElbow.setTolerance(
-        ArmConstants.Feedforward.Elbow.TOLERANCE_POSITION,
-        ArmConstants.Feedforward.Elbow.TOLERANCE_VELOCITY);
+    @Override
+    public void initialize() {
+        timer.restart();
+        arm.resetPIDs();
 
-    trapezoidProfileShoulder = new TrapezoidProfile(
-        new TrapezoidProfile.Constraints(
-            ArmConstants.Feedforward.Shoulder.MAX_VELOCITY,
-            ArmConstants.Feedforward.Shoulder.MAX_ACCELERATION),
-        new TrapezoidProfile.State(targetPositionShoulder, 0),
-        new TrapezoidProfile.State(arm.getShoulderAngle(), 0));
+        if (shouldMoveShoulder)
+            trapezoidProfileShoulder = new TrapezoidProfile(
+                    new TrapezoidProfile.Constraints(
+                            ArmConstants.Feedforward.Shoulder.MAX_VELOCITY,
+                            ArmConstants.Feedforward.Shoulder.MAX_ACCELERATION),
+                    new TrapezoidProfile.State(targetPositionShoulder, 0),
+                    new TrapezoidProfile.State(arm.getShoulderAngle(), 0));
 
-    trapezoidProfileElbow = new TrapezoidProfile(
-        new TrapezoidProfile.Constraints(
-            ArmConstants.Feedforward.Elbow.MAX_VELOCITY,
-            ArmConstants.Feedforward.Elbow.MAX_ACCELERATION),
-        new TrapezoidProfile.State(targetPositionElbow, 0),
-        new TrapezoidProfile.State(arm.getElbowAngle(), 0));
-  }
+        if (shouldMoveElbow)
+            trapezoidProfileElbow = new TrapezoidProfile(
+                    new TrapezoidProfile.Constraints(
+                            ArmConstants.Feedforward.Elbow.MAX_VELOCITY,
+                            ArmConstants.Feedforward.Elbow.MAX_ACCELERATION),
+                    new TrapezoidProfile.State(targetPositionElbow, 0),
+                    new TrapezoidProfile.State(arm.getElbowAngle(), 0));
+    }
 
-  @Override
-  public void execute() {
-    TrapezoidProfile.State setpointsShoulder = trapezoidProfileShoulder.calculate(timer.get());
-    TrapezoidProfile.State setpointsElbow = trapezoidProfileElbow.calculate(timer.get());
+    @Override
+    public void execute() {
+        TrapezoidProfile.State setpointsShoulder = shouldMoveShoulder
+                ? trapezoidProfileShoulder.calculate(timer.get())
+                : new TrapezoidProfile.State(arm.getShoulderAngle(), 0);
 
-    double feedForwardResultShoulder = feedForwardShoulder.calculate(
-        Math.toRadians(setpointsShoulder.position),
-        setpointsShoulder.velocity);
-    double feedforwardResultElbow = feedforwardElbow.calculate(
-        Math.toRadians(setpointsElbow.position),
-        setpointsElbow.velocity);
+        TrapezoidProfile.State setpointsElbow = shouldMoveElbow
+                ? trapezoidProfileElbow.calculate(timer.get())
+                : new TrapezoidProfile.State(arm.getElbowAngle(), 0);
 
-    double demandVoltageShoulder = pidControllerShoulder.calculate(arm.getShoulderAngle(), setpointsShoulder.position)
-        + feedForwardResultShoulder;
-    double demandVoltageElbow = pidControllerElbow.calculate(arm.getShoulderAngle(), setpointsElbow.position)
-        + feedforwardResultElbow;
+        ArmValues<Double> feedforwardResults = arm.calculateFeedforward(
+                setpointsShoulder.position,
+                setpointsElbow.position,
+                setpointsShoulder.velocity,
+                setpointsElbow.velocity,
+                true);
 
-    arm.setVoltageShoulder(demandVoltageShoulder);
-    arm.setVoltageElbow(demandVoltageElbow);
-  }
 
-  @Override
-  public void end(boolean interrupted) {
-  }
+        arm.setVoltageShoulder(feedforwardResults.shoulder);
+        arm.setVoltageElbow(feedforwardResults.elbow);
 
-  @Override
-  public boolean isFinished() {
-    return pidControllerShoulder.atSetpoint() && pidControllerElbow.atSetpoint();
-  }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+    }
+
+    @Override
+    public boolean isFinished() {
+        return arm.pidsAtSetpoints();
+    }
 }

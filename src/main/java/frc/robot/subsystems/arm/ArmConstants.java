@@ -4,9 +4,9 @@ public final class ArmConstants {
   public static final int MOTOR_SHOULDER_ID = 9;
   public static final int MOTOR_SHOULDER_FOLLOWER_ID = 10;
   public static final int MOTOR_ELBOW_ID = 11;
-  public static final int ENCODER_SHOULDER_ID = 8;
-  public static final int ENCODER_ELBOW_ID = 0;
-  public static final int LIMIT_SWITCH_ID = 9;
+  public static final int ENCODER_SHOULDER_ID = 6;
+  public static final int ENCODER_ELBOW_ID = 7;
+  public static final int LIMIT_SWITCH_ID = 10;
   public static final double ENCODER_OFFSET_SHOULDER = 0.3011;
   public static final double ENCODER_OFFSET_ELBOW = 0.3011;
 

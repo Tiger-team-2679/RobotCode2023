@@ -4,29 +4,17 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmConstants;
+import frc.robot.subsystems.arm.ArmValues;
 
 public class ArmController extends CommandBase {
   private final Arm arm;
 
   private final DoubleSupplier shoulderDemandSupplier;
   private final DoubleSupplier elbowDemandSupplier;
-
-  private ArmFeedforward shoulderFeedforward = new ArmFeedforward(
-      ArmConstants.Feedforward.Shoulder.KS,
-      ArmConstants.Feedforward.Shoulder.KG,
-      ArmConstants.Feedforward.Shoulder.KV,
-      ArmConstants.Feedforward.Shoulder.KA);
-
-  private ArmFeedforward elbowFeedforward = new ArmFeedforward(
-      ArmConstants.Feedforward.Elbow.KS,
-      ArmConstants.Feedforward.Elbow.KG,
-      ArmConstants.Feedforward.Elbow.KV,
-      ArmConstants.Feedforward.Elbow.KA);
 
   public ArmController(Arm arm, DoubleSupplier shoulderDemandSupplier, DoubleSupplier elbowDemandSupplier) {
     this.arm = arm;
@@ -52,19 +40,16 @@ public class ArmController extends CommandBase {
     shoulderDemand *= ArmConstants.Controller.MULTIPLIER_SHOULDER;
     elbowDemand *= ArmConstants.Controller.MULTIPLIER_ELBOW;
 
-    if (shoulderDemand == 0) {
-      double targetPosition = arm.getShoulderAngle();
-      arm.setVoltageShoulder(shoulderFeedforward.calculate(Math.toRadians(targetPosition), 0));
-    } else {
-      arm.setSpeedShoulder(shoulderDemand);
-    }
+    ArmValues<Double> feedforwardResults = arm.calculateFeedforward(
+      arm.getShoulderAngle(),
+      arm.getElbowAngle(),
+      0,
+      0,
+      false
+    );
 
-    if (elbowDemand == 0) {
-      double targetPosition = arm.getElbowAngle();
-      arm.setVoltageElbow(elbowFeedforward.calculate(Math.toRadians(targetPosition), 0));
-    } else {
-      arm.setSpeedElbow(elbowDemand);
-    }
+    arm.setVoltageShoulder(shoulderDemand + feedforwardResults.shoulder);
+    arm.setVoltageElbow(elbowDemand + feedforwardResults.elbow);
   }
 
   @Override
