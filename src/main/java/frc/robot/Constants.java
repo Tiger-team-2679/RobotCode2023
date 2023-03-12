@@ -48,7 +48,7 @@ public final class Constants {
     public static final class DriveBackwardsOutsideCommunity {
       public static final double DISTANCE_METERS = 3.5;
       public static final double TURN_ENGLE = 180;
-      public static final double WAIT_TIME =3.5;
+      public static final double WAIT_TIME = 3.5;
     }
 
     public static final class GetOnChargeStationAuto {

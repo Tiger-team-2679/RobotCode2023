@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmConstants;
+import frc.robot.subsystems.arm.ArmConstants.Joints;
 import frc.robot.subsystems.arm.commands.ArmController;
 import frc.robot.subsystems.arm.commands.MoveArmToPosition;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -88,22 +89,39 @@ public class RobotContainer {
                 () -> -operatorController.getLeftY(),
                 () -> -operatorController.getRightY()));
 
+        // operatorController.a().onTrue(new MoveArmToPosition(
+        //         arm,
+        //         ArmConstants.ANGLE_REST_SHOULDER,
+        //         ArmConstants.ANGLE_REST_ELBOW));
+        // operatorController.b().onTrue(new MoveArmToPosition(
+        //         arm,
+        //         ArmConstants.ANGLE_FIRST_SHOULDER,
+        //         ArmConstants.ANGLE_FIRST_ELBOW));
+        // operatorController.x().onTrue(new MoveArmToPosition(
+        //         arm,
+        //         ArmConstants.ANGLE_SECOND_SHOULDER,
+        //         ArmConstants.ANGLE_SECOND_ELBOW));
+        // operatorController.y().onTrue(new MoveArmToPosition(
+        //         arm,
+        //         ArmConstants.ANGLE_THIRD_SHOULDER,
+        //         ArmConstants.ANGLE_THIRD_ELBOW));
+
         operatorController.a().onTrue(new MoveArmToPosition(
                 arm,
                 ArmConstants.ANGLE_REST_SHOULDER,
-                ArmConstants.ANGLE_REST_ELBOW));
+                MoveArmToPosition.Joint.SHOULDER));
         operatorController.b().onTrue(new MoveArmToPosition(
                 arm,
                 ArmConstants.ANGLE_FIRST_SHOULDER,
-                ArmConstants.ANGLE_FIRST_ELBOW));
+                MoveArmToPosition.Joint.SHOULDER));
         operatorController.x().onTrue(new MoveArmToPosition(
                 arm,
                 ArmConstants.ANGLE_SECOND_SHOULDER,
-                ArmConstants.ANGLE_SECOND_ELBOW));
+                MoveArmToPosition.Joint.SHOULDER));
         operatorController.y().onTrue(new MoveArmToPosition(
                 arm,
                 ArmConstants.ANGLE_THIRD_SHOULDER,
-                ArmConstants.ANGLE_THIRD_ELBOW));
+                MoveArmToPosition.Joint.SHOULDER));
 
         operatorController.leftBumper().onTrue(new InstantCommand(
                 () -> arm.setEmergencyMode(!arm.getEmergencyMode())));
@@ -112,6 +130,11 @@ public class RobotContainer {
                     arm.setSpeedShoulder(0);
                     arm.setSpeedElbow(0);
                 }, arm).repeatedly());
+
+        operatorController.povUp().onTrue(new MoveArmToPosition(arm, 40, MoveArmToPosition.Joint.ELBOW));
+        operatorController.povRight().onTrue(new MoveArmToPosition(arm, 0, MoveArmToPosition.Joint.ELBOW));
+        operatorController.povDown().onTrue(new MoveArmToPosition(arm, -70, MoveArmToPosition.Joint.ELBOW));
+        operatorController.povLeft().onTrue(new MoveArmToPosition(arm, 140, MoveArmToPosition.Joint.ELBOW, true));
     }
 
     public Command getAutonomousCommand() {

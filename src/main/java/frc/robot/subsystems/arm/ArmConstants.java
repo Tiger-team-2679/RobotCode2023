@@ -7,50 +7,52 @@ public final class ArmConstants {
   public static final int ENCODER_SHOULDER_ID = 6;
   public static final int ENCODER_ELBOW_ID = 7;
   public static final int LIMIT_SWITCH_ID = 10;
-  public static final double ENCODER_OFFSET_SHOULDER = 0.3011;
-  public static final double ENCODER_OFFSET_ELBOW = 0.3011;
+  public static final double ENCODER_SHOULDER_ZERO_ANGLE = -168.128;
+  public static final double ENCODER_ELBOW_ZERO_ANGLE = 334.322;
+  public static final double ENCODER_MAX_POSITIVE_SHOULDER = 150;
+  public static final double ENCODER_MAX_POSITIVE_ELBOW = 200;
 
   public static final int CURRENT_LIMIT_SHOULDER_AMP = 20;
   public static final int CURRENT_LIMIT_ELBOW_AMP = 20;
 
-  public static final double SPEED_LIMIT_SHOULDER = 0.2;
+  public static final double SPEED_LIMIT_SHOULDER = 0.6;
   public static final double SPEED_LIMIT_ELBOW = 0.2;
 
-  public static final double ANGLE_FEEDER_SHOULDER = 10, ANGLE_FEEDER_ELBOW = 0;
+  // public static final double ANGLE_FEEDER_SHOULDER = 10, ANGLE_FEEDER_ELBOW = 0;
   public static final double ANGLE_THIRD_SHOULDER = 0, ANGLE_THIRD_ELBOW = 0;
   public static final double ANGLE_SECOND_SHOULDER = -30, ANGLE_SECOND_ELBOW = 0;
   public static final double ANGLE_FIRST_SHOULDER = -60, ANGLE_FIRST_ELBOW = 0;
-  public static final double ANGLE_REST_SHOULDER = 0, ANGLE_REST_ELBOW = 0;
+  public static final double ANGLE_REST_SHOULDER = -80, ANGLE_REST_ELBOW = 0;
 
   public static final class Feedforward {
     public static final class Shoulder {
-      public static final double KP = 0.0;
-      public static final double KI = 0.00;
+      public static final double KP = 0.01;
+      public static final double KI = 0.0;
       public static final double KD = 0.0;
 
-      public static final double KV = 0.04;
-      public static final double KG = 0.48;
+      public static final double KV = 0.18;
+      public static final double KG = 0.25;
       public static final double KS = 0;
       public static final double KA = 0.0;
 
-      public static final double TOLERANCE_POSITION = 0;
-      public static final double TOLERANCE_VELOCITY = 0;
-      public static final double MAX_VELOCITY = 100;
-      public static final double MAX_ACCELERATION = 150;
+      public static final double TOLERANCE_POSITION = 10;
+      public static final double TOLERANCE_VELOCITY = 2;
+      public static final double MAX_VELOCITY = 40;
+      public static final double MAX_ACCELERATION = 100;
     }
 
     public static final class Elbow {
-      public static final double KP = 0.0;
-      public static final double KI = 0.00;
+      public static final double KP = 0.03;
+      public static final double KI = 0.0;
       public static final double KD = 0.0;
 
-      public static final double KV = 0.04;
-      public static final double KG = 0.48;
+      public static final double KV = 0.027;
+      public static final double KG = 0.35;
       public static final double KS = 0;
       public static final double KA = 0.0;
 
-      public static final double TOLERANCE_POSITION = 0;
-      public static final double TOLERANCE_VELOCITY = 0;
+      public static final double TOLERANCE_POSITION = 10;
+      public static final double TOLERANCE_VELOCITY = 2;
       public static final double MAX_VELOCITY = 100;
       public static final double MAX_ACCELERATION = 150;
     }
@@ -83,7 +85,7 @@ public final class ArmConstants {
   }
 
   public static final class Controller {
-    public static final double MULTIPLIER_SHOULDER = 0.2;
+    public static final double MULTIPLIER_SHOULDER = 0.4;
     public static final double MULTIPLIER_ELBOW = 0.2;
   }
 

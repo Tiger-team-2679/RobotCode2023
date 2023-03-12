@@ -34,7 +34,7 @@ public final class Autos {
   }
 
   public static Command releaseCubeToThird(Arm arm, Intake intake) {
-    return new MoveArmToPosition(arm, ArmConstants.ANGLE_THIRD_SHOULDER, ArmConstants.ANGLE_FEEDER_ELBOW)
+    return new MoveArmToPosition(arm, ArmConstants.ANGLE_THIRD_SHOULDER, ArmConstants.ANGLE_THIRD_ELBOW)
             .withTimeout(Constants.Autos.ReleaseCubeToThird.ARM_MOVE_TO_SECOND_TIME_SECONDS)
             .andThen(new InstantCommand(() -> intake.setSpeed(Constants.Autos.ReleaseCubeToThird.RELEASE_SPEED), intake))
             .andThen(new WaitCommand(Constants.Autos.ReleaseCubeToThird.RELEASE_TIME_SECONDS))

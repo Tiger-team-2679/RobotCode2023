@@ -1,7 +1,5 @@
 package frc.robot.subsystems.arm.commands;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -20,12 +18,18 @@ public class MoveArmToPosition extends CommandBase {
 
     private boolean shouldMoveShoulder = true;
     private boolean shouldMoveElbow = true;
+    private boolean isElbowRelativeToShoulder = false;
 
     private final Timer timer = new Timer();
 
     public enum Joint {
         SHOULDER,
         ELBOW
+    }
+
+    public MoveArmToPosition(Arm arm, double targetPosition, Joint joint, boolean isElbowRelativeToShoulder) {
+        this(arm, targetPosition, joint);
+        this.isElbowRelativeToShoulder = isElbowRelativeToShoulder;
     }
 
     public MoveArmToPosition(Arm arm, double targetPosition, Joint joint) {
@@ -68,7 +72,7 @@ public class MoveArmToPosition extends CommandBase {
                             ArmConstants.Feedforward.Elbow.MAX_VELOCITY,
                             ArmConstants.Feedforward.Elbow.MAX_ACCELERATION),
                     new TrapezoidProfile.State(targetPositionElbow, 0),
-                    new TrapezoidProfile.State(arm.getElbowAngle(), 0));
+                    new TrapezoidProfile.State(arm.getElbowAngle(isElbowRelativeToShoulder), 0));
     }
 
     @Override
@@ -79,7 +83,7 @@ public class MoveArmToPosition extends CommandBase {
 
         TrapezoidProfile.State setpointsElbow = shouldMoveElbow
                 ? trapezoidProfileElbow.calculate(timer.get())
-                : new TrapezoidProfile.State(arm.getElbowAngle(), 0);
+                : new TrapezoidProfile.State(arm.getElbowAngle(isElbowRelativeToShoulder), 0);
 
         ArmValues<Double> feedforwardResults = arm.calculateFeedforward(
                 setpointsShoulder.position,
@@ -88,10 +92,8 @@ public class MoveArmToPosition extends CommandBase {
                 setpointsElbow.velocity,
                 true);
 
-
         arm.setVoltageShoulder(feedforwardResults.shoulder);
         arm.setVoltageElbow(feedforwardResults.elbow);
-
     }
 
     @Override
@@ -100,6 +102,10 @@ public class MoveArmToPosition extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return arm.pidsAtSetpoints();
+        boolean shoulderTrapezoidFinished = trapezoidProfileShoulder == null || trapezoidProfileShoulder.isFinished(timer.get());
+        boolean elbowTrapezoidFinished = trapezoidProfileElbow == null || trapezoidProfileElbow.isFinished(timer.get());
+        return  shoulderTrapezoidFinished
+                && elbowTrapezoidFinished
+                && arm.pidsAtSetpoints();
     }
 }

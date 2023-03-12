@@ -24,6 +24,11 @@ public class Arm extends SubsystemBase {
     private final double SPEED_LIMIT_SHOULDER = ArmConstants.SPEED_LIMIT_SHOULDER;
     private final double SPEED_LIMIT_ELBOW = ArmConstants.SPEED_LIMIT_ELBOW;
 
+    private double encoderShoulderZeroAngle = ArmConstants.ENCODER_SHOULDER_ZERO_ANGLE;
+    private double ENCODER_MAX_POSITIVE_SHOULDER = ArmConstants.ENCODER_MAX_POSITIVE_SHOULDER;
+    private double encoderElbowZeroAngle = ArmConstants.ENCODER_ELBOW_ZERO_ANGLE;
+    private double ENCODER_MAX_POSITIVE_ELBOW = ArmConstants.ENCODER_MAX_POSITIVE_ELBOW;
+
     private final ArmFeedforward feedForwardShoulder = new ArmFeedforward(
             ArmConstants.Feedforward.Shoulder.KS,
             ArmConstants.Feedforward.Shoulder.KG,
@@ -50,6 +55,7 @@ public class Arm extends SubsystemBase {
 
     private Arm() {
         motorShoulder.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT_SHOULDER_AMP);
+        motorShoulder.setInverted(true);
         motorShoulderFollower.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT_SHOULDER_AMP);
         motorShoulder.setIdleMode(CANSparkMax.IdleMode.kBrake);
         motorShoulderFollower.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -57,11 +63,10 @@ public class Arm extends SubsystemBase {
 
         motorElbow.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT_ELBOW_AMP);
         motorElbow.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        motorElbow.setInverted(true);
 
-        encoderShoulder.setPositionOffset(ArmConstants.ENCODER_OFFSET_SHOULDER);
-        encoderShoulder.setDistancePerRotation(360);
-        encoderElbow.setPositionOffset(ArmConstants.ENCODER_OFFSET_ELBOW);
-        encoderElbow.setDistancePerRotation(360);
+        encoderShoulder.setPositionOffset(0);
+        encoderElbow.setPositionOffset(0);
 
         pidControllerShoulder.setTolerance(
                 ArmConstants.Feedforward.Shoulder.TOLERANCE_POSITION,
@@ -75,13 +80,22 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("arm angle shoulder", getShoulderAngle());
-        SmartDashboard.putNumber("arm angle shoulder", getElbowAngle());
+        SmartDashboard.putNumber("arm angle elbow", getElbowAngle());
+        SmartDashboard.putNumber("arm angle elbow relative to shoulder", getElbowAngle(true));
+        SmartDashboard.putNumber("arm shoulder zero angle", encoderShoulderZeroAngle);
+        SmartDashboard.putNumber("arm elbow zero angle", encoderElbowZeroAngle);
         SmartDashboard.putBoolean("arm limit switch", !limitSwitch.get());
-        SmartDashboard.putBoolean("arm is safety mode", isEmergencyMode);
+        SmartDashboard.putBoolean("arm is emeregency mode", isEmergencyMode);
+        SmartDashboard.putBoolean("arm isPIDsAtSetpoint", pidsAtSetpoints());
+    }
+
+    public void resetEncoders() {
+        encoderShoulderZeroAngle = -encoderShoulder.getAbsolutePosition() * 360;
+        encoderElbowZeroAngle = encoderElbow.getAbsolutePosition() * 360;
     }
 
     public void setSpeedShoulder(double demand) {
-        motorShoulder.set(isEmergencyMode && !limitSwitch.get() && demand < 0
+        motorShoulder.set(!isEmergencyMode && !limitSwitch.get() && demand < 0
                 ? 0
                 : MathUtil.clamp(demand, -SPEED_LIMIT_SHOULDER, SPEED_LIMIT_SHOULDER));
     }
@@ -91,21 +105,47 @@ public class Arm extends SubsystemBase {
     }
 
     public void setVoltageShoulder(double demand) {
-        motorShoulder.setVoltage(isEmergencyMode && !limitSwitch.get() && demand < 0
+        SmartDashboard.putNumber("shoulder voltage demand", demand);
+
+        motorShoulder.setVoltage(!isEmergencyMode && !limitSwitch.get() && demand < 0
                 ? 0
-                : MathUtil.clamp(demand, -12, 12));
+                : MathUtil.clamp(demand, -12 * SPEED_LIMIT_SHOULDER, 12 * SPEED_LIMIT_SHOULDER));
     }
 
     public void setVoltageElbow(double demand) {
-        motorElbow.setVoltage(MathUtil.clamp(demand, -12, 12));
+        SmartDashboard.putNumber("elbow voltage demand", demand);
+        motorElbow.setVoltage(MathUtil.clamp(demand, -12 * SPEED_LIMIT_ELBOW, 12 * SPEED_LIMIT_ELBOW));
+    }
+
+    public double normalizeAbsoluteAngle(double angle, double zeroAngle, double maxPositive) {
+        double maxNegative = maxPositive - 360;
+
+
+        angle *= 360;
+        angle -= zeroAngle;
+        if(angle > maxPositive) angle -= 360;
+        if(angle < maxNegative) angle += 360;
+
+        return angle;
     }
 
     public double getShoulderAngle() {
-        return -encoderShoulder.getDistance();
+        return normalizeAbsoluteAngle(
+                -encoderShoulder.getAbsolutePosition(),
+                encoderShoulderZeroAngle,
+                ENCODER_MAX_POSITIVE_SHOULDER);
     }
 
-    public double getElbowAngle() {
-        return -encoderShoulder.getDistance();
+
+    public double getElbowAngle(){
+        return getElbowAngle(false);
+    }
+    public double getElbowAngle(boolean isRelativeToShoulder) {
+        return normalizeAbsoluteAngle(
+                encoderElbow.getAbsolutePosition(),
+                encoderElbowZeroAngle,
+                ENCODER_MAX_POSITIVE_ELBOW)
+                + (isRelativeToShoulder ? 0 : getShoulderAngle());
     }
 
     public ArmValues<Double> calculateFeedforward(
