@@ -162,7 +162,7 @@ public class Arm extends SubsystemBase {
 
         ArmValues<Double> voltages = new ArmValues<>(
                 feedForwardShoulder.calculate(Math.toRadians(shoulderAngle), shoulderVelocity),
-                feedforwardElbow.calculate(Math.toRadians(elbowAngle), elbowVelocity));
+                feedforwardElbow.calculate(Math.toRadians(elbowAngle + (isRelativeToShoulder ? getShoulderAngle() : 0)), elbowVelocity));
 
         if (usePID) {
             voltages.shoulder += pidControllerShoulder.calculate(getShoulderAngle(), shoulderAngle);
