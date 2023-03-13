@@ -15,6 +15,7 @@ import frc.robot.subsystems.intake.commands.IntakeController;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class RobotContainer {
@@ -40,7 +41,7 @@ public class RobotContainer {
 
                 firstAutoCommandChooser.addOption(
                                 "Release Cube",
-                                () -> Autos.releaseCube(arm, intake));
+                                () -> Autos.releaseCube(intake));
 
                 firstAutoCommandChooser.addOption(
                                 "None",
@@ -102,10 +103,10 @@ public class RobotContainer {
                 operatorController.leftBumper().onTrue(new InstantCommand(
                                 () -> arm.setEmergencyMode(!arm.getEmergencyMode())));
                 operatorController.rightBumper().whileTrue(
-                                new InstantCommand(() -> {
+                                new RunCommand(() -> {
                                         arm.setSpeedShoulder(0);
                                         arm.setSpeedElbow(0);
-                                }, arm).repeatedly());
+                                }, arm));
 
 
                 operatorController.rightStick().onTrue(new InstantCommand(() -> arm.resetEncoders()));

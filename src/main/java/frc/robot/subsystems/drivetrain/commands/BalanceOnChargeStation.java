@@ -27,7 +27,9 @@ public class BalanceOnChargeStation extends CommandBase {
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    pidController.reset();
+  }
 
   @Override
   public void execute() {

@@ -80,7 +80,7 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("arm angle shoulder", getShoulderAngle());
-        SmartDashboard.putNumber("arm angle elbow", getElbowAngle());
+        SmartDashboard.putNumber("arm angle elbow", getElbowAngle(false));
         SmartDashboard.putNumber("arm angle elbow relative to shoulder", getElbowAngle(true));
         SmartDashboard.putNumber("arm shoulder zero angle", encoderShoulderZeroAngle);
         SmartDashboard.putNumber("arm elbow zero angle", encoderElbowZeroAngle);
@@ -136,9 +136,6 @@ public class Arm extends SubsystemBase {
                 ENCODER_MAX_POSITIVE_SHOULDER);
     }
 
-    public double getElbowAngle(){
-        return getElbowAngle(false);
-    }
     public double getElbowAngle(boolean isRelativeToShoulder) {
         return normalizeAbsoluteAngle(
                 encoderElbow.getAbsolutePosition(),
@@ -183,8 +180,8 @@ public class Arm extends SubsystemBase {
         return pidControllerElbow.atSetpoint();
     }
 
-    public void setEmergencyMode(boolean isLimitSwitchSafetyMode) {
-        this.isEmergencyMode = isLimitSwitchSafetyMode;
+    public void setEmergencyMode(boolean isEmergencyMode) {
+        this.isEmergencyMode = isEmergencyMode;
     }
 
     public boolean getEmergencyMode() {

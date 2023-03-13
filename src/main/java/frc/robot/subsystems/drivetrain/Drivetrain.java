@@ -79,6 +79,11 @@ public class Drivetrain extends SubsystemBase {
         pitchOffset = imu.getPitch();
     }
 
+    public void resetEncoders() {
+        rightEncoder.reset();
+        leftEncoder.reset();
+    }
+
     public double getYaw() {
         return imu.getYaw();
     }
