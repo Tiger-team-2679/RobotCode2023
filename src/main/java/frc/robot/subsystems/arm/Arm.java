@@ -121,7 +121,6 @@ public class Arm extends SubsystemBase {
     public double normalizeAbsoluteAngle(double angle, double zeroAngle, double maxPositive) {
         double maxNegative = maxPositive - 360;
 
-
         angle *= 360;
         angle -= zeroAngle;
         if(angle > maxPositive) angle -= 360;
@@ -136,7 +135,6 @@ public class Arm extends SubsystemBase {
                 encoderShoulderZeroAngle,
                 ENCODER_MAX_POSITIVE_SHOULDER);
     }
-
 
     public double getElbowAngle(){
         return getElbowAngle(false);

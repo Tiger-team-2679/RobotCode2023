@@ -4,7 +4,7 @@ public final class Constants {
   public static final class OI {
     public static final int DRIVER_PORT = 0;
     public static final int OPERATOR_PORT = 1;
-    public static final double JOYSTICKS_DEADBAND_VALUE = 0.1;
+    public static final double JOYSTICKS_DEADBAND_VALUE = 0.05;
   }
 
   public static final class Autos {

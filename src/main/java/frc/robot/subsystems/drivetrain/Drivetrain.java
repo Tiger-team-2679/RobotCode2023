@@ -7,7 +7,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,29 +25,7 @@ public class Drivetrain extends SubsystemBase {
     private final Encoder rightEncoder = new Encoder(DrivetrainConstants.RIGHT_ENCODER_CHANNEL_A,
             DrivetrainConstants.RIGHT_ENCODER_CHANNEL_B);
 
-    private final PIDController leftVelocityPID = new PIDController(DrivetrainConstants.VELOCITY_KP, DrivetrainConstants.VELOCITY_KI,
-                    DrivetrainConstants.VELOCITY_KD);
-
-    private final PIDController rightVelocityPID = new PIDController(DrivetrainConstants.VELOCITY_KP, DrivetrainConstants.VELOCITY_KI,
-            DrivetrainConstants.VELOCITY_KD);
-
-    private final PIDController leftVoltagePID = new PIDController(DrivetrainConstants.VOLTAGE_KP, DrivetrainConstants.VOLTAGE_KI,
-                    DrivetrainConstants.VOLTAGE_KD);
-
-    private final PIDController rightVoltagePID = new PIDController(DrivetrainConstants.VOLTAGE_KP, DrivetrainConstants.VOLTAGE_KI,
-                    DrivetrainConstants.VOLTAGE_KD);
-
-    private double lastSpeedLeft = 0;
-    private double lastSpeedRight = 0;
-    private ControlType controlType = ControlType.VOLTAGE;
-
-    private double pitchOffset = 0;
-
-    enum ControlType{
-        VOLTAGE,
-        VELOCITY,
-        GRADUAL_VOLTAGE
-    }
+    private double pitchOffset = DrivetrainConstants.PITCH_OFFSET;
 
     private Drivetrain() {
         SupplyCurrentLimitConfiguration currentLimitConfiguration = new SupplyCurrentLimitConfiguration(
@@ -87,31 +64,11 @@ public class Drivetrain extends SubsystemBase {
         leftEncoder.setDistancePerPulse(distancePerPules);
     }
 
-
-    private void set(double leftDemand, double rightDemand) {
+    public void setSpeed(double leftDemand, double rightDemand){
         leftDemand = MathUtil.clamp(leftDemand, -1, 1);
         rightDemand = MathUtil.clamp(rightDemand, -1, 1);
         leftMotor.set(ControlMode.PercentOutput, leftDemand);
         rightMotor.set(ControlMode.PercentOutput, rightDemand);
-        lastSpeedLeft = leftDemand;
-        lastSpeedRight = rightDemand;
-    }
-
-    public void setVelocity(double leftDemand, double rightDemand) {
-        controlType = ControlType.VELOCITY;
-        leftVelocityPID.setSetpoint(leftDemand);
-        rightVelocityPID.setSetpoint(rightDemand);
-    }
-
-    public void setGradualSpeed(double leftDemand, double rightDemand){
-        controlType = ControlType.GRADUAL_VOLTAGE;
-        leftVoltagePID.setSetpoint(leftDemand);
-        rightVoltagePID.setSetpoint(rightDemand);
-    }
-
-    public void setSpeed(double leftDemand, double rightDemand){
-        controlType = ControlType.VOLTAGE;
-        set(leftDemand, rightDemand);
     }
 
     public double getPitch() {
@@ -143,21 +100,6 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("IMU pitch", getPitch());
         SmartDashboard.putNumber("left encoder drivetrain", getLeftDistanceMeters());
         SmartDashboard.putNumber("right encoder drivetrain", getRightDistanceMeters());
-
-        if(controlType == ControlType.VELOCITY || controlType == ControlType.GRADUAL_VOLTAGE){
-            double leftPIDValue = controlType == ControlType.VELOCITY 
-                ? leftVelocityPID.calculate(leftEncoder.getRate() / DrivetrainConstants.MAX_VELOCITY)
-                : leftVoltagePID.calculate(lastSpeedLeft);
-            double rightPIDValue = controlType == ControlType.VELOCITY 
-                ? rightVelocityPID.calculate(rightEncoder.getRate() / DrivetrainConstants.MAX_VELOCITY)
-                : rightVoltagePID.calculate(lastSpeedRight);
-                
-            double finalLeftValue = MathUtil.clamp(lastSpeedLeft + leftPIDValue, -1, 1);
-            double finalRightValue = MathUtil.clamp(lastSpeedRight + rightPIDValue, -1, 1);
-
-            set(finalLeftValue, finalRightValue);
-
-        }
     }
 
     public static Drivetrain getInstance() {

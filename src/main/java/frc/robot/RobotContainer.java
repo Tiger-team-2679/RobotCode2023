@@ -32,7 +32,7 @@ public class RobotContainer {
         private final SendableChooser<CommandSupplier> secondAutoCommandChooser = new SendableChooser<>();
 
         public RobotContainer() {
-                CameraServer.startAutomaticCapture();
+                // CameraServer.startAutomaticCapture();
                 configureBindings();
                 firstAutoCommandChooser.setDefaultOption(
                                 "Release Cone",
