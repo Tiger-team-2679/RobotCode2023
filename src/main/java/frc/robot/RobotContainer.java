@@ -94,8 +94,11 @@ public class RobotContainer {
                 operatorController.x().onTrue(ArmPositionsCommands.cubeSecond(arm));
                 operatorController.y().onTrue(ArmPositionsCommands.cubeThird(arm));
                 
+                operatorController.b().onTrue(ArmPositionsCommands.feeder(arm));
+                operatorController.povLeft().onTrue(ArmPositionsCommands.coneSecond(arm));
                 operatorController.povUp().onTrue(ArmPositionsCommands.coneThird(arm));
-
+                operatorController.povDown().onTrue(ArmPositionsCommands.floor(arm));
+ 
                 operatorController.leftBumper().onTrue(new InstantCommand(
                                 () -> arm.setEmergencyMode(!arm.getEmergencyMode())));
                 operatorController.rightBumper().whileTrue(

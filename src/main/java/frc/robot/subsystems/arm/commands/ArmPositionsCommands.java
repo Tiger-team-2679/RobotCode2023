@@ -36,4 +36,25 @@ public class ArmPositionsCommands {
             ArmConstants.ANGLE_THIRD_CONE_ELBOW,
             false);
     }
+    public static Command coneSecond(Arm arm) {
+        return new MoveArmToPosition(
+            arm,
+            ArmConstants.ANGLE_SECOND_CONE_SHOULDER,
+            ArmConstants.ANGLE_SECOND_CONE_ELBOW,
+            false);
+    }
+    public static Command feeder(Arm arm) {
+        return new MoveArmToPosition(
+            arm,
+            ArmConstants.ANGLE_FEEDER_SHOULDER,
+            ArmConstants.ANGLE_FEEDER_ELBOW,
+            false);
+    }
+    public static Command floor(Arm arm) {
+        return new MoveArmToPosition(
+            arm,
+            ArmConstants.ANGLE_FLOOR_SHOULDER,
+            ArmConstants.ANGLE_FLOOR_ELBOW,
+            false);
+    }
 }
