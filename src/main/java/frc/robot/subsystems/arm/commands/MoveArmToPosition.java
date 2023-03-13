@@ -28,14 +28,10 @@ public class MoveArmToPosition extends CommandBase {
     }
 
     public MoveArmToPosition(Arm arm, double targetPosition, Joint joint, boolean isElbowRelativeToShoulder) {
-        this(arm, targetPosition, joint);
-        this.isElbowRelativeToShoulder = isElbowRelativeToShoulder;
-    }
-
-    public MoveArmToPosition(Arm arm, double targetPosition, Joint joint) {
         this(arm,
                 joint == Joint.SHOULDER ? targetPosition : 0,
-                joint == Joint.ELBOW ? targetPosition : 0);
+                joint == Joint.ELBOW ? targetPosition : 0,
+                isElbowRelativeToShoulder);
 
         if (joint == Joint.ELBOW) {
             shouldMoveShoulder = false;
@@ -45,10 +41,11 @@ public class MoveArmToPosition extends CommandBase {
 
     }
 
-    public MoveArmToPosition(Arm arm, double targetPositionShoulder, double targetPositionElbow) {
+    public MoveArmToPosition(Arm arm, double targetPositionShoulder, double targetPositionElbow, boolean isElbowRelativeToShoulder) {
         this.arm = arm;
         addRequirements(arm);
 
+        this.isElbowRelativeToShoulder = isElbowRelativeToShoulder;
         this.targetPositionShoulder = targetPositionShoulder;
         this.targetPositionElbow = targetPositionElbow;
     }
@@ -90,7 +87,8 @@ public class MoveArmToPosition extends CommandBase {
                 setpointsElbow.position,
                 setpointsShoulder.velocity,
                 setpointsElbow.velocity,
-                true);
+                true,
+                isElbowRelativeToShoulder);
 
         arm.setVoltageShoulder(feedforwardResults.shoulder);
         arm.setVoltageElbow(feedforwardResults.elbow);
@@ -104,8 +102,7 @@ public class MoveArmToPosition extends CommandBase {
     public boolean isFinished() {
         boolean shoulderTrapezoidFinished = trapezoidProfileShoulder == null || trapezoidProfileShoulder.isFinished(timer.get());
         boolean elbowTrapezoidFinished = trapezoidProfileElbow == null || trapezoidProfileElbow.isFinished(timer.get());
-        return  shoulderTrapezoidFinished
-                && elbowTrapezoidFinished
-                && arm.pidsAtSetpoints();
+        return  (!shouldMoveShoulder || (shoulderTrapezoidFinished && arm.shoulderPIDAtSetpoint()))
+                && (!shouldMoveElbow || (elbowTrapezoidFinished && arm.elbowPIDAtSetpoint()));
     }
 }

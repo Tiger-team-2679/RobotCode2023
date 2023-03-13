@@ -44,6 +44,7 @@ public class ArmController extends CommandBase {
       arm.getElbowAngle(),
       0,
       0,
+      false,
       false
     );
 

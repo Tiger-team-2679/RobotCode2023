@@ -21,29 +21,31 @@ public final class Autos {
   }
 
   public static Command releaseCube(Arm arm, Intake intake) {
-    return new MoveArmToPosition(arm, ArmConstants.ANGLE_SECOND_SHOULDER, ArmConstants.ANGLE_SECOND_ELBOW)
-            .withTimeout(Constants.Autos.ReleaseCube.ARM_MOVE_TO_SECOND_TIME_SECONDS)
-            .andThen(new InstantCommand(() -> intake.setSpeed(Constants.Autos.ReleaseCube.RELEASE_SPEED), intake))
-            .andThen(new WaitCommand(Constants.Autos.ReleaseCube.RELEASE_TIME_SECONDS))
-            .andThen(new InstantCommand(() -> intake.setSpeed(0), intake)
-            .andThen(
-              new MoveArmToPosition(arm, ArmConstants.ANGLE_REST_SHOULDER, ArmConstants.ANGLE_REST_ELBOW))
-              .withTimeout(Constants.Autos.ReleaseCube.ARM_MOVE_TO_REST_TIME_SECONDS
-            )
-    );
+    // return new MoveArmToPosition(arm, ArmConstants.ANGLE_SECOND_SHOULDER, ArmConstants.ANGLE_SECOND_ELBOW)
+    //         .withTimeout(Constants.Autos.ReleaseCube.ARM_MOVE_TO_SECOND_TIME_SECONDS)
+    //         .andThen(new InstantCommand(() -> intake.setSpeed(Constants.Autos.ReleaseCube.RELEASE_SPEED), intake))
+    //         .andThen(new WaitCommand(Constants.Autos.ReleaseCube.RELEASE_TIME_SECONDS))
+    //         .andThen(new InstantCommand(() -> intake.setSpeed(0), intake)
+    //         .andThen(
+    //           new MoveArmToPosition(arm, ArmConstants.ANGLE_REST_SHOULDER, ArmConstants.ANGLE_REST_ELBOW))
+    //           .withTimeout(Constants.Autos.ReleaseCube.ARM_MOVE_TO_REST_TIME_SECONDS
+    //         )
+    // );
+    return new InstantCommand();
   }
 
   public static Command releaseCubeToThird(Arm arm, Intake intake) {
-    return new MoveArmToPosition(arm, ArmConstants.ANGLE_THIRD_SHOULDER, ArmConstants.ANGLE_THIRD_ELBOW)
-            .withTimeout(Constants.Autos.ReleaseCubeToThird.ARM_MOVE_TO_SECOND_TIME_SECONDS)
-            .andThen(new InstantCommand(() -> intake.setSpeed(Constants.Autos.ReleaseCubeToThird.RELEASE_SPEED), intake))
-            .andThen(new WaitCommand(Constants.Autos.ReleaseCubeToThird.RELEASE_TIME_SECONDS))
-            .andThen(new InstantCommand(() -> intake.setSpeed(0), intake)
-            .andThen(
-              new MoveArmToPosition(arm, ArmConstants.ANGLE_REST_SHOULDER, ArmConstants.ANGLE_REST_ELBOW))
-              .withTimeout(Constants.Autos.ReleaseCube.ARM_MOVE_TO_REST_TIME_SECONDS
-            )
-    );
+    // return new MoveArmToPosition(arm, ArmConstants.ANGLE_THIRD_SHOULDER, ArmConstants.ANGLE_THIRD_ELBOW)
+    //         .withTimeout(Constants.Autos.ReleaseCubeToThird.ARM_MOVE_TO_SECOND_TIME_SECONDS)
+    //         .andThen(new InstantCommand(() -> intake.setSpeed(Constants.Autos.ReleaseCubeToThird.RELEASE_SPEED), intake))
+    //         .andThen(new WaitCommand(Constants.Autos.ReleaseCubeToThird.RELEASE_TIME_SECONDS))
+    //         .andThen(new InstantCommand(() -> intake.setSpeed(0), intake)
+    //         .andThen(
+    //           new MoveArmToPosition(arm, ArmConstants.ANGLE_REST_SHOULDER, ArmConstants.ANGLE_REST_ELBOW))
+    //           .withTimeout(Constants.Autos.ReleaseCube.ARM_MOVE_TO_REST_TIME_SECONDS
+    //         )
+    // );
+    return new InstantCommand();
   }
 
   public static Command driveBackwardsOutsideCommunity(Drivetrain drivetrain, boolean turnOnFinish) {

@@ -86,7 +86,8 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("arm elbow zero angle", encoderElbowZeroAngle);
         SmartDashboard.putBoolean("arm limit switch", !limitSwitch.get());
         SmartDashboard.putBoolean("arm is emeregency mode", isEmergencyMode);
-        SmartDashboard.putBoolean("arm isPIDsAtSetpoint", pidsAtSetpoints());
+        SmartDashboard.putBoolean("arm is shoulder pid at setpoint", shoulderPIDAtSetpoint());
+        SmartDashboard.putBoolean("arm is elbow pid at setpoint", elbowPIDAtSetpoint());
     }
 
     public void resetEncoders() {
@@ -153,7 +154,8 @@ public class Arm extends SubsystemBase {
             double elbowAngle,
             double shoulderVelocity,
             double elbowVelocity,
-            boolean usePID) {
+            boolean usePID,
+            boolean isRelativeToShoulder) {
 
         if (isEmergencyMode)
             return new ArmValues<Double>(0.0, 0.0);
@@ -164,7 +166,7 @@ public class Arm extends SubsystemBase {
 
         if (usePID) {
             voltages.shoulder += pidControllerShoulder.calculate(getShoulderAngle(), shoulderAngle);
-            voltages.elbow += pidControllerElbow.calculate(getElbowAngle(), elbowAngle);
+            voltages.elbow += pidControllerElbow.calculate(getElbowAngle(isRelativeToShoulder), elbowAngle);
         }
 
         return voltages;
@@ -175,8 +177,12 @@ public class Arm extends SubsystemBase {
         pidControllerElbow.reset();
     }
 
-    public boolean pidsAtSetpoints() {
-        return pidControllerShoulder.atSetpoint() && pidControllerElbow.atSetpoint();
+    public boolean shoulderPIDAtSetpoint() {
+        return pidControllerShoulder.atSetpoint();
+    }
+
+    public boolean elbowPIDAtSetpoint() {
+        return pidControllerElbow.atSetpoint();
     }
 
     public void setEmergencyMode(boolean isLimitSwitchSafetyMode) {

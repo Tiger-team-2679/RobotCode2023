@@ -7,8 +7,8 @@ public final class ArmConstants {
   public static final int ENCODER_SHOULDER_ID = 6;
   public static final int ENCODER_ELBOW_ID = 7;
   public static final int LIMIT_SWITCH_ID = 10;
-  public static final double ENCODER_SHOULDER_ZERO_ANGLE = -168.128;
-  public static final double ENCODER_ELBOW_ZERO_ANGLE = 334.322;
+  public static final double ENCODER_SHOULDER_ZERO_ANGLE = -48.47774521194363;
+  public static final double ENCODER_ELBOW_ZERO_ANGLE = 333.67824834195625;
   public static final double ENCODER_MAX_POSITIVE_SHOULDER = 150;
   public static final double ENCODER_MAX_POSITIVE_ELBOW = 200;
 
@@ -16,13 +16,12 @@ public final class ArmConstants {
   public static final int CURRENT_LIMIT_ELBOW_AMP = 20;
 
   public static final double SPEED_LIMIT_SHOULDER = 0.6;
-  public static final double SPEED_LIMIT_ELBOW = 0.2;
+  public static final double SPEED_LIMIT_ELBOW = 0.7;
 
-  // public static final double ANGLE_FEEDER_SHOULDER = 10, ANGLE_FEEDER_ELBOW = 0;
-  public static final double ANGLE_THIRD_SHOULDER = 0, ANGLE_THIRD_ELBOW = 0;
-  public static final double ANGLE_SECOND_SHOULDER = -30, ANGLE_SECOND_ELBOW = 0;
-  public static final double ANGLE_FIRST_SHOULDER = -60, ANGLE_FIRST_ELBOW = 0;
-  public static final double ANGLE_REST_SHOULDER = -80, ANGLE_REST_ELBOW = 0;
+  public static final double ANGLE_THIRD_CONE_SHOULDER = 5, ANGLE_THIRD_CONE_ELBOW = 30;  
+  public static final double ANGLE_SECOND_CUBE_SHOULDER = -30, ANGLE_SECOND_CUBE_ELBOW = 25;  
+  public static final double ANGLE_THIRD_CUBE_SHOULDER = 0, ANGLE_THIRD_CUBE_ELBOW = 45;  
+  public static final double ANGLE_REST_SHOULDER = -85, ANGLE_REST_ELBOW = 155;
 
   public static final class Feedforward {
     public static final class Shoulder {
@@ -42,7 +41,7 @@ public final class ArmConstants {
     }
 
     public static final class Elbow {
-      public static final double KP = 0.03;
+      public static final double KP = 0.08;
       public static final double KI = 0.0;
       public static final double KD = 0.0;
 
@@ -51,37 +50,11 @@ public final class ArmConstants {
       public static final double KS = 0;
       public static final double KA = 0.0;
 
-      public static final double TOLERANCE_POSITION = 10;
+      public static final double TOLERANCE_POSITION = 12;
       public static final double TOLERANCE_VELOCITY = 2;
-      public static final double MAX_VELOCITY = 100;
-      public static final double MAX_ACCELERATION = 150;
+      public static final double MAX_VELOCITY = 130;
+      public static final double MAX_ACCELERATION = 180;
     }
-  }
-
-  public static final class PID {
-    public static final double KP_REST = 2.7;
-    public static final double KI_REST = 0;
-    public static final double KD_REST = 0.3;
-
-    public static final double KP_FIRST = 1.6;
-    public static final double KI_FIRST = 0.01;
-    public static final double KD_FIRST = 0.3;
-
-    public static final double KP_SECOND = 1.9;
-    public static final double KI_SECOND = 0.015;
-    public static final double KD_SECOND = 0.5;
-
-    public static final double KP_THIRD = 2.4;
-    public static final double KI_THIRD = 0.018;
-    public static final double KD_THIRD = 0.05;
-
-    public static final double KP_MAX = 2.5;
-    public static final double KI_MAX = 0.019;
-    public static final double KD_MAX = 0.05;
-
-    public static final double KP_FEEDER = 0;
-    public static final double KI_FEEDER = 0;
-    public static final double KD_FEEDER = 0;
   }
 
   public static final class Controller {
